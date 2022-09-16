@@ -1,0 +1,15 @@
+{
+  "name": "equal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "author": "Hechen Liu",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^20.1.3"
+  }
+}

@@ -9,8 +9,8 @@ const createWindow = () => {
       preload: path.join(__dirname, "preload.js"),
     },
   })
-  win.setIcon("./public/assets/logo.png");
-  win.loadFile("./public/index.html");
+  win.setIcon("./public/assets/icon.png");
+  win.loadFile("./build/index.html");
 }
 
 app.whenReady()

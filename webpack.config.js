@@ -2,13 +2,13 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: "./src/equal-zero/index.js",
   output: {
     filename: "main.js",
     path: path.resolve(__dirname, "build"),
     clean: true
   },
-  mode: "production",
+  mode: "development",
   module: {
     rules: [
       {
@@ -30,6 +30,10 @@ module.exports = {
     extensions: ["*", ".js", "jsx"]
   },
   plugins: [new HtmlWebpackPlugin({
-    template: "./src/template.html"
+    template: "./src/equal-zero/template.html"
   })],
+  // watch: true,
+  // watchOptions: {
+  //   ignored: /nodule_modules/
+  // }
 }

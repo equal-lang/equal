@@ -3,8 +3,9 @@ const path = require("path");
 
 const createWindow = () => {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    fullscreen: true,
+    // width: 800,
+    // height: 600,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
@@ -79,7 +80,9 @@ app.whenReady()
         {
           // only different from close on macOS
           label: "Quit",
-          role: "quit"
+          role: "quit",
+          accelerator: "Alt+F4",
+
         },
       ]
     },
@@ -94,6 +97,10 @@ app.whenReady()
       label: "View",
       role: "viewMenu",
       submenu: [
+        {
+          role: "toggleDevTools"
+          
+        }
 
       ]
     },
@@ -109,7 +116,7 @@ app.whenReady()
 })
 .then(() => {
   // TODO: change tray menu
-  let tray = new Tray(nativeImage.createFromPath("./assets/logo.png"));
+  let tray = new Tray(nativeImage.createFromPath("./public/assets/logo.png"));
   const trayMenu = Menu.buildFromTemplate([
     { label: "Launch Interpreter", type: "normal"}
   ])

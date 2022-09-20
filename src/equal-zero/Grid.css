@@ -1,0 +1,8 @@
+.react-grid-item {
+  background-color: #C3ED6F;
+  /* border: groove; */
+}
+
+.react-grid-item#editor {
+  background-color: #6BAD4D;
+}

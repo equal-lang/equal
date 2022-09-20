@@ -1,4 +1,4 @@
 // const { contextBridge } = require("electron");
 
-// contextBridge.exposeInMainWorld("", {
+// contextBridge.exposeInMainWorld("browser", {
 // })

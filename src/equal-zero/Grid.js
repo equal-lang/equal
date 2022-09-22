@@ -18,9 +18,10 @@ class Grid extends React.Component {
       stdinH: 3, // can be modified
       stdoutH: 6 - 3, // can be modified
     }
+  }
+
     // editor: height is constant at winH, but editorW can change
     // stdin and stdout: individual H can change, but total H is constant at winH; outputW can change, providing that its total with editorW remains constant at winW
-  }
 
   // onBreakpointChange(newBreakpoint, newCols) {
   //   this.setState({ winW: newCols });
@@ -77,12 +78,9 @@ class Grid extends React.Component {
         rowHeight={document.documentElement.clientHeight / 6}
 
       >
-
-
-
         <div key="editor" id="editor"><Editor /></div>
-        <div key="stdin">stdin</div>
-        <div key="stdout">stdout</div>
+        <div key="stdin" id="stdin">stdin</div>
+        <div key="stdout" id="stdout">stdout</div>
         {/* <div key="transpiled-javascript"></div> */}
 
       </ResponsiveGridLayout>

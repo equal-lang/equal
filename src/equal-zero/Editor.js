@@ -1,7 +1,15 @@
-import React from 'react';
-import SimpleCodeEditor from 'react-simple-code-editor';
+import React from "react";
 import * as Prism from "prismjs";
+
+// import "../../node_modules/blissfuljs/bliss.shy.js";
+// linking directly from node modules for the moment
+// fix later
 import "../../node_modules/prism-themes/themes/prism-duotone-forest.min.css";
+
+import "../../node_modules/prism-live/src/prism-live.js";
+import "../../node_modules/prism-live/prism-live.css";
+
+import "./Editor.css";
 
 class Editor extends React.Component {
   constructor(props) {
@@ -12,17 +20,19 @@ class Editor extends React.Component {
   }
 
   render() {
-    return(
-      <SimpleCodeEditor
-        value={this.state.code}
-        onValueChange={code => this.setState({ code: code })}
-        highlight={code => Prism.highlight(code, Prism.languages.html)}
-        padding={10}
-      />
+    // console.log(test);
+    return (
+        <textarea
+          className="prism-live line-numbers language-html fill"
+          spellCheck={false}
+          defaultValue={this.state.code}
+        >
+        </textarea>
+
     );
   }
 
-  
+
 }
 
 export default Editor;

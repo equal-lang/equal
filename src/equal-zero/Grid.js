@@ -41,26 +41,27 @@ class Grid extends React.Component {
 
     if (this.state.stdoutH != newStdoutH) this.setState({ stdoutH: newStdoutH, stdinH: this.state.winH - newStdoutH });
 
+
     // TODO: fix resize on breakpoint change
     // TODO: make sure output always fill the space, in height and weight
 
     // TODO: fix error Failed prop type: minWidth larger than item width/maxWidth
 
-    if (newStdinW < newOutputW || newStdoutW < newOutputW) this.setState({ outputW: newOutputW });
+    // if (newStdinW < newOutputW || newStdoutW < newOutputW) {
+    //   console.log(this.state.outputW, newOutputW);
+    //   this.setState({ outputW: newOutputW });
+    //   console.log("yes")
+
+    // }
   }
 
   render() {
     let layouts = {
       lg: [
-        { i: "editor", x: 0, y: 0, w: this.state.editorW, h: this.state.winH, minH: this.state.winH, maxH: this.state.winH, maxW: this.state.winW },
+        { i: "editor", x: 0, y: 0, w: this.state.editorW, h: this.state.winH, minH: this.state.winH, maxW: this.state.winW }, // maxH: this.state.winH, 
         { i: "stdin", x: this.state.editorW, y: 0, w: this.state.outputW, h: this.state.stdinH, maxH: this.state.winH, maxW: this.state.winW },
         { i: "stdout", x: this.state.editorW, y: this.state.stdinH, w: this.state.outputW, h: this.state.stdoutH, maxH: this.state.winH, maxW: this.state.winW }
-      ],
-      md: [
-        { i: "editor", x: 0, y: 0, w: this.state.editorW, h: this.state.winH, minH: this.state.winH, maxH: this.state.winH, maxW: this.state.winW },
-        { i: "stdin", x: this.state.editorW, y: 0, w: this.state.outputW, h: this.state.stdinH, maxH: this.state.winH, maxW: this.state.winW },
-        { i: "stdout", x: this.state.editorW, y: this.state.stdinH, w: this.state.outputW, h: this.state.stdoutH, maxH: this.state.winH, maxW: this.state.winW }
-      ],
+      ]
 
     };
     return (

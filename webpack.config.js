@@ -20,9 +20,9 @@ module.exports = {
           plugins: [
             ["prismjs", {
               "languages": ["html"],
-              "plugins": [],
+              "plugins": ["line-numbers"],
               // "theme": "twilight",
-              // "css": true
+              "css": true
             }]
           ]
         }

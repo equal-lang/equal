@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "system",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "outDir": "build/equal",
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true
+    // "sourceMap": true
+  },
+  "include": ["src/equal/*"],
+  "exclude": ["node_modules"]
+}

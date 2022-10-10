@@ -24,42 +24,76 @@ class Grid extends React.Component {
     // editor: height is constant at winH, but editorW can change
     // stdin and stdout: individual H can change, but total H is constant at winH; outputW can change, providing that its total with editorW remains constant at winW
 
-  onResize(layout) {
+  onResize(layout, oldItem, newItem) {
     // deconstruct object?
-    const newEditorW = layout[0]["w"];
-    const newOutputW = this.state.winW - newEditorW;
-    const newStdinH = layout[1]["h"];
-    const newStdoutH = layout[2]["h"];
-    const newStdinW = layout[1]["w"];
-    const newStdoutW = layout[2]["w"];
 
-    console.log("onresize", layout)
+    // check only this function
+    // only thing done later is if stdin or stdout has a height of 0 or below, not return their elements
+      // why does width not need this?
+    // when resize happens, if one element has not been included previously and there is now space for it, find a way to add it in
+      // layout 
+    // else keep the total width at 6 and the total height at 12
+    // hidden handle in editor
+    
+    // search based on i
 
-    if (this.state.editorW != newEditorW) this.setState({ editorW: newEditorW, outputW: newOutputW });
+    function searchI(layout, i) {
+      for (let j = 0; j < layout.length; j++) {
+        if (layout[j]["i"] == i) return layout[j];
+      }
+      return null;
+    }
+    
+    const editor = searchI(layout, "editor");
+    const stdin = searchI(layout, "stdin");
+    const stdout = searchI(layout, "stdout");
+
+    const newEditorW = editor["w"];
+
+    // if (stdin && stdout) {
+    //   const newStdinH = stdin["h"];
+    //   const newStdoutH = stdout["h"];
+    // } else if (stdin) {
+    //   const newStdinH = stdin["h"];
+    //   const newStdoutH = this.state.winH - stdin["h"];
+    // } else if (stdout) {
+    //   const newStdinH = this.state.winH - stdout["h"];
+    //   const newStdoutH = stdout["h"];
+    // } else {
+    //   const newStdinH = 0;
+    //   const newStdoutH = 0;
+    // }
+
+    // one of stdin or stdout?
+
+    const newStdinH = stdin ? stdin["h"] : (this.state.winH - stdout["h"]);
+    const newStdoutH = stdout ? stdout["h"] : (this.state.winH - stdin["h"]);
+
+    const newStdinW = stdin ? stdin["w"] : (this.state.winW - newEditorW);
+    const newStdoutW = stdout ? stdout["w"] : (this.state.winW - newEditorW);
+
+    const newOutputW = (newItem["i"] == "stdin" || newItem["i"] == "stdout") ? newItem["w"] : this.state.winW - newEditorW;
+
+
+    if (this.state.editorW != newEditorW) {
+      this.setState({ editorW: newEditorW, outputW: newOutputW });
+    }
 
     if (this.state.stdinH != newStdinH) {
       this.setState({ stdinH: newStdinH, stdoutH: this.state.winH - newStdinH });
     }
 
-    if (this.state.stdoutH != newStdoutH) this.setState({ stdoutH: newStdoutH, stdinH: this.state.winH - newStdoutH });
-
-
-    // TODO: fix resize on breakpoint change
-    // TODO: make sure output always fill the space, in height and weight
-
-    // TODO: fix error Failed prop type: minWidth larger than item width/maxWidth
-
-    if (newStdinW < newOutputW || newStdoutW < newOutputW) {
-      console.log(this.state.outputW, newOutputW);
-      this.setState({ outputW: newOutputW-1 });
-      this.setState({ outputW: newOutputW });
-
-      // problem: outputW and newOutputW are the same, because editorW has not changed
-      // rerender needed
-      // problem: editorH also changing
-      // changing stdinH can force out stdoutW
-
+    if (this.state.stdoutH != newStdoutH) {
+      this.setState({ stdoutH: newStdoutH, stdinH: this.state.winH - newStdoutH });
     }
+
+    // stdout sometimes does not fill the space
+    // TODO: fix resize on breakpoint change
+
+
+    if (newStdinW != newOutputW || newStdoutW != newOutputW) {
+      this.setState({ outputW: newOutputW, editorW: this.state.winW - newOutputW });
+    } 
   }
 
   render() {
@@ -67,42 +101,19 @@ class Grid extends React.Component {
 
     let editorLayout = { i: "editor", x: 0, y: 0, w: state.editorW, h: state.winH, minH: state.winH, maxH: state.winH, maxW: state.winW, minW: 0}; 
 
-    let stdinLayout = { i: "stdin", x: state.editorW, y: 0, w: state.outputW, h: state.stdinH, maxH: state.winH - 1, maxW: state.winW, minW: 0 };
-    // let emptyStdinLayout = { i: "stdin", x: state.editorW, y: 0, w: 0, h: 0, minW: 0, minH: 0 };
+    let stdinLayout = { i: "stdin", x: state.editorW, y: 0, w: state.outputW, h: state.stdinH, maxH: state.winH, maxW: state.winW, minW: 0, minH: 0 };
 
-    let stdoutLayout = { i: "stdout", x: state.editorW, y: state.stdinH, w: state.outputW, h: state.stdoutH, maxH: state.winH - 1, maxW: state.winW, minW: 0};
-    // let emptyStdoutLayout = { i: "stdout", x: state.editorW, y: state.stdinH, w: 0, h: 0, minW: 0, minH: 0 };
+    let stdoutLayout = { i: "stdout", x: state.editorW, y: state.stdinH, w: state.outputW, h: state.stdoutH, maxH: state.winH, maxW: state.winW, minW: 0, minH: 0 };
 
-
-
-    let layouts;
-    if (state.stdinH <= 0) {
-      layouts = {
-        lg: [editorLayout, stdoutLayout]
-        // lg: [editorLayout, emptyStdinLayout, stdoutLayout]
-
-      };
-    }
-    else if (state.stdoutH <= 0) {
-
-      layouts = {
-        // lg: [editorLayout, stdinLayout, emptyStdoutLayout]
-        lg: [editorLayout, stdinLayout]
-      };
-    } else {
-      layouts = {
-        lg: [ editorLayout, stdinLayout, stdoutLayout ]
-      };
-    }
-    console.log(state)
-    console.log(layouts);
+    let layouts = {
+      lg: [ editorLayout, stdinLayout, stdoutLayout ]
+    };
 
     let editor = <div key="editor" id="editor"><Editor /></div>;
     let stdin = <div key="stdin" id="stdin">stdin</div>;
     let stdout = <div key="stdout" id="stdout">stdout</div>;
 
     return (
-
       <ResponsiveGridLayout style={{ width: document.documentElement.clientWeight, height: document.documentElement.clientHeight }}
         className="layout"
         layouts={layouts}
@@ -113,13 +124,11 @@ class Grid extends React.Component {
         resizeHandles={["nw", "ne", "sw", "se"]}
         onResize={this.onResize.bind(this)}
         rowHeight={document.documentElement.clientHeight / 6}
-
       >
         {editor}
-        {(state.stdinH >= 0) ? stdin : <span/>}
-        {(state.stdoutH >= 0) ? stdout : <span/>}
-      </ResponsiveGridLayout>
-    )
+        {(state.stdinH > 0) ? stdin : <span/>}
+        {(state.stdoutH > 0) ? stdout : <span/>}
+      </ResponsiveGridLayout>);
   }
 }
 

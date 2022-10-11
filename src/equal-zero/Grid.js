@@ -21,22 +21,19 @@ class Grid extends React.Component {
     }
   }
 
+  onBreakpointChange(newBreakpoint, newCols) {
+    const winW = newCols,
+    editorW = Math.floor(.6 * winW),
+    outputW = winW - editorW;
+    this.setState({
+      winW, editorW, outputW
+    })
+  }
+
     // editor: height is constant at winH, but editorW can change
     // stdin and stdout: individual H can change, but total H is constant at winH; outputW can change, providing that its total with editorW remains constant at winW
 
   onResize(layout, oldItem, newItem) {
-    // deconstruct object?
-
-    // check only this function
-    // only thing done later is if stdin or stdout has a height of 0 or below, not return their elements
-      // why does width not need this?
-    // when resize happens, if one element has not been included previously and there is now space for it, find a way to add it in
-      // layout 
-    // else keep the total width at 6 and the total height at 12
-    // hidden handle in editor
-    
-    // search based on i
-
     function searchI(layout, i) {
       for (let j = 0; j < layout.length; j++) {
         if (layout[j]["i"] == i) return layout[j];
@@ -48,47 +45,31 @@ class Grid extends React.Component {
     const stdin = searchI(layout, "stdin");
     const stdout = searchI(layout, "stdout");
 
+    // editor, one of stdin or stdout must exist
+
     const newEditorW = editor["w"];
-
-    // if (stdin && stdout) {
-    //   const newStdinH = stdin["h"];
-    //   const newStdoutH = stdout["h"];
-    // } else if (stdin) {
-    //   const newStdinH = stdin["h"];
-    //   const newStdoutH = this.state.winH - stdin["h"];
-    // } else if (stdout) {
-    //   const newStdinH = this.state.winH - stdout["h"];
-    //   const newStdoutH = stdout["h"];
-    // } else {
-    //   const newStdinH = 0;
-    //   const newStdoutH = 0;
-    // }
-
-    // one of stdin or stdout?
-
-    const newStdinH = stdin ? stdin["h"] : (this.state.winH - stdout["h"]);
-    const newStdoutH = stdout ? stdout["h"] : (this.state.winH - stdin["h"]);
-
+    const newOutputW = (newItem["i"] == "stdin" || newItem["i"] == "stdout") ? newItem["w"] : this.state.winW - newEditorW;
     const newStdinW = stdin ? stdin["w"] : (this.state.winW - newEditorW);
     const newStdoutW = stdout ? stdout["w"] : (this.state.winW - newEditorW);
 
-    const newOutputW = (newItem["i"] == "stdin" || newItem["i"] == "stdout") ? newItem["w"] : this.state.winW - newEditorW;
+  
 
+    const newStdinH = stdin ? stdin["h"] : (this.state.winH - stdout["h"]);
+    const newStdoutH = stdout ? stdout["h"] : (this.state.winH - stdin["h"]);
 
     if (this.state.editorW != newEditorW) {
       this.setState({ editorW: newEditorW, outputW: newOutputW });
     }
 
     if (this.state.stdinH != newStdinH) {
+      // stdout does not exist, no state is reset because this.state.winH - stdin["h"] is equal to the previous state
       this.setState({ stdinH: newStdinH, stdoutH: this.state.winH - newStdinH });
     }
 
     if (this.state.stdoutH != newStdoutH) {
       this.setState({ stdoutH: newStdoutH, stdinH: this.state.winH - newStdoutH });
     }
-
-    // stdout sometimes does not fill the space
-    // TODO: fix resize on breakpoint change
+    // BUG: when stdin/stdout resized itself to zero / simply resized, empty space is left
 
 
     if (newStdinW != newOutputW || newStdoutW != newOutputW) {
@@ -113,22 +94,25 @@ class Grid extends React.Component {
     let stdin = <div key="stdin" id="stdin">stdin</div>;
     let stdout = <div key="stdout" id="stdout">stdout</div>;
 
-    return (
-      <ResponsiveGridLayout style={{ width: document.documentElement.clientWeight, height: document.documentElement.clientHeight }}
-        className="layout"
-        layouts={layouts}
-        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-        cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
-        isDraggable={false}
-        margin={[0, 0]}
-        resizeHandles={["nw", "ne", "sw", "se"]}
-        onResize={this.onResize.bind(this)}
-        rowHeight={document.documentElement.clientHeight / 6}
-      >
-        {editor}
-        {(state.stdinH > 0) ? stdin : <span/>}
-        {(state.stdoutH > 0) ? stdout : <span/>}
-      </ResponsiveGridLayout>);
+
+    // responsive grid not needed?
+    let grid = <ResponsiveGridLayout style={{ width: document.documentElement.clientWeight, height: document.documentElement.clientHeight }}
+      className="layout"
+      layouts={layouts}
+      breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+      cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+      isDraggable={false}
+      margin={[0, 0]}
+      resizeHandles={["nw", "ne", "sw", "se"]}
+      onResize={this.onResize.bind(this)}
+      onBreakpointChange={this.onBreakpointChange.bind(this)}
+      rowHeight={document.documentElement.clientHeight / 6}
+    >
+      {editor}
+      {(state.stdinH > 0) ? stdin : <span/>}
+      {(state.stdoutH > 0) ? stdout : <span/>}
+    </ResponsiveGridLayout>;
+    return grid;
   }
 }
 

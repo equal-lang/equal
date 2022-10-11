@@ -2,16 +2,19 @@ const { app, BrowserWindow, Tray, nativeImage, Menu } = require("electron");
 const path = require("path");
 
 const createWindow = () => {
+  // const { screen } = require("electron");
+  // const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   const win = new BrowserWindow({
-    fullscreen: true,
-    // width: 800,
-    // height: 600,
+    // fullscreen: true,
+    // width: width,
+    // height: height,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
   })
-  win.setIcon("./public/assets/icon.png");
-  win.loadFile("./build/index.html");
+
+  win.setIcon(path.join(__dirname, "../public/assets/icon.png"));
+  win.loadFile(path.join(__dirname, "../build/index.html"));
 }
 
 app.whenReady()
@@ -109,6 +112,16 @@ app.whenReady()
       role: "help",
       submenu: [
 
+      ]
+    },
+    {
+      label: "Tools",
+      // role: "help",
+      submenu: [
+// html linter
+// js transpiler
+// view actual webpage
+// tabs?
       ]
     }
   ])

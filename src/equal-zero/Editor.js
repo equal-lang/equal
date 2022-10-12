@@ -5,12 +5,11 @@ import { html } from "@codemirror/lang-html";
 
 import "./Editor.css";
 
-
 class Editor extends React.Component {
   render() {
     return (
       <CodeMirror
-      value="console.log('hello world!');"
+      value="<div>Hello World</div>"
       height={this.props.height + "px"}
       extensions={[html()]}
     />

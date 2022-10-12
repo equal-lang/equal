@@ -1,9 +1,11 @@
-const { app, BrowserWindow, Tray, nativeImage, Menu } = require("electron");
+const { app, BrowserWindow, Tray, nativeImage, Menu, ipcMain } = require("electron");
 const path = require("path");
 
 const createWindow = () => {
   
   const win = new BrowserWindow({
+    // height: 900,
+    // width: 800,
     webPreferences: {
       preload: path.join(__dirname, "./preload.js"),
     },
@@ -11,6 +13,11 @@ const createWindow = () => {
 
   win.setIcon(path.join(__dirname, "../public/assets/icon.png"));
   win.loadFile(path.join(__dirname, "../build/index.html"));
+  win.on("resize", () => {
+    
+    win.webContents.send("window-resize");
+
+  })
 }
 
 app.whenReady()

@@ -1,4 +1,7 @@
-// const { contextBridge } = require("electron");
+const { contextBridge, ipcRenderer } = require("electron");
 
-// contextBridge.exposeInMainWorld("browser", {
-// })
+contextBridge.exposeInMainWorld("electronAPI", {
+  onWindowResize: (callback) => {
+    ipcRenderer.on("window-resize", callback);
+  }
+})

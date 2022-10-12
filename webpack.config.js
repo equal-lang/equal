@@ -18,12 +18,6 @@ module.exports = {
         options: { 
           presets: ["@babel/preset-react"],
           plugins: [
-            ["prismjs", {
-              "languages": ["html"],
-              "plugins": ["line-numbers"],
-              // "theme": "twilight",
-              "css": true
-            }]
           ]
         }
       },
@@ -39,9 +33,5 @@ module.exports = {
   },
   plugins: [new HtmlWebpackPlugin({
     template: "./src/equal-zero/template.html"
-  })],
-  // watch: true,
-  // watchOptions: {
-  //   ignored: /nodule_modules/
-  // }
+  })]
 }

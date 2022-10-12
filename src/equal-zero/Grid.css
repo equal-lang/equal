@@ -1,12 +1,7 @@
 .react-grid-layout {
-  /* overflow-x: hidden; */
+  overflow: hidden;
   /* overflow-y: scroll; */
   height: 100%;
-}
-.react-grid-item#editor {
-  background-color: #2a2d2a;
-
-  /* font-family: "Courier New", monospace; */
 }
 
 .react-grid-item#stdin {

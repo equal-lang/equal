@@ -18,16 +18,20 @@ class Grid extends React.Component {
       outputW: 12 - 7, // change when editorW changes
       stdinH: 3, // can be modified
       stdoutH: 6 - 3, // can be modified
+
     }
   }
 
   onBreakpointChange(newBreakpoint, newCols) {
+
     const winW = newCols,
     editorW = Math.floor(.6 * winW),
     outputW = winW - editorW;
     this.setState({
       winW, editorW, outputW
     })
+    // reset row height
+    // pass down
   }
 
     // editor: height is constant at winH, but editorW can change
@@ -77,26 +81,29 @@ class Grid extends React.Component {
     } 
   }
 
+  // window.innerHeight
+// || document.documentElement.clientHeight
+// || document.body.clientHeight;
+
   render() {
-    let state = this.state;
-
-    let editorLayout = { i: "editor", x: 0, y: 0, w: state.editorW, h: state.winH, minH: state.winH, maxH: state.winH, maxW: state.winW, minW: 0}; 
-
-    let stdinLayout = { i: "stdin", x: state.editorW, y: 0, w: state.outputW, h: state.stdinH, maxH: state.winH, maxW: state.winW, minW: 0, minH: 0 };
-
-    let stdoutLayout = { i: "stdout", x: state.editorW, y: state.stdinH, w: state.outputW, h: state.stdoutH, maxH: state.winH, maxW: state.winW, minW: 0, minH: 0 };
-
-    let layouts = {
+    let state = this.state,
+    editorLayout = { i: "editor", x: 0, y: 0, w: state.editorW, h: state.winH, minH: state.winH, maxH: state.winH, maxW: state.winW, minW: 0},
+    stdinLayout = { i: "stdin", x: state.editorW, y: 0, w: state.outputW, h: state.stdinH, maxH: state.winH, maxW: state.winW, minW: 0, minH: 0 },
+    stdoutLayout = { i: "stdout", x: state.editorW, y: state.stdinH, w: state.outputW, h: state.stdoutH, maxH: state.winH, maxW: state.winW, minW: 0, minH: 0 },
+    layouts = {
       lg: [ editorLayout, stdinLayout, stdoutLayout ]
     };
 
-    let editor = <div key="editor" id="editor"><Editor /></div>;
+    const gridWidth = document.documentElement.clientWeight;
+    const gridHeight = document.documentElement.clientHeight;
+
+    let editor = <div key="editor" id="editor"><Editor height={gridHeight}/></div>;
     let stdin = <div key="stdin" id="stdin">stdin</div>;
     let stdout = <div key="stdout" id="stdout">stdout</div>;
 
-
     // responsive grid not needed?
-    let grid = <ResponsiveGridLayout style={{ width: document.documentElement.clientWeight, height: document.documentElement.clientHeight }}
+    // BUG: scroll bar shows up sometimes
+    let grid = <ResponsiveGridLayout style={{ width: gridWidth, height: gridHeight }}
       className="layout"
       layouts={layouts}
       breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}

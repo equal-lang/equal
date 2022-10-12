@@ -2,12 +2,8 @@ const { app, BrowserWindow, Tray, nativeImage, Menu } = require("electron");
 const path = require("path");
 
 const createWindow = () => {
-  // const { screen } = require("electron");
-  // const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+  
   const win = new BrowserWindow({
-    // fullscreen: true,
-    // width: width,
-    // height: height,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },

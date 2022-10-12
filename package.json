@@ -1,20 +1,14 @@
 {
   "name": "equal",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "Interpreter for the esoteric programming language Equal",
+  "author": "Hechen Liu",
+  "license": "MIT",
   "main": "./src/main.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/equal-lang/equal.git"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
-    "start": "electron .",
-    "run": "tsc && node cli-build/equal/equal.js"
-  },
-  "author": "Hechen Liu",
-  "license": "MIT",
   "devDependencies": {
     "@babel/cli": "^7.18.10",
     "@babel/core": "^7.19.1",
@@ -22,8 +16,7 @@
     "babel-loader": "^8.2.5",
     "css-loader": "^6.7.1",
     "electron": "^21.1.0",
-    "electron-packager": "^16.0.0",
-    "electron-winstaller": "^5.0.0",
+    "electron-builder": "^23.6.0",
     "html-webpack-plugin": "^5.5.0",
     "style-loader": "^3.3.1",
     "typescript": "^4.8.3",
@@ -36,5 +29,27 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-grid-layout": "^1.3.4"
-  }
+  },
+  "build": {
+    "appId": "com.electron.equal",
+    "icon": "./public/assets/logo.ico",
+    "win": {
+      "target": "portable"
+    },
+    "files": [
+      "build",
+      "node_modules",
+      "public",
+      "src"
+    ]
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "start": "electron .",
+    "run": "tsc && node cli-build/equal/equal.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder -w"
+  },
+  "postInstall": "electron-builder install-app-deps"
 }

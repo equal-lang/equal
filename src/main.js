@@ -5,7 +5,7 @@ const createWindow = () => {
   
   const win = new BrowserWindow({
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
+      preload: path.join(__dirname, "./preload.js"),
     },
   })
 
@@ -125,7 +125,7 @@ app.whenReady()
 })
 .then(() => {
   // TODO: change tray menu
-  let tray = new Tray(nativeImage.createFromPath("./public/assets/logo.png"));
+  let tray = new Tray(nativeImage.createFromPath(path.join(__dirname, "../public/assets/logo.png")));
   const trayMenu = Menu.buildFromTemplate([
     { label: "Launch Interpreter", type: "normal"}
   ])

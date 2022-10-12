@@ -1,13 +1,14 @@
 import React from "react";
 import * as Prism from "prismjs";
 
-// import "../../node_modules/blissfuljs/bliss.shy.js";
 // linking directly from node modules for the moment
 // fix later
 import "../../node_modules/prism-themes/themes/prism-duotone-forest.min.css";
 
+// import "../../node_modules/blissfuljs/bliss.shy.js";
 import "../../node_modules/prism-live/src/prism-live.js";
 import "../../node_modules/prism-live/prism-live.css";
+
 
 import "./Editor.css";
 

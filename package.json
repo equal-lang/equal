@@ -11,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
     "start": "electron .",
-    "run": "tsc && node build/equal/equal.js"
+    "run": "tsc && node cli-build/equal/equal.js"
   },
   "author": "Hechen Liu",
   "license": "MIT",

@@ -1,4 +1,10 @@
 node_modules/
 build/
-dist/
+# electron app build (using webpack)
 package/
+# electron app package
+dist/
+# electron app installers (unsuccessful so far)
+cli-build/
+# typescript app build
+notes.txt

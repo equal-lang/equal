@@ -1,7 +1,4 @@
-// class Command {
-//   // let 
-
-// }
-// function parseCmd(str: string): Command {
-
-// }
+export const enum equalMode {
+  VERBOSE = "VERBOSE",
+  NORMAL = "NORMAL"
+}

@@ -18,16 +18,20 @@ class equalError {
 
 
 class errorHandler {
+  // store error?
   _hasError: boolean;
   mode: keyof typeof equalMode;
+  errors: equalError[];
   constructor(mode: keyof typeof equalMode) {
     this.mode = mode;
     this._hasError = false;
+    this.errors = [];
   }
   public reportError(message: string, file?: string, line?: number) {
     let err: equalError = new equalError(message, file, line);
     console.error(err.toString());
     this._hasError = true;
+    this.errors.push(err);
   }
   public getErrorStatus(): boolean {
     return this._hasError;

@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "module": "system",
-    "noImplicitAny": true,
+    "module": "commonjs",
     "removeComments": true,
     "preserveConstEnums": true,
     "outDir": "cli-build/equal",
     "strictNullChecks": true,
-    "strictPropertyInitialization": true
-    // "sourceMap": true
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "noImplicitAny": true,
   },
   "include": ["src/equal/*"],
   "exclude": ["node_modules"]

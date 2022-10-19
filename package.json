@@ -9,26 +9,14 @@
     "type": "git",
     "url": "https://github.com/equal-lang/equal.git"
   },
-  "devDependencies": {
-    "@babel/cli": "^7.18.10",
-    "@babel/core": "^7.19.1",
-    "@babel/preset-react": "^7.18.6",
-    "babel-loader": "^8.2.5",
-    "css-loader": "^6.7.1",
-    "electron": "^21.1.0",
-    "electron-builder": "^23.6.0",
-    "html-webpack-plugin": "^5.5.0",
-    "style-loader": "^3.3.1",
-    "typescript": "^4.8.3",
-    "webpack": "^5.74.0",
-    "webpack-cli": "^4.10.0"
-  },
-  "dependencies": {
-    "@codemirror/lang-html": "^6.1.2",
-    "@uiw/react-codemirror": "^4.12.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-grid-layout": "^1.3.4"
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "start": "electron .",
+    "build1": "tsc",
+    "start1": "node cli-build/equal/equal.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder -w"
   },
   "build": {
     "appId": "com.electron.equal",
@@ -43,13 +31,28 @@
       "src"
     ]
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
-    "start": "electron .",
-    "run": "tsc && node cli-build/equal/equal.js",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder -w"
+  "postInstall": "electron-builder install-app-deps",
+  "devDependencies": {
+    "@babel/cli": "^7.18.10",
+    "@babel/core": "^7.19.1",
+    "@babel/preset-react": "^7.18.6",
+    "@types/yargs": "^17.0.13",
+    "babel-loader": "^8.2.5",
+    "css-loader": "^6.7.1",
+    "electron": "^21.1.0",
+    "electron-builder": "^23.6.0",
+    "html-webpack-plugin": "^5.5.0",
+    "style-loader": "^3.3.1",
+    "typescript": "^4.8.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
   },
-  "postInstall": "electron-builder install-app-deps"
+  "dependencies": {
+    "@codemirror/lang-html": "^6.1.2",
+    "@uiw/react-codemirror": "^4.12.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-grid-layout": "^1.3.4",
+    "yargs": "^17.6.0"
+  }
 }

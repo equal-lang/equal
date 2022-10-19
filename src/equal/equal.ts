@@ -2,6 +2,7 @@ import * as fs from "fs";
 import { Lexer } from "./lexer";
 import { Parser } from "./parser";
 import { equalMode } from "./utils";
+import { errorHandler } from "./error";
 
 class Equal {
   error: boolean;
@@ -9,6 +10,7 @@ class Equal {
   mode: keyof typeof equalMode;
   lexer: Lexer;
   parser: Parser;
+  errHandler: errorHandler;
 
   constructor(path: string, mode: string) {
     try {
@@ -17,9 +19,12 @@ class Equal {
   
       if (mode == "VERBOSE") this.mode = equalMode.VERBOSE;
       else this.mode = equalMode.NORMAL;
+
+      this.errHandler = new errorHandler(this.mode);
   
-      this.lexer = new Lexer(this.mode);
+      this.lexer = new Lexer(this.mode, this.errHandler);
       this.parser = new Parser();
+
       this.run();
 
     } catch(err) {
@@ -30,7 +35,11 @@ class Equal {
     try {
       if (this.error == false) {    
         if (this.mode == equalMode.VERBOSE) console.info("Running in verbose mode");
-        const tokens = this.lexer.lex(this.loadFile());
+        const tokens = this.lexer.lex(this.loadFile(), this.path);
+        console.log(tokens);
+        this.error = this.errHandler.getErrorStatus();
+        this.execute();
+        // check for error here
       }
 
     } catch(err) {
@@ -52,7 +61,14 @@ class Equal {
 
   }
 
-  
+  private execute() {
+    if (this.error == false) {
+    }
+    // exit?    
+
+  }
+
+  // handle unexpected errors in interpreter code
   private handleUnexpectedError(err: Error): void {
     if (this.mode == equalMode.VERBOSE) console.info(err);
     console.error("Unexpected Error: " + ((err.message == "") ? "Unknown Error" : err.message));

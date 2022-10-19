@@ -1,28 +1,29 @@
 const enum tokenType {
-  LEFT_ANGLE_BRACKET = "LEFT_ANGLE_BRACKET",
-  RIGHT_ANGLE_BRACKET = "RIGHT_ANGLE_BRACKET",
-  QUOTATION_MARK = "QUOTATION_MARK",
+  START_TAG_LEFT = "START_TAG_LEFT",
+  END_TAG_LEFT = "END_TAG_LEFT",
+  TAG_RIGHT = "TAG_RIGHT",
   EQUAL_SIGN = "EQUAL_SIGN",
-  SLASH = "SLASH",
+  EOF = "EOF",
 
   TAGNAME = "TAGNAME",
   INNERTEXT = "INNERTEXT",
   ATTRIBUTE = "ATTRIBUTE",
-  VALUE = "VALUE"
+  VALUE = "VALUE",
+
+  STRING = "STRING",
+  NUMBER = "NUMBER"
 }
 
 class Token {
   tokenType: tokenType;
-  value: object;
+  value: object | undefined;
   line: number;
 
-  constructor(type: tokenType, value: object, line: number) {
+  constructor(type: tokenType, line: number, value?: object) {
     this.tokenType = type;
     this.value = value;
     this.line = line;
   }
-
-  // type, value, line?
 }
 
 export {

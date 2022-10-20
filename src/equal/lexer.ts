@@ -39,20 +39,25 @@ class Lexer {
       this.leftPointer = this.rightPointer;
       switch (char) {
         case "<": {
-          if (this.condForward("/")) this.pushToken(tokenType.END_TAG_LEFT);
-          else if (this.lookAhead() == "!") {
-            // WORKING
+          if (this.condForward("!--", 3)) {
             this.rightPointer++;
             this.comment();
           }
-          else this.pushToken(tokenType.START_TAG_LEFT);
-          this.rightPointer++;
-          this.tagname();
+          else {
+            if (this.condForward("/")) {
+              this.pushToken(tokenType.END_TAG_LEFT);
+            } else {
+              this.pushToken(tokenType.START_TAG_LEFT);
+            }
+            this.rightPointer++;
+            this.tagname();
+          }
+          
           break;
         } case ">": {
           this.pushToken(tokenType.TAG_RIGHT);
           this.rightPointer++;
-          this.text();
+          // this.text();
           break;
         } case "=": {
           // NEED IDENTIFER
@@ -63,7 +68,7 @@ class Lexer {
         } case "\n": {
           this.line++;
           break;
-        } case " ":6
+        } case " ":
           case "\t":
           case "\r": {
             break;
@@ -82,7 +87,7 @@ class Lexer {
   }
 
   private tagname(): void {
-    this.pushToken(tokenType.TAGNAME, this.consumeWhile((char) => (!this.isWhitespace(char) && !(char == ">"))));
+    this.pushToken(tokenType.TAGNAME, this.consumeWhile((char) => (!this.isWhitespace(char) && (char != ">"))));
   }
 
   private value(): void {
@@ -116,16 +121,18 @@ class Lexer {
   //   else this.pushToken(tokenType.STRING, String(data));
   // }
 
-  
-
-  private text(): void {
-    let content: string = this.consumeWhile((char) => (char != "<"));
-    if (content != "") this.pushToken(tokenType.TEXT, content);
-  }
+  // DO ATTRIBUTE FIRST, THEN CHANGE RECOGNIZING TO DEFAULT
+  // private text(): void {
+  //   let content: string = this.consumeWhile((char) => (char != "<"));
+  //   if (content != "") this.pushToken(tokenType.TEXT, content);
+  // }
 
   private comment(): void {
-    this.consumeWhile((char) => (char != ">"));
-
+    // consumed
+    this.consumeWhile((char) => {
+      return (!(char == "-" && this.condForward("->", 2)));
+    });
+    this.rightPointer++;
   }
 
   // consume and return string while function returns true
@@ -150,9 +157,10 @@ class Lexer {
     return ret;
   }
 
-  private condForward(char: string): boolean {
-    if (!this.lastChar() && char == this.content[this.rightPointer+1]) {
-      this.rightPointer++;
+  private condForward(char: string, offset=1): boolean {
+    if (!this.atEnd(offset) && char == this.content.slice(this.rightPointer + 1, this.rightPointer + offset + 1)) {
+      console.log(char)
+      this.rightPointer += offset;
       return true;
     } else return false;
   }

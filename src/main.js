@@ -1,5 +1,6 @@
 const { app, BrowserWindow, Tray, nativeImage, Menu, ipcMain } = require("electron");
 const path = require("path");
+const { newFile, openFile, save, saveAs } = require("./file.js");
 
 const createWindow = () => {
   
@@ -39,14 +40,14 @@ app.whenReady()
           label: "New File",
           accelerator: "CommandOrControl+N",
           click: (menuItem, browserWindow, event) => {
-            console.log("New File");
+            newFile();
           }
         },
         {
-          label: "Open...",
+          label: "Open File...",
           accelerator: "CommandOrControl+O",
           click: (menuItem, browserWindow, event) => {
-            console.log("Open File");
+            openFile();
           }
         },
         {
@@ -56,14 +57,14 @@ app.whenReady()
           label: "Save",
           accelerator: "CommandOrControl+S",
           click: (menuItem, browserWindow, event) => {
-            console.log("Save");
+            save();
           }
         },
         {
           label: "Save As...",
           accelerator: "CommandOrControl+Shift+S",
           click: (menuItem, browserWindow, event) => {
-            console.log("Save As...");
+            saveAs();
           }
         },
         {

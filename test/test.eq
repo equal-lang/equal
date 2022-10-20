@@ -1,7 +1,11 @@
 <div class = "1" id=test>
 abc
-<span class='2 test'>test</span>
+<span class='2 test'>test\n</span>
 </div>
 <div />
 <div/>
-<!--NaN = 0?-->
+<div>
+<!-- comment -->
+text2
+</div>
+<input>

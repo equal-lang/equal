@@ -2,12 +2,6 @@ import { equalMode } from "./utils";
 import { Token, tokenType } from "./token";
 import { errorHandler } from "./error";
 
-
-
-class flags {
-
-}
-
 class Lexer {
   mode: keyof typeof equalMode;
   errHandler: errorHandler;
@@ -34,6 +28,9 @@ class Lexer {
     this.content = content;
     this.path = path;
 
+    // better way?
+    let inTag = false;
+
     while (!this.atEnd()) {
       let char: string = this.content[this.rightPointer];
       this.leftPointer = this.rightPointer;
@@ -49,21 +46,26 @@ class Lexer {
             } else {
               this.pushToken(tokenType.START_TAG_LEFT);
             }
+            inTag = true;
             this.rightPointer++;
             this.tagname();
           }
-          
           break;
         } case ">": {
           this.pushToken(tokenType.TAG_RIGHT);
+          inTag = false;
           this.rightPointer++;
           // this.text();
           break;
         } case "=": {
-          // NEED IDENTIFER
-          this.pushToken(tokenType.EQUAL_SIGN);
-          this.rightPointer++;
-          this.value();
+          if (inTag) {
+            this.pushToken(tokenType.EQUAL_SIGN);
+            this.rightPointer++;
+            this.value();
+          }
+          break;
+        } case "/": {
+          if (inTag && this.lookAhead() == ">") this.rightPointer++;
           break;
         } case "\n": {
           this.line++;
@@ -74,6 +76,8 @@ class Lexer {
             break;
         }
         default: {
+          if (inTag) this.pushToken(tokenType.ATTRIBUTE, (this.consumeWhile((char) => (char != "=" && !this.endOfTag(char) && !this.isWhitespace(char)))));
+          else this.pushToken(tokenType.TEXT, (this.consumeWhile((char) => (char != "<")))); 
           // this.reportError("Invalid character");
           break;
         }
@@ -83,13 +87,13 @@ class Lexer {
     this.pushToken(tokenType.EOF);
 
     return this.tokens;
-
   }
 
   private tagname(): void {
-    this.pushToken(tokenType.TAGNAME, this.consumeWhile((char) => (!this.isWhitespace(char) && (char != ">"))));
+    this.pushToken(tokenType.TAGNAME, this.consumeWhile((char) => (!this.isWhitespace(char) && !this.endOfTag(char))));
   }
 
+  // using pointers to slice off quotes
   private value(): void {
     let firstChar = this.content[this.rightPointer];
     let content: string;
@@ -108,34 +112,25 @@ class Lexer {
       content = this.consumeWhile((char) => (char != "'"));
       this.rightPointer++;
     } else {
-      content = this.consumeWhile((char) => (!this.isWhitespace(char) && char != ">"));
+      content = this.consumeWhile((char) => (!this.isWhitespace(char) && !this.endOfTag(char)));
     }
     this.pushToken(tokenType.VALUE, content);
     // this.numberOrString(content);
   }
-
-  // private numberOrString(data: string) {
-  //   if (!isNaN(Number(data))) {
-  //     this.pushToken(tokenType.NUMBER, Number(data));
-  //   }
-  //   else this.pushToken(tokenType.STRING, String(data));
-  // }
-
-  // DO ATTRIBUTE FIRST, THEN CHANGE RECOGNIZING TO DEFAULT
-  // private text(): void {
-  //   let content: string = this.consumeWhile((char) => (char != "<"));
-  //   if (content != "") this.pushToken(tokenType.TEXT, content);
-  // }
 
   private comment(): void {
     // consumed
     this.consumeWhile((char) => {
       return (!(char == "-" && this.condForward("->", 2)));
     });
+    // really consuming three characters
     this.rightPointer++;
   }
 
   // consume and return string while function returns true
+
+  // rely on calling function to move pointer to start of string
+  // pointer returned to the end of string to be advanced by the while loop above
   private consumeWhile(test: (char: string) => boolean): string {
     // this.rightPointer++;
     this.leftPointer = this.rightPointer;
@@ -159,7 +154,6 @@ class Lexer {
 
   private condForward(char: string, offset=1): boolean {
     if (!this.atEnd(offset) && char == this.content.slice(this.rightPointer + 1, this.rightPointer + offset + 1)) {
-      console.log(char)
       this.rightPointer += offset;
       return true;
     } else return false;
@@ -183,6 +177,10 @@ class Lexer {
 
   private isWhitespace(char: string) {
     return (char == " " || char == "\t" || char == "\r");
+  }
+
+  private endOfTag(char: string) {
+    return (char == ">" || (char == "/" && this.lookAhead() == ">"));
   }
 
   private atEnd(offset=0): boolean {

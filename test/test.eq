@@ -1,11 +1,4 @@
 <div class = "1" id=test>
-abc
-<span class='2 test'>test\n</span>
+text with space in it
+12 = ts
 </div>
-<div />
-<div/>
-<div>
-<!-- comment -->
-text2
-</div>
-<input>

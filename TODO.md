@@ -8,3 +8,4 @@
   - currently a hybrid of flags and functions
 [ ] Add option to have whitespace between / and > (?)
 [ ] Strip text of spaces and make line numbers for multi-line strings align
+[ ] Add option to import and export libraries

@@ -1,4 +1,4 @@
-# Equal - the Programming Language HTML
+# Equal - the Esoteric Programming Language HTML
 
 ## Features
 ### Control Flow
@@ -42,14 +42,16 @@
 ### Variables
 #### Assignment
 ```html
+<!-- local variable -->
 <a id="name_of_variable">
   value
 </a>
+<!-- global variable -->
+<a href="name_of_variable">
+  value
+</a>
 ```
-#### Reference
-```html
-<a href="name_of_variable"></a>
-```
+
 ##### Types
 - three types available: string, number, boolean
 - if ```!isNaN(Number(expression))``` is true, the variable is a number
@@ -59,6 +61,9 @@
 - implict conversions between types will throw error
 ##### Scope
 - an variable is available in the div block the variable is defined in as well as all its children  
+##### Notes
+- variables can be redefined
+- expressions must be assigned to variables to be used later
 
 
 ### Functions
@@ -81,92 +86,82 @@
   <form title="name_of_function" class="param1 param2 param3">
 </a>
 ```
+### Operators
+```html
+<!-- arithmetic -->
+<form title="+" class="num1 num2 num3 num4"></form> <!-- more args possible -->
+<form title="-" class="num1 num2 num3 num4"></form> <!-- more args possible -->
+<form title="*" class="num1 num2 num3 num4"></form> <!-- more args possible -->
+<form title="/" class="num1 num2 num3 num4"></form> <!-- b != 0 --> <!-- more args possible -->
+<!-- logic -->
+<form title="!" class="expression1"></form>
+<form title="==" class="expression1 expression2"></form>
+<form title="!=" class="expression1 expression2"></form>
+<form title=">" class="expression1 expression2"></form>
+<form title="<" class="expression1 expression2"></form>
+<form title="&&" class="expression1 expression2 expression3 expression4"></form> <!-- more args possible --> <!-- return true if all evaluate to true -->
+<form title="||" class="expression1 expression2 expression3 expression4"></form> <!-- more args possible --> <!-- return true if one evaluates to true -->
+```
+#### Grammar so far
+```txt
+expression -> logic
+logic -> '<form title="' ('&&' | '||') '" class="' equality ' ' (equality)* '"></form>' 
+equality -> '<form title="' ('==' | '!=') '" class="' comparsion ' ' comparsion '"></form>'
+comparsion -> '<form title="' ('>' | '<') '" class="' addition ' ' addition '"></form>'
+addition -> '<form title="' ('+' | '-') '" class="' multiplication ' ' (multiplication)* '"></form>'
+multiplication -> '<form title="' ('*' | '/') '" class="' unary ' ' (unary)* '"></form>'  
+unary -> '<form title="' '!' '" class="' primary '"></form>' 
+primary -> STRING | NUMBER | BOOLEAN
+```
+- do not change the order of classes if possible
 
 ### Standard library
-#### Numbers
-- Four operations 
+#### String manipulation
 ```html
-<form title="+" class="num1 num2">
-<form title="-" class="num1 num2">
-<form title="*" class="num1 num2">
-<form title="/" class="num1 num2"> <!-- b != 0 -->
+<!-- concat -->
+<form title="con" class="str1 str2"></form>
+<!-- substring -->
+<!-- (index1 inclusive, index2 exclusive) -->
+<form title="sub" class="str index1 index2"></form>
 ```
+#### Conversion between types
 ```html
-<!-- example -->
-<!-- a = 1; b = 3 -->
-<a id="a">1</a>
-<a id="b">3</a>
-<!-- c = a + b -->
-<a href="c">
-  <form title="+" class="a b">
-</a>
-<!-- d = 7 -->
-<a id="d">7</a>
-<!-- e = c * d -->
-<a href="e">
-  <form title="*" class="c d">
-</a>
+<!-- string to number (only when possible) -->
+<form title="sn" class="str"></form>
+<!-- number to string -->
+<form title="ns" class="num"></form>
 ```
-- ASCII to string
+#### ASCII
 ```html
-<form title="as" class="ascii_string">
-```
-- Number to string
-```html
-<form title="ns" class="num">
+<!-- string to ascii -->
+<form title="sa" class="str"></form>
+<!-- ASCII to string -->
+<form title="as" class="ascii_string"></form>
 ```
 
-#### String
-- Concat and substring
-```html
-<form title="con" class="str1 str2">
-<!-- index1 inclusive, index2 exclusive -->
-<form title="sub" class="str index1 index2">
-```
-- String to ascii
-```html
-<form title="sa" class="str">
-```
-- String to numbers
-```html
-<form title="sn" class="str">
-```
 #### Reserved function names
-- \+ ; \- ; \* ; /
+- \+ , \- , \* , /, !, ==, !=, >, <, &&, ||
 - as, ns
 - con, sub
 - sa, sn
 
 ### IO
-#### Input
-##### Source 
+#### Streams
 ```html
 <head>
   <!-- set source of input stream, default to stdin if not set -->
   <link rel="stylesheet" href="file.in" type="in">
-</head>
-```
-##### Content
-```html
-<!-- empty src value means input, and alt, which defaults to 1, represents the number of whitespace-separated values the input would take -->
-<img src="" alt="num"> 
-```
-
-#### Output
-##### Destination 
-```html
-<head>
   <!-- set destination of output stream, default to stdout if not set -->
   <link rel="stylesheet" href="file.out" type="out">
 </head>
 ```
-##### Content
+#### Content
 ```html
+<!-- empty src value means input, and alt, which defaults to 1, represents the number of whitespace-separated values the input would take -->
+<img src="" alt="num"> 
 <!-- output the variables specified in src value -->
 <img src="variable1 variable2"> <!-- etc -->
 ```
-
-
 
 ### Notes
 - ```class``` usually stores expressions to be evaluated
@@ -174,9 +169,9 @@
 - ```href``` is used later to refer to the variable
 - ```title``` is used later to refer to the function
 
----
 
-### References
+
+## References
 - The vast majority of code in this repository is written by me and the errors are mine alone
 - Credit to [Crafting Interpreters](https://craftinginterpreters.com/representing-code.html) for inspiring much of the structure of the interpreter
 - Other references:

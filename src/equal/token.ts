@@ -7,13 +7,9 @@ const enum tokenType {
   TAGNAME = "TAGNAME",
   ATTRIBUTE = "ATTRIBUTE",
   TEXT = "TEXT",
-  COMMENT = "COMMENT",
+  // COMMENT = "COMMENT",
 
   VALUE = "VALUE",
-  // COMMENT
-  // self closing tag?
-  // space in string
-  // new line
   // doctype
   DOCTYPE = "DOCTYPE",
   EOF = "EOF",

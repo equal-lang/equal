@@ -14,7 +14,7 @@
     "build": "webpack",
     "start": "electron .",
     "build1": "tsc",
-    "start1": "node cli-build/equal/equal.js",
+    "start1": "node cli-build/equal/cli.js",
     "pack": "electron-builder --dir",
     "dist": "electron-builder -w"
   },

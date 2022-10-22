@@ -65,7 +65,6 @@
 - variables can be redefined
 - expressions must be assigned to variables to be used later
 
-
 ### Functions
 #### Definition
 ```html
@@ -82,37 +81,71 @@
 ```
 #### Reference
 ```html
-<a id="name_of_value">
-  <form title="name_of_function" class="param1 param2 param3">
-</a>
+<!-- for is optional and is for readability purposes only-->
+<form title="name_of_function">
+  <label for="name_of_param1">
+    arg1
+  </label>
+  <label for="name_of_param2">
+    arg2
+  </label>
+  <label for="name_of_param3">
+    arg3
+  </label>
+  <!-- etc -->
+</form>
 ```
 ### Operators
 ```html
 <!-- arithmetic -->
-<form title="+" class="num1 num2 num3 num4"></form> <!-- more args possible -->
-<form title="-" class="num1 num2 num3 num4"></form> <!-- more args possible -->
-<form title="*" class="num1 num2 num3 num4"></form> <!-- more args possible -->
-<form title="/" class="num1 num2 num3 num4"></form> <!-- b != 0 --> <!-- more args possible -->
+<form title="+">
+  <label for="name_of_param1">num1</label>
+  <label for="name_of_param2">num2</label>
+  <!-- more args possible -->
+</form>
+<!-- possible titles: "+" "-" "*" "/" -->
+<!-- no division by zero -->
+
+<!-- comparsion -->
+<form title="==">
+  <label for="name_of_param1">expression1</label>
+  <label for="name_of_param2">expression2</label>
+  <!-- only two args -->
+</form>
+<!-- possible titles: "==" "!=" ">" "<" -->
+
 <!-- logic -->
-<form title="!" class="expression1"></form>
-<form title="==" class="expression1 expression2"></form>
-<form title="!=" class="expression1 expression2"></form>
-<form title=">" class="expression1 expression2"></form>
-<form title="<" class="expression1 expression2"></form>
-<form title="&&" class="expression1 expression2 expression3 expression4"></form> <!-- more args possible --> <!-- return true if all evaluate to true -->
-<form title="||" class="expression1 expression2 expression3 expression4"></form> <!-- more args possible --> <!-- return true if one evaluates to true -->
+<!-- (1) -->
+<form title="!">
+  <label for="name_of_param1">expression1</label>
+  <!-- only one arg -->
+</form>
+<!-- (2) -->
+<form title="&&">
+  <label for="name_of_param1">expression1</label>
+  <label for="name_of_param2">expression2</label>
+  <!-- more args possible -->
+</form>
+<!-- possible titles for (2): "&&" "||" -->
+<!-- &&: return true if all evaluate to true -->
+<!-- ||: return true if one evaluates to true -->
+
 ```
-#### Grammar so far
-```txt
-expression -> logic
-logic -> '<form title="' ('&&' | '||') '" class="' equality ' ' (equality)* '"></form>' 
-equality -> '<form title="' ('==' | '!=') '" class="' comparsion ' ' comparsion '"></form>'
-comparsion -> '<form title="' ('>' | '<') '" class="' addition ' ' addition '"></form>'
-addition -> '<form title="' ('+' | '-') '" class="' multiplication ' ' (multiplication)* '"></form>'
-multiplication -> '<form title="' ('*' | '/') '" class="' unary ' ' (unary)* '"></form>'  
-unary -> '<form title="' '!' '" class="' primary '"></form>' 
-primary -> STRING | NUMBER | BOOLEAN
-```
+#### precedence (lower to higher):
+- expression
+- logic
+- equality
+- comparsion
+- addition
+- multiplication
+- unary
+- literal
+
+
+#### [Grammar so far](GRAMMAR.md)
+
+
+
 - do not change the order of classes if possible
 
 ### Standard library
@@ -164,10 +197,17 @@ primary -> STRING | NUMBER | BOOLEAN
 ```
 
 ### Notes
-- ```class``` usually stores expressions to be evaluated
-- ```id``` is usually used when defining a variable or a function
-- ```href``` is used later to refer to the variable
-- ```title``` is used later to refer to the function
+- Attributes
+  - ```class``` usually stores expressions to be evaluated in control flow
+  - ```id``` is usually used when defining the name of variables or functions
+  - ```href``` is used when the variable is global
+  - the value can be referenced directly from values in tags
+  - ```title``` is used later to refer to the function
+  - ```input``` is used to define the parameters and return variable of function
+  - ```for``` is used to refer to the parameter when passing in values
+- Tagnames
+  - tbc
+
 
 
 

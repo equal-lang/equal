@@ -6,8 +6,8 @@ class Lexer {
   mode: keyof typeof equalMode;
   errHandler: errorHandler;
   path: string;
-  
-  content: string;
+
+  source: string;
 
   line: number;
   tokens: Token[];
@@ -17,22 +17,22 @@ class Lexer {
   constructor(mode: keyof typeof equalMode, errHandler: errorHandler) {
     this.mode = mode;
     this.errHandler = errHandler;
-    this.content = "";
+    this.source = "";
     this.leftPointer = 0;
     this.rightPointer = 0;
     this.line = 1;
     this.tokens = []
   }
 
-  public lex(content: string, path: string) {
-    this.content = content;
+  public lex(source: string, path: string) {
+    this.source = source;
     this.path = path;
 
-    // better way?
+    // how to deal with syntax errors?
     let inTag = false;
 
     while (!this.atEnd()) {
-      let char: string = this.content[this.rightPointer];
+      let char: string = this.source[this.rightPointer];
       this.leftPointer = this.rightPointer;
       switch (char) {
         case "<": {
@@ -71,13 +71,13 @@ class Lexer {
           this.line++;
           break;
         } case " ":
-          case "\t":
-          case "\r": {
-            break;
+        case "\t":
+        case "\r": {
+          break;
         }
         default: {
           if (inTag) this.pushToken(tokenType.ATTRIBUTE, (this.consumeWhile((char) => (char != "=" && !this.endOfTag(char) && !this.isWhitespace(char)))));
-          else this.pushToken(tokenType.TEXT, (this.consumeWhile((char) => (char != "<")))); 
+          else this.pushToken(tokenType.TEXT, (this.consumeWhile((char) => (char != "<"))));
           // this.reportError("Invalid character");
           break;
         }
@@ -95,27 +95,27 @@ class Lexer {
 
   // using pointers to slice off quotes
   private value(): void {
-    let firstChar = this.content[this.rightPointer];
-    let content: string;
+    let firstChar = this.source[this.rightPointer];
+    let source: string;
     if (this.isWhitespace(firstChar)) {
       this.consumeWhile((char) => (this.isWhitespace(char)));
       this.rightPointer++;
-      firstChar = this.content[this.rightPointer];
+      firstChar = this.source[this.rightPointer];
     }
     if (firstChar == "\"") {
       this.rightPointer++;
-      content = this.consumeWhile((char) => (char != "\""));
+      source = this.consumeWhile((char) => (char != "\""));
       this.rightPointer++;
     }
     else if (firstChar == "'") {
       this.rightPointer++;
-      content = this.consumeWhile((char) => (char != "'"));
+      source = this.consumeWhile((char) => (char != "'"));
       this.rightPointer++;
     } else {
-      content = this.consumeWhile((char) => (!this.isWhitespace(char) && !this.endOfTag(char)));
+      source = this.consumeWhile((char) => (!this.isWhitespace(char) && !this.endOfTag(char)));
     }
-    this.pushToken(tokenType.VALUE, content);
-    // this.numberOrString(content);
+    this.pushToken(tokenType.VALUE, source);
+    // this.numberOrString(source);
   }
 
   private comment(): void {
@@ -135,42 +135,42 @@ class Lexer {
     // this.rightPointer++;
     this.leftPointer = this.rightPointer;
 
-    let char: string = this.content[this.rightPointer];
+    let char: string = this.source[this.rightPointer];
     let testResult = test(char);
 
     while (!this.atEnd() && testResult) {
       this.handleNewline();
       this.rightPointer++;
-      char = this.content[this.rightPointer];
+      char = this.source[this.rightPointer];
       testResult = test(char);
     }
 
     if (testResult) this.reportError("Unexpected EOF");
     // multi-line string: use line number at the end of the string
-    let ret = this.content.slice(this.leftPointer, this.rightPointer);
+    let ret = this.source.slice(this.leftPointer, this.rightPointer);
     this.rightPointer--;
     return ret;
   }
 
-  private condForward(char: string, offset=1): boolean {
-    if (!this.atEnd(offset) && char == this.content.slice(this.rightPointer + 1, this.rightPointer + offset + 1)) {
+  private condForward(char: string, offset = 1): boolean {
+    if (!this.atEnd(offset) && char == this.source.slice(this.rightPointer + 1, this.rightPointer + offset + 1)) {
       this.rightPointer += offset;
       return true;
     } else return false;
   }
 
-  private lookAhead(offset=1): string {
-    if (!this.atEnd(offset)) return this.content.slice(this.rightPointer + 1, this.rightPointer + offset + 1);
+  private lookAhead(offset = 1): string {
+    if (!this.atEnd(offset)) return this.source.slice(this.rightPointer + 1, this.rightPointer + offset + 1);
     else return "";
   }
 
   private lookBehind(): string {
-    if (!this.lastChar()) return this.content[this.rightPointer-1];
+    if (!this.lastChar()) return this.source[this.rightPointer - 1];
     else return "";
   }
 
   private handleNewline(): void {
-    let char: string = this.content[this.rightPointer];
+    let char: string = this.source[this.rightPointer];
     if (char == "\r") this.line++;
     if (char == "\n" && this.lookBehind() != "\r") this.line++;
   }
@@ -183,8 +183,8 @@ class Lexer {
     return (char == ">" || (char == "/" && this.lookAhead() == ">"));
   }
 
-  private atEnd(offset=0): boolean {
-    return (this.rightPointer + offset > this.content.length - 1);
+  private atEnd(offset = 0): boolean {
+    return (this.rightPointer + offset > this.source.length - 1);
   }
 
   private lastChar(): boolean {

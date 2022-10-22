@@ -1,4 +1,8 @@
-export const enum equalMode {
+const enum equalMode {
   VERBOSE = "VERBOSE",
   NORMAL = "NORMAL"
+}
+
+export {
+  equalMode
 }

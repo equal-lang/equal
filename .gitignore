@@ -1,10 +1,13 @@
 node_modules/
-build/
 # electron app build (using webpack)
-package/
+build/
 # electron app package
-dist/
+package/
 # electron app installers (unsuccessful so far)
-cli-build/
+dist/
 # typescript app build
+cli-build/
+
 notes.txt
+
+# .vscode?

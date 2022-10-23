@@ -25,7 +25,8 @@ class Expression {
     visitorMethods += 
   `public visit${cls}(host: ${cls}): any {
     throw new Error("Method in abstract class cannot be called");
-  }`
+  }
+  `
     exportStr += (cls + ", ");
 
     let instanceStr = "";
@@ -51,7 +52,7 @@ class ${cls} extends Expression {
     ${constructStr}
   }
   public accept(visitor: Visitor) {
-    visitor.visit${cls}(this);
+    return visitor.visit${cls}(this);
   }
 }
 `
@@ -70,7 +71,7 @@ export {
 }
 `
   const path = "./src/equal/expression.ts";
-  const data = imports + baseClass + subclasses + visitor + exports;
+  const data = imports + visitor + baseClass + subclasses + exports;
 
   fs.writeFile(path, data)
     .then(() => {
@@ -83,18 +84,3 @@ export {
 module.exports = {
   ast
 }
-
-
-// class printer extends Visitor {
-//   public run(expr: Expression) {
-//     expr.accept(this);
-//   }
-//   public visitBinary(host: Binary): any {
-//     console.log(host);
-//   }
-// }
-
-// printer.run(new Binary(
-//   new Token(tokenType.VALUE, 2),
-
-// ))

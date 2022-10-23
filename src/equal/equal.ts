@@ -2,7 +2,7 @@ import * as fs from "fs";
 import { Lexer } from "./lexer";
 import { Parser } from "./parser";
 import { equalMode } from "./utils";
-import { errorHandler } from "./error";
+import { EqualRuntimeError, EqualUnexpectedError, ErrorHandler } from "./error";
 
 class Equal {
   error: boolean;
@@ -10,7 +10,7 @@ class Equal {
   mode: keyof typeof equalMode;
   lexer: Lexer;
   parser: Parser;
-  errHandler: errorHandler;
+  errHandler: ErrorHandler;
 
   constructor(path: string, mode: string) {
     try {
@@ -19,36 +19,40 @@ class Equal {
 
       this.error = false;
       this.path = path;
-      this.errHandler = new errorHandler(this.mode);
+      this.errHandler = new ErrorHandler(this.mode);
       this.lexer = new Lexer(this.mode, this.errHandler);
-      this.parser = new Parser();
+      this.parser = new Parser(this.mode, this.errHandler);
       this.run();
 
     } catch(err) {
-      this.handleUnexpectedError(err);
+      this.errHandler.handleError(err);
     }
   }
   public run(): void {
     try {
       // is this line needed?
       if (this.error == false) {    
-        if (this.mode == equalMode.VERBOSE) console.info("Running in verbose mode");
+        this.verbose("Running in verbose mode");
         const tokens = this.lexer.lex(this.loadFile(), this.path);
-        console.log(tokens);
+        this.verbose(tokens);
+        this.parser.parse(tokens, this.path);
         this.error = this.errHandler.getErrorStatus();
         this.execute();
         // check for error here
       }
 
     } catch(err) {
-      this.handleUnexpectedError(err);
+      this.errHandler.handleError(err);
     }
     
   }
 
-  private loadFile() {
-    if (this.mode == equalMode.VERBOSE) console.info("Loading file at " + this.path);
-    return fs.readFileSync(this.path, "utf8");
+  // always inside another function's try block
+  private loadFile(): string {
+    this.verbose("Loading file at " + this.path);
+    const file = fs.readFileSync(this.path, "utf8");
+    if (file == undefined) throw new EqualRuntimeError("Invalid path");
+    else return file as string;
   }
 
   private stdout(output: string): void {
@@ -60,19 +64,22 @@ class Equal {
   }
 
   private execute() {
-    if (this.error == false) {
-    } else {
-      // delete later
-      console.log(this.errHandler.errors);
-    }
-    // exit?    
+    try {
+      if (this.error == false) {
+      } else {
+        // delete later
+        this.verbose(this.errHandler.errors);
+      }
+      // exit?   
 
+    } catch(err) {
+      this.errHandler.handleError(err);
+    }
+     
   }
 
-  // handle unexpected errors in interpreter code
-  private handleUnexpectedError(err: Error): void {
-    if (this.mode == equalMode.VERBOSE) console.info(err);
-    console.error("Unexpected Error: " + ((err.message == "") ? "Unknown Error" : err.message));
+  private verbose(log: any): void {
+    if (this.mode == equalMode.VERBOSE) console.info(log);
   }
 
 }

@@ -1,58 +1,33 @@
-import { string } from "yargs";
 import { equalMode } from "./utils";
 
-// return statements
-// interface
-
 interface ErrorVisitor {
-  visitInterpreterError(host: EqualInterpreterError): any;
   visitSyntaxError(host: EqualSyntaxError): any;
   visitRuntimeError(host: EqualRuntimeError): any;
+  visitUnexpectedError(host: EqualUnexpectedError): any;
 }
 
-class test extends Error {
-  message: string;
-  constructor(message: string) {
-    super(message);
-    Object.setPrototypeOf(this, test.prototype);
-  }
-  public test1232435() {
-    console.log("test");
-  }
-}
+function isErrorVisitor(cls: any): cls is ErrorVisitor {
+  return (cls.visitSyntaxError !== undefined && cls.visitRuntimeError !== undefined && cls.visitUnexpectedError !== undefined);
+} 
 
-class test1 extends test{
-  public test1232435() {
-    console.log("test1");
-  }
-}
 class ErrorPrinter implements ErrorVisitor {
   public print(err: EqualError) {
-    console.log(new test1("message").test1232435());
-    // console.log(new EqualInterpreterError("test").accept(this));
-    // let err1 = new EqualError("emssage");
-    // console.log(err1.accept(this));
-    // return err.accept(this); 
-  }
-  public visitInterpreterError(host: EqualInterpreterError): string {
-    return "Interpreter Error at " + this.toString(host);
+    return err.accept(this);
   }
   public visitSyntaxError(host: EqualSyntaxError): string {
-    return "Syntax Error at " + this.toString(host);
+    return "SyntaxError at " + this.toString(host);
   }
   public visitRuntimeError(host: EqualRuntimeError): string {
-    return "Runtime Error at " + this.toString(host);
+    return "RuntimeError at " + this.toString(host);
+  }
+  public visitUnexpectedError(host: EqualRuntimeError): string {
+    return "Unexpected Error at " + this.toString(host) + "\nPlease report a bug at https://github.com/equal-lang/equal/issues";
   }
   private toString(err: EqualError): string {
     return err.file + ":" + err.line + ": " + err.message;
   }
 }
 
-function isErrorVisitor(cls: any): cls is ErrorVisitor {
-  return (cls.visitInterpreterError !== undefined && cls.SyntaxError !== undefined && cls.visitRuntimeError !== undefined)
-} 
-
-// abstract class
 class EqualError extends Error {
   message: string;
   file: string;
@@ -60,9 +35,10 @@ class EqualError extends Error {
 
   constructor(message: string, file?: string, line?: number) {
     super(message);
+    Object.setPrototypeOf(this, EqualError.prototype);
     this.name = "EqualError";
     this.message = message;
-    this.file = ((file == undefined) ? "Unknown file" : file);
+    this.file = ((file == undefined) ? "Unknown" : file);
     this.line = ((line == undefined) ? 0 : line);
   }
   public accept(visitor: any) {
@@ -70,21 +46,11 @@ class EqualError extends Error {
   }
 }
 
-class EqualInterpreterError extends EqualError {
-  constructor(message: string, file?: string, line?: number) {
-    super(message, file, line);
-    this.name = "EqualInterpreterError";
-  }
-
-  public accept(visitor: any) {
-    super.accept(visitor);
-    return visitor.visitInterpreterError(this);
-  }
-}
 
 class EqualSyntaxError extends EqualError {
   constructor(message: string, file?: string, line?: number) {
     super(message, file, line);
+    Object.setPrototypeOf(this, EqualSyntaxError.prototype);
     this.name = "EqualSyntaxError";
   }
   public accept(visitor: any) {
@@ -96,11 +62,25 @@ class EqualSyntaxError extends EqualError {
 class EqualRuntimeError extends EqualError {
   constructor(message: string, file?: string, line?: number) {
     super(message, file, line);
+    Object.setPrototypeOf(this, EqualRuntimeError.prototype);
     this.name = "EqualRuntimeError";
   }
   public accept(visitor: any) {
-    super.accept(visitor);
+    super.accept(visitor); 
     return visitor.visitRuntimeError(this);
+  }
+}
+
+// wrapper for unexpected errors
+class EqualUnexpectedError extends EqualError {
+  constructor(message: string, file?: string, line?: number) {
+    super(message, file, line);
+    Object.setPrototypeOf(this, EqualUnexpectedError.prototype);
+    this.name = "EqualUnexpectedError";
+  }
+  public accept(visitor: any) {
+    super.accept(visitor); 
+    return visitor.visitUnexpectedError(this);
   }
 }
 
@@ -114,38 +94,29 @@ class ErrorHandler {
     this._hasError = false;
     this.errors = [];
   }
-  // TODO: change this
-  public reportError(message: string, file?: string, line?: number) {
-    // let err: EqualError = new EqualError(message, file, line);
-    // console.error(err.toString());
-    // this._hasError = true;
-    // this.errors.push(err);
-  }
+
   public getErrorStatus(): boolean {
     return this._hasError;
   }
 
-  public handleError(err: EqualError) {
-    console.log(err.message);
-    // verbose
-    let printer = new ErrorPrinter();
-    console.log(printer.print(err));
-    
-    // if (this.mode == equalMode.VERBOSE) console.info(err);
-    // if (err instanceof EqualSyntaxError) {
-      
-    // } else if (err instanceof EqualRuntimeError) {
-
-    // } else {
-    //   if (!(err instanceof EqualInterpreterError)) err = new EqualInterpreterError(err.message, err.file, err.line);
-    //   this.handleInterpreterError(err);
-    // }
-
+  // Report errors identified without ending parsing
+  public reportError(err: EqualError) {
+    console.error(new ErrorPrinter().print(err));
+    this._hasError = true;
+    this.errors.push(err);
   }
-    // handle unexpected errors in interpreter code
-  private handleInterpreterError(err: Error): void {
-    console.error("Unexpected Error: " + ((err.message == "") ? "Unknown Error" : err.message));
+  
+  // Handle errors that are thrown
+  public handleError(err: Error) {
+    // probably will make this output look better
+    if (this.mode == equalMode.VERBOSE) console.info(err);
+    let newErr: EqualError;
+    if (!(err instanceof EqualError)) newErr = new EqualUnexpectedError(err.message);
+    else newErr = err;
+    console.error(new ErrorPrinter().print(newErr));
+    this._hasError = true;
+    this.errors.push(newErr);
   }
 }
 
-export { EqualError, EqualInterpreterError, EqualSyntaxError, EqualRuntimeError, ErrorHandler };
+export { EqualError, EqualSyntaxError, EqualRuntimeError, EqualUnexpectedError, ErrorHandler };

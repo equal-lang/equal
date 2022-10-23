@@ -1,6 +1,20 @@
 import { Token } from "./token";
 
 // abstract class
+class Visitor {
+  public visitBinary(host: Binary): any {
+    throw new Error("Method in abstract class cannot be called");
+  }
+  public visitUnary(host: Unary): any {
+    throw new Error("Method in abstract class cannot be called");
+  }
+  public visitLiteral(host: Literal): any {
+    throw new Error("Method in abstract class cannot be called");
+  }
+  
+}
+
+// abstract class
 class Expression {
   constructor() {
     throw new Error("Abstract class cannot be directly instantiated");
@@ -23,7 +37,7 @@ class Binary extends Expression {
     
   }
   public accept(visitor: Visitor) {
-    visitor.visitBinary(this);
+    return visitor.visitBinary(this);
   }
 }
 
@@ -38,7 +52,7 @@ class Unary extends Expression {
     
   }
   public accept(visitor: Visitor) {
-    visitor.visitUnary(this);
+    return visitor.visitUnary(this);
   }
 }
 
@@ -51,18 +65,7 @@ class Literal extends Expression {
     
   }
   public accept(visitor: Visitor) {
-    visitor.visitLiteral(this);
-  }
-}
-
-// abstract class
-class Visitor {
-  public visitBinary(host: Binary): any {
-    throw new Error("Method in abstract class cannot be called");
-  }public visitUnary(host: Unary): any {
-    throw new Error("Method in abstract class cannot be called");
-  }public visitLiteral(host: Literal): any {
-    throw new Error("Method in abstract class cannot be called");
+    return visitor.visitLiteral(this);
   }
 }
 

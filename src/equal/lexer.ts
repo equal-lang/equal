@@ -1,10 +1,11 @@
 import { equalMode } from "./utils";
 import { Token, tokenType } from "./token";
-import { errorHandler } from "./error";
+import { EqualSyntaxError, EqualUnexpectedError, ErrorHandler } from "./error";
+
 
 class Lexer {
   mode: keyof typeof equalMode;
-  errHandler: errorHandler;
+  errHandler: ErrorHandler;
   path: string;
   
   source: string;
@@ -14,7 +15,7 @@ class Lexer {
   leftPointer: number;
   rightPointer: number;
 
-  constructor(mode: keyof typeof equalMode, errHandler: errorHandler) {
+  constructor(mode: keyof typeof equalMode, errHandler: ErrorHandler) {
     this.mode = mode;
     this.errHandler = errHandler;
     this.source = "";
@@ -55,7 +56,6 @@ class Lexer {
           this.pushToken(tokenType.TAG_RIGHT);
           inTag = false;
           this.rightPointer++;
-          // this.text();
           break;
         } case "=": {
           if (inTag) {
@@ -192,7 +192,8 @@ class Lexer {
   }
 
   private reportError(message: string) {
-    this.errHandler.reportError(message, this.path, this.line);
+    const err = new EqualSyntaxError(message, this.path, this.line);
+    this.errHandler.reportError(err);
   }
 }
 

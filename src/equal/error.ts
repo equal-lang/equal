@@ -21,7 +21,7 @@ class ErrorPrinter implements ErrorVisitor {
     return "RuntimeError at " + this.toString(host);
   }
   public visitUnexpectedError(host: EqualRuntimeError): string {
-    return "Unexpected Error at " + this.toString(host) + "\nPlease report a bug at https://github.com/equal-lang/equal/issues";
+    return "Unexpected Error: " + host.message + "\nPlease report the bug at https://github.com/equal-lang/equal/issues\n(To view the stack trace, run the interpreter again in verbose mode)";
   }
   private toString(err: EqualError): string {
     return err.file + ":" + err.line + ": " + err.message;
@@ -87,9 +87,9 @@ class EqualUnexpectedError extends EqualError {
 class ErrorHandler {
   // store error?
   _hasError: boolean;
-  mode: keyof typeof equalMode;
+  mode: equalMode;
   errors: EqualError[];
-  constructor(mode: keyof typeof equalMode) {
+  constructor(mode: equalMode) {
     this.mode = mode;
     this._hasError = false;
     this.errors = [];

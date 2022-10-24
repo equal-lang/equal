@@ -1,16 +1,14 @@
 const fs = require("fs").promises;
 
-
-function ast(obj) {
+function ast(path, baseName, obj) {
   const imports =
-`import { Token } from "./token";
+`import { operatorType } from "./token";
 `
   const baseClass =
 `
 // abstract class
-class Expression {
+class ${baseName} {
   constructor() {
-    throw new Error("Abstract class cannot be directly instantiated");
   }
   public accept(visitor: Visitor) {
     throw new Error("Method in abstract class cannot be called");
@@ -45,7 +43,7 @@ class Expression {
 
     subclasses += 
 `
-class ${cls} extends Expression {
+class ${cls} extends ${baseName} {
   ${instanceStr}
   constructor(${constructArgs}) {
     super();
@@ -70,7 +68,6 @@ export {
   Visitor, Expression, ${exportStr}
 }
 `
-  const path = "./src/equal/expression.ts";
   const data = imports + visitor + baseClass + subclasses + exports;
 
   fs.writeFile(path, data)

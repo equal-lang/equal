@@ -13,23 +13,48 @@ const enum tokenType {
   // doctype
   DOCTYPE = "DOCTYPE",
   EOF = "EOF",
-
-  // STRING = "STRING",
-  // NUMBER = "NUMBER"
 }
 
 class Token {
   tokenType: tokenType;
-  value: string | number | undefined;
+  value: string | undefined;
   line: number;
 
-  constructor(type: tokenType, line: number, value?: string | number) {
+  constructor(type: tokenType, line: number, value?: string) {
     this.tokenType = type;
     this.value = value;
     this.line = line;
   }
 }
 
+const enum operatorType {
+  AND = "AND",
+  OR = "OR",
+  EQUAL = "EQUAL",
+  NOT_EQUAL = "NOT_EQUAL",
+  GREATER_THAN = "GREATER_THAN",
+  LESSER_THAN = "LESSER_THAN",
+  PLUS = "PLUS",
+  MINUS = "MINUS",
+  MULTIPLY = "MULTIPLY",
+  DIVIDE = "DIVIDE",
+  NOT = "NOT"
+}
+
+const operatorMap = new Map()
+.set("&&", operatorType.AND)
+.set("||", operatorType.OR)
+.set("==", operatorType.EQUAL)
+.set("!=", operatorType.NOT_EQUAL)
+.set(">", operatorType.GREATER_THAN)
+.set("<", operatorType.LESSER_THAN)
+.set("+", operatorType.PLUS)
+.set("-", operatorType.MINUS)
+.set("*", operatorType.MULTIPLY)
+.set("/", operatorType.DIVIDE)
+.set("!", operatorType.NOT)
+
+
 export {
-  Token, tokenType
+  Token, tokenType, operatorType, operatorMap
 }

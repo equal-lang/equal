@@ -1,4 +1,4 @@
-import { Token } from "./token";
+import { operatorType } from "./token";
 
 // abstract class
 class Visitor {
@@ -17,7 +17,6 @@ class Visitor {
 // abstract class
 class Expression {
   constructor() {
-    throw new Error("Abstract class cannot be directly instantiated");
   }
   public accept(visitor: Visitor) {
     throw new Error("Method in abstract class cannot be called");
@@ -25,11 +24,11 @@ class Expression {
 }
 
 class Binary extends Expression {
-  operator: Token; 
+  operator: operatorType; 
   arg1: Expression; 
   arg2: Expression; 
   
-  constructor(operator: Token, arg1: Expression, arg2: Expression, ) {
+  constructor(operator: operatorType, arg1: Expression, arg2: Expression, ) {
     super();
     this.operator = operator;
     this.arg1 = arg1;
@@ -42,10 +41,10 @@ class Binary extends Expression {
 }
 
 class Unary extends Expression {
-  operator: Token; 
+  operator: operatorType; 
   arg1: Expression; 
   
-  constructor(operator: Token, arg1: Expression, ) {
+  constructor(operator: operatorType, arg1: Expression, ) {
     super();
     this.operator = operator;
     this.arg1 = arg1;

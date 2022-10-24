@@ -1,1 +1,8 @@
-<form title="+" class="2 2">
+<test title="+">
+  <label>
+    2
+  </label>
+  <label>
+    4
+  </label>
+</form

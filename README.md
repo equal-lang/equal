@@ -53,6 +53,7 @@
 ```
 
 ##### Types
+- dynamically typed
 - three types available: string, number, boolean
 - if ```!isNaN(Number(expression))``` is true, the variable is a number
 - else if ```expression``` matches true or false exactly, the variable is a boolean
@@ -126,6 +127,7 @@
   <label for="name_of_param2">expression2</label>
   <!-- more args possible -->
 </form>
+<!-- possible titles for (1): "!" -->
 <!-- possible titles for (2): "&&" "||" -->
 <!-- &&: return true if all evaluate to true -->
 <!-- ||: return true if one evaluates to true -->
@@ -143,10 +145,9 @@
 
 
 #### [Grammar so far](GRAMMAR.md)
-
-
-
+##### Notes
 - do not change the order of classes if possible
+- add ending tags, even if they are optional
 
 ### Standard library
 #### String manipulation

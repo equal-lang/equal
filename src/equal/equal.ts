@@ -7,7 +7,7 @@ import { EqualRuntimeError, EqualUnexpectedError, ErrorHandler } from "./error";
 class Equal {
   error: boolean;
   path: string;
-  mode: keyof typeof equalMode;
+  mode: equalMode;
   lexer: Lexer;
   parser: Parser;
   errHandler: ErrorHandler;

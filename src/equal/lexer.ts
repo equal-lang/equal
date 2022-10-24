@@ -4,7 +4,7 @@ import { EqualSyntaxError, EqualUnexpectedError, ErrorHandler } from "./error";
 
 
 class Lexer {
-  mode: keyof typeof equalMode;
+  mode: equalMode;
   errHandler: ErrorHandler;
   path: string;
   
@@ -15,7 +15,7 @@ class Lexer {
   leftPointer: number;
   rightPointer: number;
 
-  constructor(mode: keyof typeof equalMode, errHandler: ErrorHandler) {
+  constructor(mode: equalMode, errHandler: ErrorHandler) {
     this.mode = mode;
     this.errHandler = errHandler;
     this.source = "";
@@ -77,8 +77,7 @@ class Lexer {
         }
         default: {
           if (inTag) this.pushToken(tokenType.ATTRIBUTE, (this.consumeWhile((char) => (char != "=" && !this.endOfTag(char) && !this.isWhitespace(char)))));
-          else this.pushToken(tokenType.TEXT, (this.consumeWhile((char) => (char != "<")))); 
-          // this.reportError("Invalid character");
+          else this.pushToken(tokenType.TEXT, this.consumeWhile((char) => (char != "<")).trim()); 
           break;
         }
       }
@@ -151,7 +150,7 @@ class Lexer {
       char = this.source[this.rightPointer];
       testResult = test(char);
     }
-    if (testResult) this.reportError("Unexpected EOF");
+    // if (testResult) this.reportError("Unexpected EOF");
     // multi-line string: use line number at the end of the string
     let ret = this.source.slice(this.leftPointer, this.rightPointer);
     this.rightPointer--;
@@ -187,7 +186,7 @@ class Lexer {
     return (char == ">" || (char == "/" && this.lookAhead() == ">"));
   }
 
-  private pushToken(type: tokenType, value?: string | number): void {
+  private pushToken(type: tokenType, value?: string): void {
     this.tokens.push(new Token(type, this.line, value));
   }
 

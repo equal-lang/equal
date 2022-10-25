@@ -21,93 +21,91 @@ class Parser {
   public parse(tokens: Token[], path: string) {
     this.path = path;
     this.tokens = bigLexer(tokens, this.path, this.errHandler);
-    // console.log(this.tokens);
     // while (!this.atEnd()) {
-      const expr = this.expression();
-      console.dir(expr);
-      // this.pointer++;
+    const expr = this.expression();
+    console.dir(expr);
+    // this.pointer++;
     // }
   }
 
   private expression(): Expression {
-    return this.unary();
+    return this.logic();
   }
 
   private logic(): Expression {
-
-    // if (this.matchStartForm(["&&", "||"])) {
-    //   if (!this.matchStartLabel()) this.throwError("Missing start label", this.tokens[this.pointer]["line"]);
-    //   let left = this.literal();
-    //   while(this.matchStartLabel()) {
-    //     // if (!this.matchStartLabel()) this.throwError("Missing start label", this.tokens[this.pointer]["line"]);
-    //     let operator = this.retPrevAttr("title");
-    //     let right = this.literal();
-    //     // expr = new Binary()
-    //     console.log(left, right);
-    //     if (!this.matchEndLabel()) this.throwError("Missing end label", this.tokens[this.pointer]["line"]);
-    //     console.log("here")
-
-
-    //   }
-    //   if (!this.matchEndLabel()) this.throwError("Missing end label", this.tokens[this.pointer]["line"]);
-    //   if (!this.matchEndForm()) this.throwError("Missing end form", this.tokens[this.pointer]["line"]);
-
-      // return {left, right};
-
-      // FORM
-      // let expr = new Binary();
-
-      return this.literal();
-      // this.endExpression();
-
-    // } else {
-    //   // return this.equality();
-    // }
-
-    // return new Expression();
+    return this.retBinaryExpr(["&&", "||"], this.equality.bind(this));
   }
 
   private equality(): Expression {
-    return this.comparsion();
+    return this.retBinaryExpr(["==", "!="], this.comparsion.bind(this));
   }
-  
+
   private comparsion(): Expression {
-    return this.addition();
+    return this.retBinaryExpr([">", "<"], this.addition.bind(this));
   }
 
   private addition(): Expression {
-    return this.multiplication();
+    return this.retBinaryExpr(["+", "-"], this.multiplication.bind(this));
   }
 
   private multiplication(): Expression {
-    return this.unary();
+    return this.retBinaryExpr(["*", "/"], this.unary.bind(this));
   }
 
   private unary(): Expression {
     if (this.matchStartForm(["!"])) {
-      let operator = operatorMap.get(this.retPrevAttrE("title"));
-      if (operator === undefined) throw new EqualUnexpectedError("Operator cannot be undefined", this.path, this.tokens[this.pointer]["line"]);
+      const operator = this.retOperator();
       this.force(this.matchStartLabel);
-      let expr = this.literal();
+      let base = this.expression();
       this.force(this.matchEndLabel);
       this.force(this.matchEndForm);
-      return new Unary(operator, expr);
-
+      return new Unary(operator, base);
     } else {
       return this.literal();
     }
   }
 
   private literal(): Expression {
-    this.force(this.matchText.bind(this));
+    this.force(this.matchText);
     return new Literal(this.retPrevAttrE("value"));
   }
-  
-  
-  private match(type: bigTokenType, name: string | undefined, attributeObj: {[k: string]: any}): boolean {
+
+  private retBinaryExpr(operatorList: string[], next: () => Expression) {
+    if (this.matchStartForm(operatorList)) {
+      const operator = this.retOperator();
+
+      this.force(this.matchStartLabel);
+      let base1 = this.expression();
+      // next();
+      this.force(this.matchEndLabel);
+
+      this.force(this.matchStartLabel);
+      let base2 = this.expression();
+      // next();
+      this.force(this.matchEndLabel);
+
+      let base = new Binary(operator, base1, base2);
+      while (this.matchStartLabel()) {
+        let top = this.expression();
+        base = new Binary(operator, base, top);
+        this.force(this.matchEndLabel);
+      }
+
+      this.force(this.matchEndForm);
+      return base;
+
+    } else {
+      return next();
+      // precedence only decide which order expressions are tested in 
+    }
+  }
+
+
+
+  private match(type: bigTokenType, name: string | undefined, attributeObj: { [k: string]: any }): boolean {
     let token;
     if (!this.atEnd()) token = this.tokens[this.pointer];
-    else throw new EqualUnexpectedError("EOF reached", this.path, this.tokens[this.tokens.length-1]["line"]);
+    else throw new EqualUnexpectedError("EOF reached", this.path, this.tokens[this.tokens.length - 1]["line"]);
     if (token["type"] === type && token["name"] === name) {
       for (let item in attributeObj) {
         if (!attributeObj[item].includes(token["attribute"][item])) return false;
@@ -115,12 +113,12 @@ class Parser {
       this.pointer++;
       return true;
     }
-
+    console.log(type, name, attributeObj);
     return false;
   }
 
   private matchStartForm(title: string[]) {
-    return this.match(bigTokenType.START_TAG, "form", {"title": title});
+    return this.match(bigTokenType.START_TAG, "form", { "title": title });
   }
 
   private matchStartLabel() {
@@ -141,30 +139,35 @@ class Parser {
 
   private force(func: () => boolean) {
     if (!func.bind(this)()) {
-      const tokenName = this.tokens[this.pointer]["name"];
-      this.throwError("Missing " + (tokenName ? tokenName : "tag"), this.tokens[this.pointer]["line"]);
+      const token = this.tokens[this.pointer];
+      // better to get what is trying to match from the match function somehow
+      let text;
+      if (token["type"] == bigTokenType.START_TAG) text = "start " + token["name"];
+      else if (token["type"] == bigTokenType.END_TAG) text = "end " + token["name"];
+      else text = "text";
+      this.throwError("Wrong " + text, this.tokens[this.pointer]["line"]);
     }
     return true;
   }
 
 
   private retPrevAttr(attribute: string): string | number | boolean | undefined {
-    return this.tokens[this.pointer-1]["attribute"][attribute];
+    return this.tokens[this.pointer - 1]["attribute"][attribute];
   }
 
   private retPrevAttrE(attribute: string): string | number | boolean {
     const val = this.retPrevAttr(attribute);
-    if (val === undefined) throw new EqualUnexpectedError("Value of attribute cannot be undefined", this.path, this.tokens[this.pointer-1]["line"]);
+    if (val === undefined) throw new EqualUnexpectedError("Value of attribute cannot be undefined", this.path, this.tokens[this.pointer - 1]["line"]);
     else return val;
   }
 
-  // private endExpression() {
-  //   if (!(this.matchEndLabel() && this.matchEndForm())) {
-  //     throw new EqualSyntaxError("Missing end tags", this.path, this.tokens[this.pointer]["line"]);
-  //   } 
-  // }
+  private retOperator() {
+    let operator = operatorMap.get(this.retPrevAttrE("title"));
+    if (operator === undefined) throw new EqualUnexpectedError("Operator cannot be undefined", this.path, this.tokens[this.pointer]["line"]);
+    return operator;
+  }
 
-  private atEnd(offset=0) {
+  private atEnd(offset = 0) {
     return (this.pointer + offset > this.tokens.length - 1);
   }
 

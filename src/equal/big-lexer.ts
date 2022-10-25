@@ -2,11 +2,12 @@ import { Token, tokenType} from "./token";
 import { EqualSyntaxError, EqualUnexpectedError, ErrorHandler } from "./error";
 
 function bigLexer(tokens: Token[], path: string, errHandler: ErrorHandler) {
-  let bigTokens: bigToken[] = [];
+  let bigTokens: BigToken[] = [];
   let pointer = 0;
   let startTag = [], text = [], endTag = [];
   let inStartTag = false, inEndTag = false;
   while (pointer <= tokens.length-1) {
+    
     const token = tokens[pointer];
     if (token["tokenType"] == tokenType.START_TAG_LEFT) {
       inStartTag = true;
@@ -24,6 +25,10 @@ function bigLexer(tokens: Token[], path: string, errHandler: ErrorHandler) {
         evalEndTag(endTag);
         inEndTag = false;
       }
+    } else if (token["tokenType"] == tokenType.EOF) {
+      // only a value?
+      evalText(text);
+
     } else {
       if (inStartTag) startTag.push(token);
       else if (inEndTag) endTag.push(token);
@@ -31,12 +36,14 @@ function bigLexer(tokens: Token[], path: string, errHandler: ErrorHandler) {
     }
     pointer++;
   }
+  if (inStartTag || inEndTag) reportError("Unclosed tag", tokens[tokens.length-1]["line"]);
+  // test for this
+  // EOF?
   return bigTokens;
 
   function evalStartTag(arr: Token[]) {
     if (arr.length == 0) return;
     startTag = [];
-    console.log(arr);
 
     let tagName = arr[0]["value"];
     if (!tagName) throwError("Missing tagname", arr[0]["line"]);
@@ -49,12 +56,11 @@ function bigLexer(tokens: Token[], path: string, errHandler: ErrorHandler) {
     while(pos < arr.length) {
       if (arr[pos]["tokenType"] == tokenType.ATTRIBUTE && attributeList.includes(arr[pos]["value"])) {
         currentAttr = arr[pos]["value"] as string;
-        // if (currentAttr == undefined) throwError("Undefined value");
         pos++;
         if (arr[pos]["tokenType"] == tokenType.EQUAL_SIGN) pos++;
-        else throwError("Missing equal sign");
+        else throwError("Missing equal sign", arr[pos]["line"]);
         if (arr[pos]["tokenType"] == tokenType.VALUE) {
-          if (arr[pos]["value"] == undefined) throwError("Undefined value");
+          if (arr[pos]["value"] == undefined) throwError("Undefined value", arr[pos]["line"]);
           else currentVal = arr[pos]["value"] as string;
           pos++;
         }
@@ -63,9 +69,8 @@ function bigLexer(tokens: Token[], path: string, errHandler: ErrorHandler) {
       } 
       pos++;
     }
-    console.log(tagName, attribute)
     
-    bigTokens.push(new bigToken(bigTokenType.START_TAG, tagName as string, attribute, arr[arr.length-1]["line"]));
+    bigTokens.push(new BigToken(bigTokenType.START_TAG, tagName as string, attribute, arr[arr.length-1]["line"]));
 
   }
 
@@ -73,20 +78,20 @@ function bigLexer(tokens: Token[], path: string, errHandler: ErrorHandler) {
     if (arr.length == 0) return;
     endTag = [];
 
-    if (arr.length > 1) reportError("Extra attributes in end tag");
+    if (arr.length > 1) reportError("Extra attributes in end tag", arr[0]["line"]);
     let tagName = arr[0]["value"];
     if (!tagName) throwError("Missing tagname", arr[0]["line"]);
 
-    bigTokens.push(new bigToken(bigTokenType.END_TAG, tagName as string, {}, arr[0]["line"]));
+    bigTokens.push(new BigToken(bigTokenType.END_TAG, tagName as string, {}, arr[0]["line"]));
   }
 
   function evalText(arr: Token[]) {
     if (arr.length == 0) return;
     text = [];
-    if (arr.length > 1) reportError("Extra attributes in text");
+    if (arr.length > 1) reportError("Extra attributes in text", arr[0]["line"]);
     let val = arr[0]["value"];
-    if (val === undefined) throwError("The value of a literal cannot be undefined");
-    bigTokens.push(new bigToken(bigTokenType.TEXT, undefined, {"value": wrapValue(val as string)}, arr[0]["line"]));
+    if (val === undefined) throwError("The value of a literal cannot be undefined", arr[0]["line"]);
+    bigTokens.push(new BigToken(bigTokenType.TEXT, undefined, {"value": wrapValue(val as string)}, arr[0]["line"]));
 
   }
 
@@ -100,7 +105,6 @@ function bigLexer(tokens: Token[], path: string, errHandler: ErrorHandler) {
   }
 
   function wrapValue(val: string): string | number | boolean {
-    // better error message?
     if (!isNaN(Number(val))) return Number(val);
     else if (val === "true" || val == "false") return (val === "true");
     // val must be string
@@ -126,16 +130,16 @@ let tagMap = new Map()
 .set("link", ["rel", "href", "type"])
 .set("img", ["src", "alt"])
 
-class bigToken {
+class BigToken {
   type: bigTokenType;
   name: string | undefined;
   attribute: {[k: string]: any};
   line: number;
   constructor(type: bigTokenType, name: string | undefined, attribute: {[k: string]: any}, line: number) {
     this.type = type;
-    this.line = line; 
     this.name = name;
     this.attribute = attribute;
+    this.line = line; 
   }
 }
 
@@ -145,4 +149,4 @@ const enum bigTokenType {
   TEXT = "TEXT"
 }
 
-export { bigLexer };
+export { bigLexer, BigToken, bigTokenType };

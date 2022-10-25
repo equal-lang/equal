@@ -55,7 +55,7 @@ class Lexer {
         } case ">": {
           this.pushToken(tokenType.TAG_RIGHT);
           inTag = false;
-          this.rightPointer++;
+          // this.rightPointer++;
           break;
         } case "=": {
           if (inTag) {

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// Wrapper outside the actual interpreter
+// Wrapper outside the actual interpreter (equal)
 import yargs from "yargs";
 // import yargs = require("yargs/yargs");
 import { hideBin } from "yargs/helpers";

@@ -46,7 +46,7 @@ class EqualError extends Error {
   }
 }
 
-
+// errors that occurred during lexing or parsing
 class EqualSyntaxError extends EqualError {
   constructor(message: string, file?: string, line?: number) {
     super(message, file, line);
@@ -59,6 +59,7 @@ class EqualSyntaxError extends EqualError {
   }
 }
 
+// rest of the errors
 class EqualRuntimeError extends EqualError {
   constructor(message: string, file?: string, line?: number) {
     super(message, file, line);
@@ -71,7 +72,7 @@ class EqualRuntimeError extends EqualError {
   }
 }
 
-// wrapper for unexpected errors
+// reserved for errors the interpreter produced
 class EqualUnexpectedError extends EqualError {
   constructor(message: string, file?: string, line?: number) {
     super(message, file, line);

@@ -77,7 +77,7 @@
   <div>
     <!-- code to be executed -->
   </div>
-  <input type="submit" class="expression_to_be_returned">
+  <input type="submit" value="expression_to_be_returned">
 </form>
 ```
 #### Reference
@@ -97,6 +97,8 @@
 </form>
 ```
 ### Operators
+- only operators that cannot be easily constructed with other operators are provided
+
 ```html
 <!-- arithmetic -->
 <form title="+">
@@ -106,6 +108,7 @@
 </form>
 <!-- possible titles: "+" "-" "*" "/" -->
 <!-- no division by zero -->
+<!-- plus does not work on strings, use concat instead -->
 
 <!-- comparsion -->
 <form title="==">
@@ -114,6 +117,8 @@
   <!-- only two args -->
 </form>
 <!-- possible titles: "==" "!=" ">" "<" -->
+<!-- strict equal and not equal -->
+<!-- greater than and lesser than with more than two arguments: true if the first arg is the largest / smallest -->
 
 <!-- logic -->
 <!-- (1) -->
@@ -143,6 +148,7 @@
 - unary
 - literal
 
+- TODO: since all expressions are nested inside forms, is precedence really needed?
 
 #### [Grammar so far](GRAMMAR.md)
 ##### Notes
@@ -151,6 +157,7 @@
 
 ### Standard library
 #### String manipulation
+- TODO: CHANGE FROM CLASS TO LABEL
 ```html
 <!-- concat -->
 <form title="con" class="str1 str2"></form>
@@ -198,7 +205,7 @@
 ```
 
 ### Notes
-- Attributes
+- Most attributes
   - ```class``` usually stores expressions to be evaluated in control flow
   - ```id``` is usually used when defining the name of variables or functions
   - ```href``` is used when the variable is global

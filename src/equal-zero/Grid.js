@@ -24,12 +24,12 @@ class Grid extends React.Component {
     }
   }
 
-  
+
   onBreakpointChange(newBreakpoint, newCols) {
 
     const winW = newCols,
-    editorW = Math.floor(.6 * winW),
-    outputW = winW - editorW;
+      editorW = Math.floor(.6 * winW),
+      outputW = winW - editorW;
     this.setState({
       winW, editorW, outputW
     })
@@ -37,8 +37,8 @@ class Grid extends React.Component {
     // pass down
   }
 
-    // editor: height is constant at winH, but editorW can change
-    // stdin and stdout: individual H can change, but total H is constant at winH; outputW can change, providing that its total with editorW remains constant at winW
+  // editor: height is constant at winH, but editorW can change
+  // stdin and stdout: individual H can change, but total H is constant at winH; outputW can change, providing that its total with editorW remains constant at winW
 
   onResize(layout, oldItem, newItem) {
     function searchI(layout, i) {
@@ -47,20 +47,20 @@ class Grid extends React.Component {
       }
       return null;
     }
-    
+
     const editor = searchI(layout, "editor"),
-    stdin = searchI(layout, "stdin"),
-    stdout = searchI(layout, "stdout");
+      stdin = searchI(layout, "stdin"),
+      stdout = searchI(layout, "stdout");
 
     // editor, one of stdin or stdout must exist
 
     const newEditorW = editor["w"],
-    newOutputW = (newItem["i"] == "stdin" || newItem["i"] == "stdout") ? newItem["w"] : this.state.winW - newEditorW,
-    newStdinW = stdin ? stdin["w"] : (this.state.winW - newEditorW),
-    newStdoutW = stdout ? stdout["w"] : (this.state.winW - newEditorW),
-    newStdinH = stdin ? stdin["h"] : (this.state.winH - stdout["h"]),
-    newStdoutH = stdout ? stdout["h"] : (this.state.winH - stdin["h"]);
-    
+      newOutputW = (newItem["i"] == "stdin" || newItem["i"] == "stdout") ? newItem["w"] : this.state.winW - newEditorW,
+      newStdinW = stdin ? stdin["w"] : (this.state.winW - newEditorW),
+      newStdoutW = stdout ? stdout["w"] : (this.state.winW - newEditorW),
+      newStdinH = stdin ? stdin["h"] : (this.state.winH - stdout["h"]),
+      newStdoutH = stdout ? stdout["h"] : (this.state.winH - stdin["h"]);
+
     if (this.state.editorW != newEditorW) {
       this.setState({ editorW: newEditorW, outputW: newOutputW });
     }
@@ -74,29 +74,31 @@ class Grid extends React.Component {
     // BUG: when stdin/stdout resized itself to zero / simply resized, empty space is left
     if (newStdinW != newOutputW || newStdoutW != newOutputW) {
       this.setState({ outputW: newOutputW, editorW: this.state.winW - newOutputW });
-    } 
+    }
   }
 
 
   render() {
-    // BUG: does not fit when the screen is a very narrow vertical rectangle
-    window.electronAPI.onWindowResize((e, val) => {
-      this.setState({
-        rowHeight: document.documentElement.clientHeight / 6
-      });
-    })
+    if (window.electronAPI) {
+      // BUG: does not fit when the screen is a very narrow vertical rectangle
+      window.electronAPI.onWindowResize((e, val) => {
+        this.setState({
+          rowHeight: document.documentElement.clientHeight / 6
+        });
+      })
+    }
     let state = this.state,
-    editorLayout = { i: "editor", x: 0, y: 0, w: state.editorW, h: state.winH, minH: state.winH, maxH: state.winH, maxW: state.winW, minW: 0},
-    stdinLayout = { i: "stdin", x: state.editorW, y: 0, w: state.outputW, h: state.stdinH, maxH: state.winH, maxW: state.winW, minW: 0, minH: 0 },
-    stdoutLayout = { i: "stdout", x: state.editorW, y: state.stdinH, w: state.outputW, h: state.stdoutH, maxH: state.winH, maxW: state.winW, minW: 0, minH: 0 },
-    layouts = {
-      lg: [ editorLayout, stdinLayout, stdoutLayout ]
-    };
+      editorLayout = { i: "editor", x: 0, y: 0, w: state.editorW, h: state.winH, minH: state.winH, maxH: state.winH, maxW: state.winW, minW: 0 },
+      stdinLayout = { i: "stdin", x: state.editorW, y: 0, w: state.outputW, h: state.stdinH, maxH: state.winH, maxW: state.winW, minW: 0, minH: 0 },
+      stdoutLayout = { i: "stdout", x: state.editorW, y: state.stdinH, w: state.outputW, h: state.stdoutH, maxH: state.winH, maxW: state.winW, minW: 0, minH: 0 },
+      layouts = {
+        lg: [editorLayout, stdinLayout, stdoutLayout]
+      };
 
     const gridWidth = document.documentElement.clientWeight;
     const gridHeight = document.documentElement.clientHeight;
 
-    let editor = <div key="editor" id="editor"><Editor height={gridHeight}/></div>;
+    let editor = <div key="editor" id="editor"><Editor height={gridHeight} /></div>;
     let stdin = <div key="stdin" id="stdin">stdin</div>;
     let stdout = <div key="stdout" id="stdout">stdout</div>;
 
@@ -115,8 +117,8 @@ class Grid extends React.Component {
       rowHeight={state.rowHeight}
     >
       {editor}
-      {(state.stdinH > 0) ? stdin : <span/>}
-      {(state.stdoutH > 0) ? stdout : <span/>}
+      {(state.stdinH > 0) ? stdin : <span />}
+      {(state.stdoutH > 0) ? stdout : <span />}
     </ResponsiveGridLayout>;
     return grid;
   }

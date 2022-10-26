@@ -1,7 +1,7 @@
 import { equalMode } from "./utils";
-import { Token, tokenType, operatorType, operatorMap } from "./token";
-import { EqualSyntaxError, EqualRuntimeError, EqualUnexpectedError, ErrorHandler } from "./error";
-import { Visitor, Expression, Binary, Unary, Literal } from "./expression";
+import { Token, operatorMap, operatorType } from "./token";
+import { EqualSyntaxError, ErrorHandler } from "./error";
+import { Expression, Binary, Unary, Literal } from "./expression";
 import { bigLexer, BigToken, bigTokenType } from "./big-lexer";
 import { boolean } from "yargs";
 
@@ -24,6 +24,8 @@ class Parser {
     // while (!this.atEnd()) {
     const expr = this.expression();
     console.dir(expr);
+    // probably return arrays later
+    return expr;
     // this.pointer++;
     // }
   }
@@ -41,7 +43,39 @@ class Parser {
   }
 
   private comparsion(): Expression {
-    return this.retBinaryExpr([">", "<"], this.addition.bind(this));
+    if (this.matchStartForm([">", "<"])) {
+      const operator = this.retOperator();
+
+      this.force(this.matchStartLabel);
+      let base1 = this.expression();
+      // next();
+      this.force(this.matchEndLabel);
+
+      this.force(this.matchStartLabel);
+      let base2 = this.expression();
+      // next();
+      this.force(this.matchEndLabel);
+
+      let base = new Binary(operator, base1, base2);
+      while (this.matchStartLabel()) {
+        let top = this.expression();
+        base = new Binary(operator, base, top);
+        this.force(this.matchEndLabel);
+      }
+
+      this.force(this.matchEndForm);
+      return new Binary(operatorType.EQUAL, base1, base2);
+
+    } else {
+      return this.addition();
+    }
+
+
+
+
+    // add an expr at the start 
+    // top: compare first number with final
+    // return this.retBinaryExpr([">", "<"], this.addition.bind(this));
   }
 
   private addition(): Expression {
@@ -103,17 +137,17 @@ class Parser {
 
 
   private match(type: bigTokenType, name: string | undefined, attributeObj: { [k: string]: any }): boolean {
-    let token;
+    let token: BigToken;
     if (!this.atEnd()) token = this.tokens[this.pointer];
-    else throw new EqualUnexpectedError("EOF reached", this.path, this.tokens[this.tokens.length - 1]["line"]);
-    if (token["type"] === type && token["name"] === name) {
+    else this.throwError("EOF reached", this.tokens[this.tokens.length - 1]["line"]);
+    if (token!["type"] === type && token!["name"] === name) {
       for (let item in attributeObj) {
-        if (!attributeObj[item].includes(token["attribute"][item])) return false;
+        if (!attributeObj[item].includes(token!["attribute"][item])) return false;
       }
       this.pointer++;
       return true;
     }
-    console.log(type, name, attributeObj);
+    // console.log(type, name, attributeObj);
     return false;
   }
 
@@ -157,13 +191,13 @@ class Parser {
 
   private retPrevAttrE(attribute: string): string | number | boolean {
     const val = this.retPrevAttr(attribute);
-    if (val === undefined) throw new EqualUnexpectedError("Value of attribute cannot be undefined", this.path, this.tokens[this.pointer - 1]["line"]);
-    else return val;
+    if (val === undefined) this.throwError("Value of attribute cannot be undefined", this.tokens[this.pointer - 1]["line"]);
+    return val as string | number | boolean;
   }
 
   private retOperator() {
     let operator = operatorMap.get(this.retPrevAttrE("title"));
-    if (operator === undefined) throw new EqualUnexpectedError("Operator cannot be undefined", this.path, this.tokens[this.pointer]["line"]);
+    if (operator === undefined) this.throwError("Operator cannot be undefined", this.tokens[this.pointer]["line"]);
     return operator;
   }
 

@@ -1,5 +1,5 @@
 import { Token, tokenType} from "./token";
-import { EqualSyntaxError, EqualUnexpectedError, ErrorHandler } from "./error";
+import { EqualSyntaxError, ErrorHandler } from "./error";
 
 function bigLexer(tokens: Token[], path: string, errHandler: ErrorHandler) {
   let bigTokens: BigToken[] = [];

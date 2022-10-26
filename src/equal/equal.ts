@@ -1,8 +1,10 @@
 import * as fs from "fs";
 import { Lexer } from "./lexer";
 import { Parser } from "./parser";
+import { Interpreter } from "./interpreter";
 import { equalMode } from "./utils";
-import { EqualRuntimeError, EqualUnexpectedError, ErrorHandler } from "./error";
+import { EqualRuntimeError, ErrorHandler } from "./error";
+import { Expression } from "./expression";
 
 class Equal {
   error: boolean;
@@ -10,6 +12,7 @@ class Equal {
   mode: equalMode;
   lexer: Lexer;
   parser: Parser;
+  interpreter: Interpreter;
   errHandler: ErrorHandler;
 
   constructor(path: string, mode: string) {
@@ -22,6 +25,7 @@ class Equal {
       this.errHandler = new ErrorHandler(this.mode);
       this.lexer = new Lexer(this.mode, this.errHandler);
       this.parser = new Parser(this.mode, this.errHandler);
+      this.interpreter = new Interpreter(this.mode, this.errHandler);
       this.run();
 
     } catch(err) {
@@ -35,9 +39,9 @@ class Equal {
         this.verbose("Running in verbose mode");
         const tokens = this.lexer.lex(this.loadFile(), this.path);
         this.verbose(tokens);
-        this.parser.parse(tokens, this.path);
+        const ast = this.parser.parse(tokens, this.path);
         this.error = this.errHandler.getErrorStatus();
-        this.execute();
+        this.execute(ast, this.path);
         // check for error here
       }
 
@@ -63,9 +67,10 @@ class Equal {
 
   }
 
-  private execute() {
+  private execute(ast: Expression, path: string) {
     try {
       if (this.error == false) {
+        console.log(this.interpreter.interpret(ast, path));
       } else {
         // delete later
         this.verbose(this.errHandler.errors);

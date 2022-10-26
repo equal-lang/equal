@@ -1,6 +1,6 @@
 import { equalMode } from "./utils";
 import { Token, tokenType } from "./token";
-import { EqualSyntaxError, EqualUnexpectedError, ErrorHandler } from "./error";
+import { EqualSyntaxError, ErrorHandler } from "./error";
 
 
 class Lexer {

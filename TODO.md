@@ -20,3 +20,23 @@
 [ ] Expand this list into some issues
 [ ] Debug yargs behavior: when option --help passed in, show option ----help in help text
   [ ] -v does not work but --verbose works
+[ ] More flexible syntax
+[ ] Better error message
+[ ] Perhaps add a second lexer / clean up first lexer
+[ ] Sychronize error!
+[ ] Dot or bracket?
+[ ] Better verbose logging - especially big tokens
+[ ] Unexpected or Syntax error?
+[ ] Where to throw error - in function or outside?
+[ ] Handle EOF better in bigToken
+[ ] In parser, condense repeating parts into functions?
+[ ] Add parentheses 
+[ ] Is predecedence really needed since arguments are always nested in forms?
+[X] More clear differece between error types
+[ ] Generate error class with ast.js
+[ ] Reorganize bigtoken file
+[ ] Reorganize this file
+[ ] Reorganize import statements
+[ ] Throw or report error?
+[ ] Fit webpage
+[ ] Add support for chaining expressions like equality

@@ -118,7 +118,6 @@
 </form>
 <!-- possible titles: "==" "!=" ">" "<" -->
 <!-- strict equal and not equal -->
-<!-- greater than and lesser than with more than two arguments: true if the first arg is the largest / smallest -->
 
 <!-- logic -->
 <!-- (1) -->

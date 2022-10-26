@@ -49,13 +49,13 @@ class Interpreter extends Visitor {
       case operatorType.GREATER_THAN: {
         this.checkType(arg1, ["number"]);
         this.checkType(arg2, ["number"]);
-        return (this.greaterThan(arg1, arg2));
+        return (arg1 > arg2);
         break;
       }
       case operatorType.LESSER_THAN: {
         this.checkType(arg1, ["number"]);
         this.checkType(arg2, ["number"]);
-        return (this.lesserThan(arg1, arg2));
+        return (arg1 < arg2);
         break;
       }
       case operatorType.PLUS: {
@@ -122,16 +122,6 @@ class Interpreter extends Visitor {
     }
     // need to find a way to get current line
     throw new EqualRuntimeError("Unexpected type " + (typeof val), this.path);
-  }
-
-  private greaterThan(a: number, b: number) {
-    if (a > b) return a;
-    else return b;
-  }
-
-  private lesserThan(a: number, b: number) {
-    if (a < b) return a;
-    else return b;
   }
 
 }

@@ -11,14 +11,14 @@ LOGIC ->
 EQUALITY -> 
 (<form title="(== | !=)">
   <label>COMPARSION</label>
-  (<label>COMPARSION</label>)+
+  <label>COMPARSION</label>
 </form>
 | COMPARSION)
 
 COMPARSION -> 
 (<form title="(> | <)">
   <label>ADDITION</label>
-  (<label>ADDITION</label>)+
+  <label>ADDITION</label>
 </form>
 | ADDITION)
 

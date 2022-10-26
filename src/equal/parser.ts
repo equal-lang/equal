@@ -35,7 +35,7 @@ class Parser {
   }
 
   private logic(): Expression {
-    return this.retBinaryExpr(["&&", "||"], this.equality.bind(this));
+    return this.retWhileBinaryExpr(["&&", "||"], this.equality.bind(this));
   }
 
   private equality(): Expression {
@@ -43,47 +43,15 @@ class Parser {
   }
 
   private comparsion(): Expression {
-    if (this.matchStartForm([">", "<"])) {
-      const operator = this.retOperator();
-
-      this.force(this.matchStartLabel);
-      let base1 = this.expression();
-      // next();
-      this.force(this.matchEndLabel);
-
-      this.force(this.matchStartLabel);
-      let base2 = this.expression();
-      // next();
-      this.force(this.matchEndLabel);
-
-      let base = new Binary(operator, base1, base2);
-      while (this.matchStartLabel()) {
-        let top = this.expression();
-        base = new Binary(operator, base, top);
-        this.force(this.matchEndLabel);
-      }
-
-      this.force(this.matchEndForm);
-      return new Binary(operatorType.EQUAL, base1, base2);
-
-    } else {
-      return this.addition();
-    }
-
-
-
-
-    // add an expr at the start 
-    // top: compare first number with final
-    // return this.retBinaryExpr([">", "<"], this.addition.bind(this));
+    return this.retBinaryExpr([">", "<"], this.addition.bind(this));
   }
 
   private addition(): Expression {
-    return this.retBinaryExpr(["+", "-"], this.multiplication.bind(this));
+    return this.retWhileBinaryExpr(["+", "-"], this.multiplication.bind(this));
   }
 
   private multiplication(): Expression {
-    return this.retBinaryExpr(["*", "/"], this.unary.bind(this));
+    return this.retWhileBinaryExpr(["*", "/"], this.unary.bind(this));
   }
 
   private unary(): Expression {
@@ -105,6 +73,26 @@ class Parser {
   }
 
   private retBinaryExpr(operatorList: string[], next: () => Expression) {
+    if (this.matchStartForm(operatorList)) {
+      const operator = this.retOperator();
+
+      this.force(this.matchStartLabel);
+      let base1 = this.expression();
+      this.force(this.matchEndLabel);
+
+      this.force(this.matchStartLabel);
+      let base2 = this.expression();
+      this.force(this.matchEndLabel);
+      this.force(this.matchEndForm);
+      return new Binary(operator, base1, base2);
+
+    } else {
+      return next();
+    }
+    
+  }
+
+  private retWhileBinaryExpr(operatorList: string[], next: () => Expression) {
     if (this.matchStartForm(operatorList)) {
       const operator = this.retOperator();
 

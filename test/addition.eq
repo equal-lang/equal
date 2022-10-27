@@ -1,29 +1,16 @@
-<form title="&&">
-  <label>
-    <form title="<">
-      <label> 
-        2
-      </label>
-      <label> 
-        5
-      </label>
-    </form>
-  </label>
-  <label>
-    <form title="!">
-      <label>false</label>
-    </form>
-  </label>
-  <label>
-    <form title="!">
-      <label>false</label>
-    </form>
-  </label>
-  <label>
-    <form title="!">
-      <label>false</label>
-    </form>
-  </label>
-</form>
+<a id="test">
+  6
+</a>
 
- 
+<a id="test">
+  <form title="+">
+    <label>
+      <a href="test">
+      </a>
+    </label>
+    <label>
+      3
+    </label>
+  </form>
+</a>
+<!-- test = 6; test = test + 3 -->

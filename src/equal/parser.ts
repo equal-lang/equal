@@ -38,8 +38,7 @@ class Parser {
     if (this.match(bigTokenType.START_TAG, "a", {})) {
       const name = this.retPrevAttrE("id");
       if (typeof name != "string") this.throwError("The value of attribute id must be a string", this.tokens[this.pointer]["line"]);
-      let expr: Expression = new Literal(0);
-      if (this.tokens[this.pointer]["type"] == bigTokenType.TEXT) expr = this.expression();
+      let expr: Expression = this.expression();
       this.force(() => this.match(bigTokenType.END_TAG, "a", {}));
       return new Assignment(name as string, expr);
     } else {

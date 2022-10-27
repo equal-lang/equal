@@ -50,7 +50,7 @@
 <a href="name_of_variable">
   value
 </a>
-<!-- value defaults to 0 -->
+<!-- value must be initialized -->
 <!-- global variables only -->
 <!-- will throw error if used in expression? -->
 ```

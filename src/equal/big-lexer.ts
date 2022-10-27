@@ -54,12 +54,13 @@ function bigLexer(tokens: Token[], path: string, errHandler: ErrorHandler) {
     let pos = 1;
     let currentAttr = "", currentVal = "";
     while(pos < arr.length) {
-      if (arr[pos]["tokenType"] == tokenType.ATTRIBUTE && attributeList.includes(arr[pos]["value"])) {
+      if (arr[pos] && arr[pos]["tokenType"] == tokenType.ATTRIBUTE && attributeList.includes(arr[pos]["value"])) {
         currentAttr = arr[pos]["value"] as string;
         pos++;
-        if (arr[pos]["tokenType"] == tokenType.EQUAL_SIGN) pos++;
-        else throwError("Missing equal sign", arr[pos]["line"]);
-        if (arr[pos]["tokenType"] == tokenType.VALUE) {
+        if (arr[pos] && arr[pos]["tokenType"] == tokenType.EQUAL_SIGN) pos++;
+        else throwError("Missing equal sign", arr[pos-1]["line"]);
+        // use arr[pos] in the future?
+        if (arr[pos] && arr[pos]["tokenType"] == tokenType.VALUE) {
           if (arr[pos]["value"] == undefined) throwError("Undefined value", arr[pos]["line"]);
           else currentVal = arr[pos]["value"] as string;
           pos++;
@@ -67,7 +68,7 @@ function bigLexer(tokens: Token[], path: string, errHandler: ErrorHandler) {
         attribute[currentAttr] = currentVal;
         currentAttr = "", currentVal = "";
       } 
-      pos++;
+      // pos++;
     }
     
     bigTokens.push(new BigToken(bigTokenType.START_TAG, tagName as string, attribute, arr[arr.length-1]["line"]));

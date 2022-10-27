@@ -111,7 +111,7 @@ class Parser {
     if (this.matchText()) return new Literal(this.retPrevAttrE("value"));
     else {
       this.force(() => this.match(bigTokenType.START_TAG, "a", {}));
-      if (this.retPrevAttr("id") !== undefined) this.throwError("Href and id cannot be used in the same a tag", this.tokens[this.pointer]["line"]);
+      // if (this.retPrevAttr("id") !== undefined) this.throwError("Href and id cannot be used in the same a tag", this.tokens[this.pointer]["line"]);
       const name = this.retPrevAttrE("href");
       if (typeof name != "string") this.throwError("The value of attribute href must be a string", this.tokens[this.pointer]["line"]);
       this.force(() => this.match(bigTokenType.END_TAG, "a", {}));

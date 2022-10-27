@@ -53,7 +53,7 @@
 <!-- value must be initialized -->
 <!-- variable outside the current div block can be accessed but not modified -->
 <!-- variable in children div blocks cannot be accessed or modified -->
-<!-- will throw error if used in expression? -->
+<!-- only href considered in expression -->
 ```
 
 ##### Types

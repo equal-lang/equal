@@ -17,7 +17,7 @@
   - [ ] -v does not work but --verbose works
 - [ ] More flexible syntax
 - [ ] Better error message
-- [ ] Perhaps add a second lexer / clean up first lexer
+- [X] Perhaps add a second lexer
 - [ ] Sychronize error!
 - [ ] Dot or bracket?
 - [ ] Better verbose logging - especially big tokens
@@ -32,7 +32,7 @@
 - [ ] Reorganize bigtoken file
 - [ ] Reorganize this file
 - [ ] Reorganize import statements
-- [ ] Throw or report error?
+- [ ] Throw or report error - report is preferred so that the user can see all errors at once?
 - [ ] Fit webpage
 - [ ] Add support for chaining expressions like equality
 - [ ] Add custom theme
@@ -42,3 +42,6 @@
 - [ ] Attached classes - accessable from outside?
 - [ ] Refer to variables in another scope
 - [ ] Short circuiting logical operators
+  - [ ] Pass binary or logical as a parameter
+- [ ] Add test cases
+- [ ] Syntax highlighting?

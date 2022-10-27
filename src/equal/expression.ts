@@ -2,6 +2,7 @@ import { operatorType } from "./token";
 
 interface ExpressionVisitor {
   visitBinary(host: Binary): any;
+  visitLogical(host: Logical): any;
   visitUnary(host: Unary): any;
   visitLiteral(host: Literal): any;
   visitVariable(host: Variable): any;
@@ -9,7 +10,7 @@ interface ExpressionVisitor {
 }
 
 function isExpressionVisitor(cls: any): cls is ExpressionVisitor {
-  return cls.visitBinary !== undefined &&cls.visitUnary !== undefined &&cls.visitLiteral !== undefined &&cls.visitVariable !== undefined ;
+  return cls.visitBinary !== undefined &&cls.visitLogical !== undefined &&cls.visitUnary !== undefined &&cls.visitLiteral !== undefined &&cls.visitVariable !== undefined ;
 } 
 
 // abstract class
@@ -36,6 +37,24 @@ class Binary extends Expression {
   public accept(visitor: ExpressionVisitor) {
     super.accept(visitor);
     return visitor.visitBinary(this);
+  }
+}
+
+class Logical extends Expression {
+  operator: operatorType; 
+  arg1: Expression; 
+  arg2: Expression; 
+  
+  constructor(operator: operatorType, arg1: Expression, arg2: Expression, ) {
+    super();
+    this.operator = operator;
+    this.arg1 = arg1;
+    this.arg2 = arg2;
+    
+  }
+  public accept(visitor: ExpressionVisitor) {
+    super.accept(visitor);
+    return visitor.visitLogical(this);
   }
 }
 
@@ -84,5 +103,5 @@ class Variable extends Expression {
 }
 
 export {
-  ExpressionVisitor, isExpressionVisitor, Expression, Binary, Unary, Literal, Variable, 
+  ExpressionVisitor, isExpressionVisitor, Expression, Binary, Logical, Unary, Literal, Variable, 
 }

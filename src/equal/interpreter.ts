@@ -1,7 +1,7 @@
 import { equalMode } from "./utils";
 import { EqualRuntimeError, ErrorHandler } from "./error";
 import { operatorType } from "./token";
-import { ExpressionVisitor, Expression, Binary, Unary, Literal, Variable } from "./expression";
+import { ExpressionVisitor, Expression, Binary, Unary, Literal, Variable, Logical } from "./expression";
 import { StatementVisitor, Statement, Assignment, ExpressionStatement, Scope } from "./statement";
 import { Environment } from "./environment";
 // change name of visitor?
@@ -39,18 +39,6 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
     let arg2 = this.eval(host.arg2);
     let operator = host.operator;
     switch (operator) {
-      case operatorType.AND: {
-        this.checkType(arg1, ["boolean"]);
-        this.checkType(arg2, ["boolean"]);
-        return (arg1 && arg2);
-        break;
-      }
-      case operatorType.OR: {
-        this.checkType(arg1, ["boolean"]);
-        this.checkType(arg2, ["boolean"]);
-        return (arg1 || arg2);
-        break;
-      }
       case operatorType.EQUAL: {
         return (arg1 === arg2);
         break;
@@ -97,10 +85,43 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
         break;
       }
       default: {
-        throw new EqualRuntimeError("Operator does not exist", this.path);
+        throw new EqualRuntimeError("Binary operator does not exist", this.path);
         break;
       }
     }
+  }
+
+  public visitLogical(host: Logical) {
+    let arg1 = this.eval(host.arg1);
+    let arg2;
+    let operator = host.operator;
+    switch (operator) {
+      case operatorType.AND: {
+        this.checkType(arg1, ["boolean"]);
+        if (arg1 === true) {
+          arg2 = this.eval(host.arg2);
+          this.checkType(arg2, ["boolean"]);
+          return arg2;
+        } else return false;
+        break;
+      }
+      case operatorType.OR: {
+        this.checkType(arg1, ["boolean"]);
+        if (arg1 === false) {
+          arg2 = this.eval(host.arg2);
+          this.checkType(arg2, ["boolean"]);
+          return arg2;
+        }
+        else return true;
+        break;
+      }
+
+      default: {
+        throw new EqualRuntimeError("Logical operator does not exist", this.path);
+        break;
+      }
+    }
+
   }
 
   public visitUnary(host: Unary): boolean {
@@ -114,7 +135,6 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
       }
       default: {
         throw new EqualRuntimeError("Operator does not exist", this.path);
-        // error
         break;
       }
     }
@@ -141,7 +161,7 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
     this.eval(host.expression);
   }
 
-  
+
   private eval(expr: Expression): any {
     return expr.accept(this);
   }
@@ -154,12 +174,12 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
     let prev: Environment = this.environment;
     this.environment = env;
     let pointer = 0;
-    while(!(pointer > stmts.length-1)) {
+    while (!(pointer > stmts.length - 1)) {
       this.exec(stmts[pointer]);
       pointer++;
     }
     this.environment = prev;
-  } 
+  }
   private checkType(val: any, type: string[]) {
     for (let t of type) {
       if (typeof val == t) return true;

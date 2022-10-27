@@ -8,6 +8,7 @@ const statementBase = "Statement";
 
 ast(expressionPath, expressionBase, {
   "Binary": {"operator": "operatorType", "arg1": "Expression", "arg2": "Expression"},
+  "Logical": {"operator": "operatorType", "arg1": "Expression", "arg2": "Expression"},
   "Unary": {"operator": "operatorType", "arg1": "Expression"},
   "Literal": {"arg": "string | number | boolean"},
   "Variable": {"name": "string"},

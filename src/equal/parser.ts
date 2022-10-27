@@ -1,7 +1,7 @@
 import { equalMode } from "./utils";
 import { Token, operatorMap, operatorType } from "./token";
 import { EqualSyntaxError, ErrorHandler } from "./error";
-import { Expression, Binary, Unary, Literal, Variable } from "./expression";
+import { Expression, Binary, Logical, Unary, Literal, Variable } from "./expression";
 import { Scope, Assignment, Statement, ExpressionStatement } from "./statement";
 import { bigLexer, BigToken, bigTokenType } from "./big-lexer";
 import { boolean } from "yargs";
@@ -75,7 +75,7 @@ class Parser {
   }
 
   private logic(): Expression {
-    return this.retWhileBinaryExpr(["&&", "||"], this.equality.bind(this));
+    return this.retWhileLogicalExpr(["&&", "||"], this.equality.bind(this));
   }
 
   private equality(): Expression {
@@ -119,6 +119,7 @@ class Parser {
     }
   }
 
+
   private retBinaryExpr(operatorList: string[], next: () => Expression) {
     if (this.matchStartForm(operatorList)) {
       const operator = this.retOperator();
@@ -139,7 +140,9 @@ class Parser {
     
   }
 
-  private retWhileBinaryExpr(operatorList: string[], next: () => Expression) {
+
+
+  private retWhileBinaryExpr(operatorList: string[], next: () => Expression, ) {
     if (this.matchStartForm(operatorList)) {
       const operator = this.retOperator();
 
@@ -170,11 +173,45 @@ class Parser {
   }
 
 
+  // there is definitely a better way to do this
+  // pass Binary or Logical as parameter?
+  private retWhileLogicalExpr(operatorList: string[], next: () => Expression, ) {
+    if (this.matchStartForm(operatorList)) {
+      const operator = this.retOperator();
+
+      this.force(this.matchStartLabel);
+      let base1 = this.expression();
+      // next();
+      this.force(this.matchEndLabel);
+
+      this.force(this.matchStartLabel);
+      let base2 = this.expression();
+      // next();
+      this.force(this.matchEndLabel);
+
+      let base = new Logical(operator, base1, base2);
+      while (this.matchStartLabel()) {
+        let top = this.expression();
+        base = new Logical(operator, base, top);
+        this.force(this.matchEndLabel);
+      }
+
+      this.force(this.matchEndForm);
+      return base;
+
+    } else {
+      return next();
+      // precedence only decide which order expressions are tested in 
+    }
+  }
+
+
+
 
   private match(type: bigTokenType, name: string | undefined, attributeObj: { [k: string]: any }): boolean {
     let token: BigToken;
     if (!this.atEnd()) token = this.tokens[this.pointer];
-    else this.throwError("EOF reached", this.tokens[this.tokens.length - 1]["line"]);
+    else this.throwError("Unexpected EOF", this.tokens[this.tokens.length - 1]["line"]);
     if (token!["type"] === type && token!["name"] === name) {
       for (let item in attributeObj) {
         if (!attributeObj[item].includes(token!["attribute"][item])) return false;

@@ -5,10 +5,16 @@
 }
 
 .react-grid-item#stdin {
-  background-color: #C3ED6F;
+  background-color: #424D58;
+  color: white;
+  font-family: monospace;
+  font-size: 15px;
   /* border: groove; */
 }
 
 .react-grid-item#stdout {
-  background-color: #6BAD4D;
+  background-color: #3B454F;
+  color: white;
+  font-family: monospace;
+  font-size: 15px;
 }

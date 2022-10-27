@@ -1,4 +1,14 @@
 ```html
+PROGRAM -> ASSIGNMENT*
+ASSIGNMENT -> 
+(<a id="(identifier)">
+  EXPRESSION
+</a>
+| STATEMENT)
+
+STATEMENT -> EXPRESSION_STATEMENT
+EXPRESSION_STATEMENT -> EXPRESSION
+
 EXPRESSION -> LOGIC
 
 LOGIC -> 
@@ -43,5 +53,10 @@ UNARY ->
 | LITERAL)
 
 LITERAL -> 
-(STRING | NUMBER | BOOLEAN)
+(string | number | boolean | IDENTIFIER)
+
+IDENTIFIER ->
+(<a href="identifier">
+</a>)
+
 ```

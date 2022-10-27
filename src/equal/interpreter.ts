@@ -1,23 +1,36 @@
 import { equalMode } from "./utils";
-import { EqualRuntimeError, EqualSyntaxError, ErrorHandler } from "./error";
+import { EqualRuntimeError, ErrorHandler } from "./error";
 import { operatorType } from "./token";
-import { Visitor, Expression, Binary, Unary, Literal } from "./expression";
+import { ExpressionVisitor, Expression, Binary, Unary, Literal, Variable } from "./expression";
+import { StatementVisitor, Statement, Assignment, ExpressionStatement } from "./statement";
+import { Environment } from "./environment";
 // change name of visitor?
 
-class Interpreter extends Visitor {
+class Interpreter implements ExpressionVisitor, StatementVisitor {
   mode: equalMode;
   errHandler: ErrorHandler;
   path: string;
+  statements: Statement[];
+  pointer: number;
+  environment: Environment;
 
   constructor(mode: equalMode, errHandler: ErrorHandler) {
-    super();
     this.mode = mode;
     this.errHandler = errHandler;
+    this.pointer = 0;
+    this.environment = new Environment();
   }
 
-  public interpret(ast: Expression, path: string) {
+  public interpret(statements: Statement[], path: string) {
     this.path = path;
-    return this.eval(ast);
+    this.statements = statements;
+    if (this.mode == equalMode.VERBOSE) console.info(this.statements);
+    while (!(this.pointer > this.statements.length - 1)) {
+      const statement = this.statements[this.pointer];
+      this.exec(statement);
+      this.pointer++;
+    }
+    if (this.mode == equalMode.VERBOSE) console.info(this.environment);
   }
 
   public visitBinary(host: Binary): string | number | boolean {
@@ -112,8 +125,25 @@ class Interpreter extends Visitor {
     return host.arg;
   }
 
+  public visitVariable(host: Variable) {
+    return this.environment.get(host.name);
+  }
+
+  public visitAssignment(host: Assignment): void {
+    this.environment.define(host.name, this.eval(host.expression));
+  }
+
+  public visitExpressionStatement(host: ExpressionStatement): void {
+    this.eval(host.expression);
+  }
+
+  
   private eval(expr: Expression): any {
     return expr.accept(this);
+  }
+
+  private exec(stmt: Statement): void {
+    return stmt.accept(this);
   }
 
   private checkType(val: any, type: string[]) {

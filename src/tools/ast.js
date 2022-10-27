@@ -1,30 +1,29 @@
 const fs = require("fs").promises;
 
-function ast(path, baseName, obj) {
-  const imports =
-`import { operatorType } from "./token";
-`
+function ast(path, baseName, obj, importClass) {
+  const imports = importClass;
+
   const baseClass =
 `
 // abstract class
 class ${baseName} {
   constructor() {
   }
-  public accept(visitor: Visitor) {
-    throw new Error("Method in abstract class cannot be called");
+  public accept(visitor: ${baseName}Visitor) {
+    if (!is${baseName}Visitor(visitor)) throw new Error("Invalid visitor type");
   }
 }
 `
   let subclasses = "";
-  let visitorMethods = "";  
+  let visitorMethods = "";
+  let visitorCheck = "";
   let exportStr = "";
 
   for (const cls in obj) {
     visitorMethods += 
-  `public visit${cls}(host: ${cls}): any {
-    throw new Error("Method in abstract class cannot be called");
-  }
+  `visit${cls}(host: ${cls}): any;
   `
+    visitorCheck += (`cls.visit${cls} !== undefined &&`);
     exportStr += (cls + ", ");
 
     let instanceStr = "";
@@ -40,7 +39,6 @@ class ${baseName} {
     `this.${arg} = ${arg};
     `
     }
-
     subclasses += 
 `
 class ${cls} extends ${baseName} {
@@ -49,23 +47,29 @@ class ${cls} extends ${baseName} {
     super();
     ${constructStr}
   }
-  public accept(visitor: Visitor) {
+  public accept(visitor: ${baseName}Visitor) {
+    super.accept(visitor);
     return visitor.visit${cls}(this);
   }
 }
 `
+
   }
+  visitorCheck = visitorCheck.slice(0, visitorCheck.length-2);
   let visitor = 
 `
-// abstract class
-class Visitor {
+interface ${baseName}Visitor {
   ${visitorMethods}
 }
+
+function is${baseName}Visitor(cls: any): cls is ${baseName}Visitor {
+  return ${visitorCheck};
+} 
 `
   let exports = 
 `
 export {
-  Visitor, Expression, ${exportStr}
+  ${baseName}Visitor, is${baseName}Visitor, ${baseName}, ${exportStr}
 }
 `
   const data = imports + visitor + baseClass + subclasses + exports;
@@ -78,6 +82,7 @@ export {
       console.error(err);
     })
 }
+
 module.exports = {
   ast
 }

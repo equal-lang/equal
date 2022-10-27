@@ -1,7 +1,8 @@
 import { equalMode } from "./utils";
 import { Token, operatorMap, operatorType } from "./token";
 import { EqualSyntaxError, ErrorHandler } from "./error";
-import { Expression, Binary, Unary, Literal } from "./expression";
+import { Expression, Binary, Unary, Literal, Variable } from "./expression";
+import { Assignment, Statement, ExpressionStatement } from "./statement";
 import { bigLexer, BigToken, bigTokenType } from "./big-lexer";
 import { boolean } from "yargs";
 
@@ -11,23 +12,48 @@ class Parser {
   path: string;
   tokens: BigToken[];
   pointer: number;
+  statements: Statement[];
 
   constructor(mode: equalMode, errHandler: ErrorHandler) {
     this.mode = mode;
     this.errHandler = errHandler;
     this.pointer = 0;
+    this.statements = [];
   }
+  
 
   public parse(tokens: Token[], path: string) {
     this.path = path;
     this.tokens = bigLexer(tokens, this.path, this.errHandler);
-    // while (!this.atEnd()) {
-    const expr = this.expression();
-    console.dir(expr);
-    // probably return arrays later
-    return expr;
-    // this.pointer++;
-    // }
+    if (this.mode == equalMode.VERBOSE) console.info(this.tokens);
+    while (!this.atEnd()) {
+      this.statements.push(this.assignment());
+      // this.pointer++;
+    }
+    return this.statements;
+  }
+
+  private assignment(): Statement {
+
+    if (this.match(bigTokenType.START_TAG, "a", {})) {
+      const name = this.retPrevAttrE("id");
+      if (typeof name != "string") this.throwError("The value of attribute id must be a string", this.tokens[this.pointer]["line"]);
+      let expr: Expression = new Literal(0);
+      if (this.tokens[this.pointer]["type"] == bigTokenType.TEXT) expr = this.expression();
+      this.force(() => this.match(bigTokenType.END_TAG, "a", {}));
+      return new Assignment(name as string, expr);
+    } else {
+      return this.statement();
+    }
+  }
+
+  private statement(): Statement {
+    // redirect
+    return this.expressionStatement();
+  }
+
+  private expressionStatement(): Statement {
+    return new ExpressionStatement(this.expression());
   }
 
   private expression(): Expression {
@@ -63,13 +89,20 @@ class Parser {
       this.force(this.matchEndForm);
       return new Unary(operator, base);
     } else {
-      return this.literal();
+      return this.primary();
     }
   }
 
-  private literal(): Expression {
-    this.force(this.matchText);
-    return new Literal(this.retPrevAttrE("value"));
+  private primary(): Expression {
+    if (this.matchText()) return new Literal(this.retPrevAttrE("value"));
+    else {
+      this.force(() => this.match(bigTokenType.START_TAG, "a", {}));
+      if (this.retPrevAttr("id") !== undefined) this.throwError("Href and id cannot be used in the same a tag", this.tokens[this.pointer]["line"]);
+      const name = this.retPrevAttrE("href");
+      if (typeof name != "string") this.throwError("The value of attribute href must be a string", this.tokens[this.pointer]["line"]);
+      this.force(() => this.match(bigTokenType.END_TAG, "a", {}));
+      return new Variable(name as string);
+    }
   }
 
   private retBinaryExpr(operatorList: string[], next: () => Expression) {
@@ -179,7 +212,7 @@ class Parser {
 
   private retPrevAttrE(attribute: string): string | number | boolean {
     const val = this.retPrevAttr(attribute);
-    if (val === undefined) this.throwError("Value of attribute cannot be undefined", this.tokens[this.pointer - 1]["line"]);
+    if (val === undefined) this.throwError("Value of attribute " + attribute + " cannot be undefined", this.tokens[this.pointer - 1]["line"]);
     return val as string | number | boolean;
   }
 

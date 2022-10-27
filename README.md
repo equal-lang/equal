@@ -42,14 +42,17 @@
 ### Variables
 #### Assignment
 ```html
-<!-- local variable -->
+<!-- declare and reassign variable -->
 <a id="name_of_variable">
   value
 </a>
-<!-- global variable -->
+<!-- refer to variable -->
 <a href="name_of_variable">
   value
 </a>
+<!-- value defaults to 0 -->
+<!-- global variables only -->
+<!-- will throw error if used in expression? -->
 ```
 
 ##### Types
@@ -60,8 +63,7 @@
 - else if the variable is a string
 - if nothing is assigned explicitly, the value of the variable is ```""```
 - implict conversions between types will throw error
-##### Scope
-- an variable is available in the div block the variable is defined in as well as all its children  
+
 ##### Notes
 - variables can be redefined
 - expressions must be assigned to variables to be used later

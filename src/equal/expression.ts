@@ -1,25 +1,23 @@
 import { operatorType } from "./token";
 
-// abstract class
-class Visitor {
-  public visitBinary(host: Binary): any {
-    throw new Error("Method in abstract class cannot be called");
-  }
-  public visitUnary(host: Unary): any {
-    throw new Error("Method in abstract class cannot be called");
-  }
-  public visitLiteral(host: Literal): any {
-    throw new Error("Method in abstract class cannot be called");
-  }
+interface ExpressionVisitor {
+  visitBinary(host: Binary): any;
+  visitUnary(host: Unary): any;
+  visitLiteral(host: Literal): any;
+  visitVariable(host: Variable): any;
   
 }
+
+function isExpressionVisitor(cls: any): cls is ExpressionVisitor {
+  return cls.visitBinary !== undefined &&cls.visitUnary !== undefined &&cls.visitLiteral !== undefined &&cls.visitVariable !== undefined ;
+} 
 
 // abstract class
 class Expression {
   constructor() {
   }
-  public accept(visitor: Visitor) {
-    throw new Error("Method in abstract class cannot be called");
+  public accept(visitor: ExpressionVisitor) {
+    if (!isExpressionVisitor(visitor)) throw new Error("Invalid visitor type");
   }
 }
 
@@ -35,7 +33,8 @@ class Binary extends Expression {
     this.arg2 = arg2;
     
   }
-  public accept(visitor: Visitor) {
+  public accept(visitor: ExpressionVisitor) {
+    super.accept(visitor);
     return visitor.visitBinary(this);
   }
 }
@@ -50,7 +49,8 @@ class Unary extends Expression {
     this.arg1 = arg1;
     
   }
-  public accept(visitor: Visitor) {
+  public accept(visitor: ExpressionVisitor) {
+    super.accept(visitor);
     return visitor.visitUnary(this);
   }
 }
@@ -63,11 +63,26 @@ class Literal extends Expression {
     this.arg = arg;
     
   }
-  public accept(visitor: Visitor) {
+  public accept(visitor: ExpressionVisitor) {
+    super.accept(visitor);
     return visitor.visitLiteral(this);
   }
 }
 
+class Variable extends Expression {
+  name: string; 
+  
+  constructor(name: string, ) {
+    super();
+    this.name = name;
+    
+  }
+  public accept(visitor: ExpressionVisitor) {
+    super.accept(visitor);
+    return visitor.visitVariable(this);
+  }
+}
+
 export {
-  Visitor, Expression, Binary, Unary, Literal, 
+  ExpressionVisitor, isExpressionVisitor, Expression, Binary, Unary, Literal, Variable, 
 }

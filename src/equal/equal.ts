@@ -4,7 +4,8 @@ import { Parser } from "./parser";
 import { Interpreter } from "./interpreter";
 import { equalMode } from "./utils";
 import { EqualRuntimeError, ErrorHandler } from "./error";
-import { Expression } from "./expression";
+import { Statement } from "./statement";
+
 
 class Equal {
   error: boolean;
@@ -67,7 +68,7 @@ class Equal {
 
   }
 
-  private execute(ast: Expression, path: string) {
+  private execute(ast: Statement[], path: string) {
     try {
       if (this.error == false) {
         console.log(this.interpreter.interpret(ast, path));

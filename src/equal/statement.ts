@@ -1,13 +1,15 @@
 import { Expression } from "./expression";
+import { Environment } from "./environment";
 
 interface StatementVisitor {
+  visitScope(host: Scope): any;
   visitAssignment(host: Assignment): any;
   visitExpressionStatement(host: ExpressionStatement): any;
   
 }
 
 function isStatementVisitor(cls: any): cls is StatementVisitor {
-  return cls.visitAssignment !== undefined &&cls.visitExpressionStatement !== undefined ;
+  return cls.visitScope !== undefined &&cls.visitAssignment !== undefined &&cls.visitExpressionStatement !== undefined ;
 } 
 
 // abstract class
@@ -16,6 +18,20 @@ class Statement {
   }
   public accept(visitor: StatementVisitor) {
     if (!isStatementVisitor(visitor)) throw new Error("Invalid visitor type");
+  }
+}
+
+class Scope extends Statement {
+  statements: Statement[]; 
+  
+  constructor(statements: Statement[], ) {
+    super();
+    this.statements = statements;
+    
+  }
+  public accept(visitor: StatementVisitor) {
+    super.accept(visitor);
+    return visitor.visitScope(this);
   }
 }
 
@@ -50,5 +66,5 @@ class ExpressionStatement extends Statement {
 }
 
 export {
-  StatementVisitor, isStatementVisitor, Statement, Assignment, ExpressionStatement, 
+  StatementVisitor, isStatementVisitor, Statement, Scope, Assignment, ExpressionStatement, 
 }

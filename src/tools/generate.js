@@ -11,11 +11,15 @@ ast(expressionPath, expressionBase, {
   "Unary": {"operator": "operatorType", "arg1": "Expression"},
   "Literal": {"arg": "string | number | boolean"},
   "Variable": {"name": "string"},
-}, `import { operatorType } from "./token";
+}, 
+`import { operatorType } from "./token";
 `);
 
 ast(statementPath, statementBase, {
+  "Scope": {"statements": "Statement[]"},
   "Assignment": {"name": "string", "expression": "Expression"},
   "ExpressionStatement": {"expression": "Expression"}
-}, `import { Expression } from "./expression";
+}, 
+`import { Expression } from "./expression";
+import { Environment } from "./environment";
 `);

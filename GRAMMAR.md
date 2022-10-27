@@ -1,54 +1,62 @@
 ```html
-PROGRAM -> ASSIGNMENT*
+PROGRAM -> SCOPE*
+
+SCOPE -> 
+((<div>
+  ASSIGNMENT
+</div>)*
+| ASSIGNMENT*)
+
 ASSIGNMENT -> 
-(<a id="(identifier)">
+(<a id="identifier">
   EXPRESSION
 </a>
 | STATEMENT)
 
 STATEMENT -> EXPRESSION_STATEMENT
+
 EXPRESSION_STATEMENT -> EXPRESSION
 
 EXPRESSION -> LOGIC
 
 LOGIC -> 
 (<form title="(&& | ||)">
-  <label>EQUALITY</label>
-  (<label>EQUALITY</label>)+
+  <label>EXPRESSION</label>
+  (<label>EXPRESSION</label>)+
 </form>
 | EQUALITY)
 
 EQUALITY -> 
 (<form title="(== | !=)">
-  <label>COMPARSION</label>
-  <label>COMPARSION</label>
+  <label>EXPRESSION</label>
+  <label>EXPRESSION</label>
 </form>
 | COMPARSION)
 
 COMPARSION -> 
 (<form title="(> | <)">
-  <label>ADDITION</label>
-  <label>ADDITION</label>
+  <label>EXPRESSION</label>
+  <label>EXPRESSION</label>
 </form>
 | ADDITION)
 
 ADDITION -> 
 (<form title="(+ | -)">
-  <label>MULTIPLICATION</label>
-  (<label>MULTIPLICATION</label>)+
+  <label>EXPRESSION</label>
+  (<label>EXPRESSION</label>)+
 </form>
 | MULTIPLICATION)
 
 MULTIPLICATION -> 
 (<form title="(* | /)">
-  <label>UNARY</label>
-  (<label>UNARY</label>)+
+  <label>EXPRESSION</label>
+  (<label>EXPRESSION</label>)+
 </form>
 | UNARY)
 
 UNARY -> 
 (<form title="!">
-  <label>LITERAL</label>
+  <label>EXPRESSION</label>
 </form>
 | LITERAL)
 

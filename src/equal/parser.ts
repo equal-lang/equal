@@ -2,9 +2,10 @@ import { equalMode } from "./utils";
 import { Token, operatorMap, operatorType } from "./token";
 import { EqualSyntaxError, ErrorHandler } from "./error";
 import { Expression, Binary, Unary, Literal, Variable } from "./expression";
-import { Assignment, Statement, ExpressionStatement } from "./statement";
+import { Scope, Assignment, Statement, ExpressionStatement } from "./statement";
 import { bigLexer, BigToken, bigTokenType } from "./big-lexer";
 import { boolean } from "yargs";
+import { Environment } from "./environment";
 
 class Parser {
   mode: equalMode;
@@ -27,10 +28,24 @@ class Parser {
     this.tokens = bigLexer(tokens, this.path, this.errHandler);
     if (this.mode == equalMode.VERBOSE) console.info(this.tokens);
     while (!this.atEnd()) {
-      this.statements.push(this.assignment());
+      this.statements.push(this.scope());
       // this.pointer++;
     }
     return this.statements;
+  }
+
+  private scope(): Statement {
+    if (this.match(bigTokenType.START_TAG, "div", {})) {
+      let statements: Statement[] = [];
+      while(!this.match(bigTokenType.END_TAG, "div", {})) {
+        statements.push(this.scope());
+      }
+      return new Scope(statements);
+      // this.force(() => this.match(bigTokenType.END_TAG, "div", {}));
+    } else {
+      return this.assignment();
+    }
+
   }
 
   private assignment(): Statement {

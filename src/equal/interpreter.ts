@@ -2,7 +2,7 @@ import { equalMode } from "./utils";
 import { EqualRuntimeError, ErrorHandler } from "./error";
 import { operatorType } from "./token";
 import { ExpressionVisitor, Expression, Binary, Unary, Literal, Variable } from "./expression";
-import { StatementVisitor, Statement, Assignment, ExpressionStatement } from "./statement";
+import { StatementVisitor, Statement, Assignment, ExpressionStatement, Scope } from "./statement";
 import { Environment } from "./environment";
 // change name of visitor?
 
@@ -129,8 +129,12 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
     return this.environment.get(host.name);
   }
 
+  public visitScope(host: Scope) {
+    this.execBlock(host.statements, new Environment(this.environment));
+  }
+
   public visitAssignment(host: Assignment): void {
-    this.environment.define(host.name, this.eval(host.expression));
+    this.environment.assign(host.name, this.eval(host.expression));
   }
 
   public visitExpressionStatement(host: ExpressionStatement): void {
@@ -146,6 +150,16 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
     return stmt.accept(this);
   }
 
+  private execBlock(stmts: Statement[], env: Environment): void {
+    let prev: Environment = this.environment;
+    this.environment = env;
+    let pointer = 0;
+    while(!(pointer > stmts.length-1)) {
+      this.exec(stmts[pointer]);
+      pointer++;
+    }
+    this.environment = prev;
+  } 
   private checkType(val: any, type: string[]) {
     for (let t of type) {
       if (typeof val == t) return true;

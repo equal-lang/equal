@@ -40,3 +40,5 @@
 - [ ] Expression and assignment?
 - [ ] Class that provide environmental variables
 - [ ] Attached classes - accessable from outside?
+- [ ] Refer to variables in another scope
+- [ ] Short circuiting logical operators

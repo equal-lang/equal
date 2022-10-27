@@ -51,7 +51,8 @@
   value
 </a>
 <!-- value must be initialized -->
-<!-- global variables only -->
+<!-- variable outside the current div block can be accessed but not modified -->
+<!-- variable in children div blocks cannot be accessed or modified -->
 <!-- will throw error if used in expression? -->
 ```
 

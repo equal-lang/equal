@@ -10,6 +10,7 @@ function bigLexer(tokens: Token[], path: string, errHandler: ErrorHandler) {
     
     const token = tokens[pointer];
     if (token["tokenType"] == tokenType.START_TAG_LEFT) {
+      evalText(text);
       inStartTag = true;
     } else if (token["tokenType"] == tokenType.END_TAG_LEFT) {
       evalText(text);

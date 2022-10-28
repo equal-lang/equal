@@ -19,7 +19,8 @@ ast(expressionPath, expressionBase, {
 ast(statementPath, statementBase, {
   "Scope": {"statements": "Statement[]"},
   "Assignment": {"name": "string", "expression": "Expression"},
-  "ExpressionStatement": {"expression": "Expression"}
+  "ExpressionStatement": {"expression": "Expression"},
+  "ConditionalStatement": {"conditions": "Expression[]", "statements": "Statement[][]"}
 }, 
 `import { Expression } from "./expression";
 import { Environment } from "./environment";

@@ -45,3 +45,5 @@
   - [ ] Pass binary or logical as a parameter
 - [ ] Add test cases
 - [ ] Syntax highlighting?
+- [ ] Clean up call stack
+- [ ] Statement

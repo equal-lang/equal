@@ -2,7 +2,7 @@ import { equalMode } from "./utils";
 import { EqualRuntimeError, ErrorHandler } from "./error";
 import { operatorType } from "./token";
 import { ExpressionVisitor, Expression, Binary, Unary, Literal, Variable, Logical } from "./expression";
-import { StatementVisitor, Statement, Assignment, ExpressionStatement, Scope } from "./statement";
+import { StatementVisitor, Statement, Assignment, ExpressionStatement, Scope, ConditionalStatement } from "./statement";
 import { Environment } from "./environment";
 // change name of visitor?
 
@@ -161,6 +161,28 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
     this.eval(host.expression);
   }
 
+  public visitConditionalStatement(host: ConditionalStatement) {
+    let correctNum = -1;
+    for (let c = 0; c < host.conditions.length; c++) {
+      if (this.eval(host.conditions[c]) === true) {
+        correctNum = c;
+        break;
+      }
+    }
+    // else statement available
+    if (correctNum == -1 && (host.statements.length == host.conditions.length + 1)) {
+      correctNum = host.statements.length - 1;
+    }
+    if (correctNum != -1) {
+      for (let pointer = 0; pointer <= host.statements[correctNum].length - 1; pointer++) {
+        this.exec(host.statements[correctNum][pointer]);
+      }
+    }
+    
+    // five ? provided, any succeed, that number is
+    // none - last statement
+  }
+
 
   private eval(expr: Expression): any {
     return expr.accept(this);
@@ -173,10 +195,8 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
   private execBlock(stmts: Statement[], env: Environment): void {
     let prev: Environment = this.environment;
     this.environment = env;
-    let pointer = 0;
-    while (!(pointer > stmts.length - 1)) {
+    for (let pointer = 0; pointer <= stmts.length - 1; pointer++) {
       this.exec(stmts[pointer]);
-      pointer++;
     }
     this.environment = prev;
   }

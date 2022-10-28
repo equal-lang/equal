@@ -5,11 +5,12 @@ interface StatementVisitor {
   visitScope(host: Scope): any;
   visitAssignment(host: Assignment): any;
   visitExpressionStatement(host: ExpressionStatement): any;
+  visitConditionalStatement(host: ConditionalStatement): any;
   
 }
 
 function isStatementVisitor(cls: any): cls is StatementVisitor {
-  return cls.visitScope !== undefined &&cls.visitAssignment !== undefined &&cls.visitExpressionStatement !== undefined ;
+  return cls.visitScope !== undefined &&cls.visitAssignment !== undefined &&cls.visitExpressionStatement !== undefined &&cls.visitConditionalStatement !== undefined ;
 } 
 
 // abstract class
@@ -65,6 +66,22 @@ class ExpressionStatement extends Statement {
   }
 }
 
+class ConditionalStatement extends Statement {
+  conditions: Expression[]; 
+  statements: Statement[][]; 
+  
+  constructor(conditions: Expression[], statements: Statement[][], ) {
+    super();
+    this.conditions = conditions;
+    this.statements = statements;
+    
+  }
+  public accept(visitor: StatementVisitor) {
+    super.accept(visitor);
+    return visitor.visitConditionalStatement(this);
+  }
+}
+
 export {
-  StatementVisitor, isStatementVisitor, Statement, Scope, Assignment, ExpressionStatement, 
+  StatementVisitor, isStatementVisitor, Statement, Scope, Assignment, ExpressionStatement, ConditionalStatement, 
 }

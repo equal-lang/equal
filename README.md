@@ -6,28 +6,27 @@
 ```html
 <!-- comments about the code -->
 ```
+
 #### Code blocks
 ```html
 <div>
   <!-- code inside -->
 </div>
+<!-- variable outside the current div block can be accessed but not modified -->
+<!-- variable in children div blocks cannot be accessed or modified -->
 ```
 #### If/else statements
 ```html
-<!--must have a wrapping div block for if/else statements-->
-<div>
-  <h1 class="expression_that_evaluates_to_boolean">
-    <!-- execute if h1 class evaluates to true-->
-  </h1>
-  <h2 class="expression">
-    <div>
-      <h1>
-        <!-- a nested if/else statement-->
-      </h1>
-    </div>
-  </h2>
-  <!-- continues until h6 -->
-</div>
+<h1>
+  <!-- expression -->
+  <!-- statements (execute if expression evaluates to true) -->
+</h1>
+<h2>
+  <!-- else if statements -->
+</h2>
+<h6>
+  <!-- else statement -->
+</h6>
 ```
 
 #### While loops
@@ -48,11 +47,8 @@
 </a>
 <!-- refer to variable -->
 <a href="name_of_variable">
-  value
 </a>
-<!-- value must be initialized -->
-<!-- variable outside the current div block can be accessed but not modified -->
-<!-- variable in children div blocks cannot be accessed or modified -->
+<!-- variables must be initialized -->
 <!-- only href considered in expression -->
 ```
 

@@ -2,7 +2,7 @@ import { equalMode } from "./utils";
 import { Token, operatorMap, operatorType } from "./token";
 import { EqualSyntaxError, ErrorHandler } from "./error";
 import { Expression, Binary, Logical, Unary, Literal, Variable } from "./expression";
-import { Scope, Assignment, Statement, ExpressionStatement } from "./statement";
+import { Scope, Assignment, Statement, ExpressionStatement, ConditionalStatement } from "./statement";
 import { bigLexer, BigToken, bigTokenType } from "./big-lexer";
 import { boolean } from "yargs";
 import { Environment } from "./environment";
@@ -63,13 +63,53 @@ class Parser {
 
   private statement(): Statement {
     // redirect
-    return this.expressionStatement();
+    return this.conditionalStatement();
+  }
+
+  private conditionalStatement(): Statement {
+    
+    if (this.match(bigTokenType.START_TAG, "h1", {})) {
+      let statements: Statement[][] = [];
+      let conditions: Expression[] = [];
+      let stmts: Statement[] = [];
+      let expr: Expression = this.expression();
+
+      while(!this.match(bigTokenType.END_TAG, "h1", {})) {
+        stmts.push(this.scope());
+      }
+      statements.push(stmts);
+      conditions.push(expr);
+      // rewrite to avoid repeating?
+      for (let i = 2; i <= 5; i++) {
+        if (this.match(bigTokenType.START_TAG, "h" + i, {})) {
+          expr = this.expression();
+          stmts = [];
+          while(!this.match(bigTokenType.END_TAG, "h" + i, {})) {
+            stmts.push(this.scope());
+          }
+          statements.push(stmts);
+          conditions.push(expr);
+        }
+      }
+      if (this.match(bigTokenType.START_TAG, "h6", {})) {
+        stmts = [];
+        while(!this.match(bigTokenType.END_TAG, "h6", {})) {
+          stmts.push(this.scope());
+        }
+        statements.push(stmts);
+      }
+      return new ConditionalStatement(conditions, statements);
+    } else {
+      return this.expressionStatement();
+    }
+
   }
 
   private expressionStatement(): Statement {
     return new ExpressionStatement(this.expression());
   }
 
+  
   private expression(): Expression {
     return this.logic();
   }
@@ -208,10 +248,13 @@ class Parser {
 
 
 
-  private match(type: bigTokenType, name: string | undefined, attributeObj: { [k: string]: any }): boolean {
+  private match(type: bigTokenType, name: string | undefined, attributeObj: { [k: string]: any }, force?: boolean): boolean {
     let token: BigToken;
     if (!this.atEnd()) token = this.tokens[this.pointer];
-    else this.throwError("Unexpected EOF", this.tokens[this.tokens.length - 1]["line"]);
+    else {
+      if (force) this.throwError("Unexpected EOF", this.tokens[this.tokens.length - 1]["line"]);
+      return false;
+    }
     if (token!["type"] === type && token!["name"] === name) {
       for (let item in attributeObj) {
         if (!attributeObj[item].includes(token!["attribute"][item])) return false;
@@ -244,7 +287,7 @@ class Parser {
   }
 
   private force(func: () => boolean) {
-    if (!func.bind(this)()) {
+    if (!func.bind(this, true)()) {
       const token = this.tokens[this.pointer];
       // better to get what is trying to match from the match function somehow
       let text;

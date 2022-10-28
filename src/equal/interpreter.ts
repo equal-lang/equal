@@ -2,7 +2,7 @@ import { equalMode } from "./utils";
 import { EqualRuntimeError, ErrorHandler } from "./error";
 import { operatorType } from "./token";
 import { ExpressionVisitor, Expression, Binary, Unary, Literal, Variable, Logical } from "./expression";
-import { StatementVisitor, Statement, Assignment, ExpressionStatement, Scope, ConditionalStatement } from "./statement";
+import { StatementVisitor, Statement, Assignment, ExpressionStatement, Scope, ConditionalStatement, Loop } from "./statement";
 import { Environment } from "./environment";
 // change name of visitor?
 
@@ -178,11 +178,18 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
         this.exec(host.statements[correctNum][pointer]);
       }
     }
-    
-    // five ? provided, any succeed, that number is
-    // none - last statement
   }
 
+  public visitLoop(host: Loop) {
+    let cond = this.eval(host.condition);
+    while(cond === true) {
+      for (let pointer = 0; pointer <= host.statements.length - 1; pointer++) {
+        this.exec(host.statements[pointer]);
+      }
+      cond = this.eval(host.condition);
+    }
+    
+  }
 
   private eval(expr: Expression): any {
     return expr.accept(this);

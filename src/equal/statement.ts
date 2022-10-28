@@ -4,13 +4,14 @@ import { Environment } from "./environment";
 interface StatementVisitor {
   visitScope(host: Scope): any;
   visitAssignment(host: Assignment): any;
-  visitExpressionStatement(host: ExpressionStatement): any;
+  visitLoop(host: Loop): any;
   visitConditionalStatement(host: ConditionalStatement): any;
+  visitExpressionStatement(host: ExpressionStatement): any;
   
 }
 
 function isStatementVisitor(cls: any): cls is StatementVisitor {
-  return cls.visitScope !== undefined &&cls.visitAssignment !== undefined &&cls.visitExpressionStatement !== undefined &&cls.visitConditionalStatement !== undefined ;
+  return cls.visitScope !== undefined &&cls.visitAssignment !== undefined &&cls.visitLoop !== undefined &&cls.visitConditionalStatement !== undefined &&cls.visitExpressionStatement !== undefined ;
 } 
 
 // abstract class
@@ -52,17 +53,19 @@ class Assignment extends Statement {
   }
 }
 
-class ExpressionStatement extends Statement {
-  expression: Expression; 
+class Loop extends Statement {
+  condition: Expression; 
+  statements: Statement[]; 
   
-  constructor(expression: Expression, ) {
+  constructor(condition: Expression, statements: Statement[], ) {
     super();
-    this.expression = expression;
+    this.condition = condition;
+    this.statements = statements;
     
   }
   public accept(visitor: StatementVisitor) {
     super.accept(visitor);
-    return visitor.visitExpressionStatement(this);
+    return visitor.visitLoop(this);
   }
 }
 
@@ -82,6 +85,20 @@ class ConditionalStatement extends Statement {
   }
 }
 
+class ExpressionStatement extends Statement {
+  expression: Expression; 
+  
+  constructor(expression: Expression, ) {
+    super();
+    this.expression = expression;
+    
+  }
+  public accept(visitor: StatementVisitor) {
+    super.accept(visitor);
+    return visitor.visitExpressionStatement(this);
+  }
+}
+
 export {
-  StatementVisitor, isStatementVisitor, Statement, Scope, Assignment, ExpressionStatement, ConditionalStatement, 
+  StatementVisitor, isStatementVisitor, Statement, Scope, Assignment, Loop, ConditionalStatement, ExpressionStatement, 
 }

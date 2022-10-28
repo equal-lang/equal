@@ -71,7 +71,7 @@ class Equal {
   private execute(ast: Statement[], path: string) {
     try {
       if (this.error == false) {
-        console.log(this.interpreter.interpret(ast, path));
+        this.interpreter.interpret(ast, path);
       } else {
         // delete later
         this.verbose(this.errHandler.errors);

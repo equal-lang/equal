@@ -31,9 +31,9 @@
 
 #### While loops
 ```html
-<!-- execute until p class evaluates to false -->
-<p class="expression">
-  <!-- execute -->
+<p>
+  <!-- expression -->
+  <!-- statements (execute until expression evaluates to false) -->
 </p>
 ```
 

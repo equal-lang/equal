@@ -2,7 +2,7 @@ import { equalMode } from "./utils";
 import { Token, operatorMap, operatorType } from "./token";
 import { EqualSyntaxError, ErrorHandler } from "./error";
 import { Expression, Binary, Logical, Unary, Literal, Variable } from "./expression";
-import { Scope, Assignment, Statement, ExpressionStatement, ConditionalStatement } from "./statement";
+import { Scope, Assignment, Statement, ExpressionStatement, ConditionalStatement, Loop } from "./statement";
 import { bigLexer, BigToken, bigTokenType } from "./big-lexer";
 import { boolean } from "yargs";
 import { Environment } from "./environment";
@@ -63,7 +63,19 @@ class Parser {
 
   private statement(): Statement {
     // redirect
-    return this.conditionalStatement();
+    return this.loop();
+  }
+
+  private loop(): Statement {
+    if (this.match(bigTokenType.START_TAG, "p", {})) {
+      let statements: Statement[] = [];
+      let condition: Expression = this.expression();
+      while(!this.match(bigTokenType.END_TAG, "p", {})) {
+        statements.push(this.scope());
+      }
+      return new Loop(condition, statements);
+    }
+    else return this.conditionalStatement();
   }
 
   private conditionalStatement(): Statement {
@@ -248,11 +260,10 @@ class Parser {
 
 
 
-  private match(type: bigTokenType, name: string | undefined, attributeObj: { [k: string]: any }, force?: boolean): boolean {
+  private match(type: bigTokenType, name: string | undefined, attributeObj: { [k: string]: any }): boolean {
     let token: BigToken;
     if (!this.atEnd()) token = this.tokens[this.pointer];
     else {
-      if (force) this.throwError("Unexpected EOF", this.tokens[this.tokens.length - 1]["line"]);
       return false;
     }
     if (token!["type"] === type && token!["name"] === name) {
@@ -287,7 +298,8 @@ class Parser {
   }
 
   private force(func: () => boolean) {
-    if (!func.bind(this, true)()) {
+    if (!func.bind(this)()) {
+      if (this.pointer > this.tokens.length - 1) this.throwError("Unexpected EOF", this.tokens[this.tokens.length - 1]["line"]);
       const token = this.tokens[this.pointer];
       // better to get what is trying to match from the match function somehow
       let text;

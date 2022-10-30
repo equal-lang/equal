@@ -1,5 +1,6 @@
 import { Token, tokenType} from "./token";
 import { EqualSyntaxError, ErrorHandler } from "./error";
+import { wrapValue } from "./utils";
 
 function bigLexer(tokens: Token[], path: string, errHandler: ErrorHandler) {
   let bigTokens: BigToken[] = [];
@@ -105,14 +106,6 @@ function bigLexer(tokens: Token[], path: string, errHandler: ErrorHandler) {
     const err = new EqualSyntaxError(message, path, line);
     errHandler.reportError(err);
   }
-
-  function wrapValue(val: string): string | number | boolean {
-    if (!isNaN(Number(val))) return Number(val);
-    else if (val === "true" || val == "false") return (val === "true");
-    // val must be string
-    else return val;
-  }
-
 }
 
 // tagname -> attributes needed

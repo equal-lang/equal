@@ -12,6 +12,7 @@ ast(expressionPath, expressionBase, {
   "Unary": {"operator": "operatorType", "arg1": "Expression"},
   "Literal": {"arg": "string | number | boolean"},
   "Variable": {"name": "string"},
+  "Call": {"calleeName": "string", "args": "Expression[]"}
 }, 
 `import { operatorType } from "./token";
 `);

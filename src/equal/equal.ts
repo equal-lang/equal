@@ -61,6 +61,14 @@ class Equal {
     return file as string;
   }
 
+  private stdin() {
+
+  }
+
+  private stdout() {
+    
+  }
+
   private execute(ast: Statement[], path: string) {
     try {
       if (this.error == false) {

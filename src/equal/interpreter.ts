@@ -1,10 +1,12 @@
 import { equalMode } from "./utils";
 import { EqualRuntimeError, ErrorHandler } from "./error";
 import { operatorType } from "./token";
-import { ExpressionVisitor, Expression, Binary, Unary, Literal, Variable, Logical } from "./expression";
+import { ExpressionVisitor, Expression, Binary, Unary, Literal, Variable, Logical, Call } from "./expression";
 import { StatementVisitor, Statement, Assignment, ExpressionStatement, Scope, ConditionalStatement, Loop, PrintStatement } from "./statement";
 import { Environment } from "./environment";
-// change name of visitor?
+import { EqualCallable, isEqualCallable } from "./callable";
+import { Input } from "./foreign";
+
 
 class Interpreter implements ExpressionVisitor, StatementVisitor {
   mode: equalMode;
@@ -27,6 +29,7 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
   public interpret(statements: Statement[], path: string) {
     this.path = path;
     this.statements = statements;
+    this.global.declareFunc("input", new Input());
     if (this.mode == equalMode.VERBOSE) console.info(this.statements);
     let ret = "";
     while (!(this.pointer > this.statements.length - 1)) {
@@ -37,7 +40,6 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
     }
     if (this.mode == equalMode.VERBOSE) console.info(this.environment);
     return ret.slice(0, ret.length-1);
-    // JSON.stringify(this.environment);
   }
 
   public visitBinary(host: Binary): string | number | boolean {
@@ -147,6 +149,19 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
     }
   }
 
+  public visitCall(host: Call) {
+    const func = this.environment.getFunc(host.calleeName);
+    if (!isEqualCallable(func)) throw new EqualRuntimeError("Object is not callable", this.path);
+    const argList: (string | number | boolean)[] = [];
+    for (let pointer = 0; pointer <= host.args.length - 1; pointer++) {
+      let arg = this.eval(host.args[pointer]);
+      this.checkType(arg, ["string", "number", "boolean"]);
+      argList.push(arg);
+    }
+    if (argList.length != func.arity()) throw new EqualRuntimeError("Expected " + func.arity() + " arguments, got " + argList.length);
+    return func.call(this, argList);
+  }
+
   public visitLiteral(host: Literal): string | number | boolean {
     this.checkType(host.arg, ["string", "number", "boolean"]);
     return host.arg;
@@ -206,7 +221,6 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
       ret += this.eval(host.expressions[pointer]) + "\n";
     }
     return ret.slice(0, ret.length-1);
-    ;
   }
 
   private eval(expr: Expression): any {

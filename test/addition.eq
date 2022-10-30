@@ -7,6 +7,11 @@
   </a>
 </div>
 
+<form title="testing">
+  <label>param one</label>
+</form>
+<!-- colliding variable and function names? -->
+
 <span>
   <a href="test">
   </a>

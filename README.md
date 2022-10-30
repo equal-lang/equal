@@ -67,6 +67,8 @@
 - expressions must be assigned to variables to be used later
 
 ### Functions
+- Only global functions supported
+- Functions must be declared?
 #### Definition
 ```html
 <form id="name_of_function">

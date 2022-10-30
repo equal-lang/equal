@@ -1,18 +1,22 @@
 import { EqualRuntimeError } from "./error";
+import { EqualCallable } from "./callable";
 
 class Environment {
   outerEnv: Environment | undefined;
-  keys: Map<string, string | number | boolean>;
+  variables: Map<string, string | number | boolean>;
+  functions: Map<string, EqualCallable>;
 
   constructor(outEnv?: Environment) {
-    this.keys = new Map<string, string | number | boolean>();
+    this.variables = new Map<string, string | number | boolean>();
+    this.functions = new Map<string, EqualCallable>();
     this.outerEnv = outEnv;
   }
+
   public assign(key: string, val: string | number | boolean): void {
-    this.keys.set(key, val);
+    this.variables.set(key, val);
   }
   public get(key: string): string | number | boolean {
-    let val = this.keys.get(key);
+    let val = this.variables.get(key);
     // precedence: id and href
     // TODO: get file name and line here
     if (val == undefined && this.outerEnv != undefined) {
@@ -20,6 +24,16 @@ class Environment {
     }
     if (val == undefined) throw new EqualRuntimeError("Undefined variable " + key);
     return val;
+  }
+
+  public declareFunc(key: string, func: EqualCallable) {
+    this.functions.set(key, func);
+  }
+
+  public getFunc(key: string): EqualCallable {
+    let func = this.functions.get(key);
+    if (func == undefined) throw new EqualRuntimeError("Undeclared function " + key);
+    return func;
   }
 }
 

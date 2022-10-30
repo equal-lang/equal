@@ -1,7 +1,7 @@
 import { equalMode } from "./utils";
 import { Token, operatorMap, operatorType } from "./token";
 import { EqualSyntaxError, ErrorHandler } from "./error";
-import { Expression, Binary, Logical, Unary, Literal, Variable } from "./expression";
+import { Expression, Binary, Logical, Unary, Literal, Variable, Call } from "./expression";
 import { Scope, Assignment, Statement, ExpressionStatement, ConditionalStatement, PrintStatement, Loop } from "./statement";
 import { bigLexer, BigToken, bigTokenType } from "./big-lexer";
 import { boolean } from "yargs";
@@ -166,8 +166,26 @@ class Parser {
       this.force(this.matchEndForm);
       return new Unary(operator, base);
     } else {
-      return this.primary();
+      return this.call();
     }
+  }
+
+  private call(): Expression {
+    if (this.match(bigTokenType.START_TAG, "form", {})) {
+      let calleeName = this.retPrevAttrE("title");
+      if (typeof calleeName !== "string") this.throwError("The name of a function must be a string", this.tokens[this.pointer]["line"])
+      let args: Expression[] = [];
+      
+      while (this.matchStartLabel()) {
+        let arg = this.expression();
+        args.push(arg);
+        this.force(this.matchEndLabel);
+      }
+
+      this.force(this.matchEndForm);
+      return new Call(calleeName as string, args);
+    }
+    else return this.primary();
   }
 
   private primary(): Expression {

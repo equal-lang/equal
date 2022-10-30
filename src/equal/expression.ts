@@ -6,11 +6,12 @@ interface ExpressionVisitor {
   visitUnary(host: Unary): any;
   visitLiteral(host: Literal): any;
   visitVariable(host: Variable): any;
+  visitCall(host: Call): any;
   
 }
 
 function isExpressionVisitor(cls: any): cls is ExpressionVisitor {
-  return cls.visitBinary !== undefined &&cls.visitLogical !== undefined &&cls.visitUnary !== undefined &&cls.visitLiteral !== undefined &&cls.visitVariable !== undefined ;
+  return cls.visitBinary !== undefined &&cls.visitLogical !== undefined &&cls.visitUnary !== undefined &&cls.visitLiteral !== undefined &&cls.visitVariable !== undefined &&cls.visitCall !== undefined ;
 } 
 
 // abstract class
@@ -102,6 +103,22 @@ class Variable extends Expression {
   }
 }
 
+class Call extends Expression {
+  calleeName: string; 
+  args: Expression[]; 
+  
+  constructor(calleeName: string, args: Expression[], ) {
+    super();
+    this.calleeName = calleeName;
+    this.args = args;
+    
+  }
+  public accept(visitor: ExpressionVisitor) {
+    super.accept(visitor);
+    return visitor.visitCall(this);
+  }
+}
+
 export {
-  ExpressionVisitor, isExpressionVisitor, Expression, Binary, Logical, Unary, Literal, Variable, 
+  ExpressionVisitor, isExpressionVisitor, Expression, Binary, Logical, Unary, Literal, Variable, Call, 
 }

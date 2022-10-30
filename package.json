@@ -28,7 +28,8 @@
       "build",
       "node_modules",
       "public",
-      "src"
+      "src",
+      "cli-build"
     ]
   },
   "postInstall": "electron-builder install-app-deps",

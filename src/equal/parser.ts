@@ -2,7 +2,7 @@ import { equalMode } from "./utils";
 import { Token, operatorMap, operatorType } from "./token";
 import { EqualSyntaxError, ErrorHandler } from "./error";
 import { Expression, Binary, Logical, Unary, Literal, Variable } from "./expression";
-import { Scope, Assignment, Statement, ExpressionStatement, ConditionalStatement, Loop } from "./statement";
+import { Scope, Assignment, Statement, ExpressionStatement, ConditionalStatement, PrintStatement, Loop } from "./statement";
 import { bigLexer, BigToken, bigTokenType } from "./big-lexer";
 import { boolean } from "yargs";
 import { Environment } from "./environment";
@@ -112,9 +112,19 @@ class Parser {
       }
       return new ConditionalStatement(conditions, statements);
     } else {
-      return this.expressionStatement();
+      return this.printStatement();
     }
 
+  }
+  
+  private printStatement(): Statement {
+    let expressions: Expression[] = [];
+    if (this.match(bigTokenType.START_TAG, "span", {})) {
+      while(!this.match(bigTokenType.END_TAG, "span", {})) {
+        expressions.push(this.expression());
+      }
+      return new PrintStatement(expressions);
+    } else return this.expressionStatement();
   }
 
   private expressionStatement(): Statement {

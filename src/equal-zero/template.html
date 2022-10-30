@@ -15,4 +15,10 @@
   <body>
     <div id="root"></div>
   </body>
+  <script>
+    // TO CHANGE
+    window.electronAPI.onExecuteEqual((_event, value) => {
+      document.getElementById("stdout").innerText = value;
+    })
+  </script>
 </html>

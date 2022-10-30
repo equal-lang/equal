@@ -198,8 +198,9 @@
 ```html
 <!-- empty src value means input, and alt, which defaults to 1, represents the number of whitespace-separated values the input would take -->
 <img src="" alt="num"> 
-<!-- output the variables specified in src value -->
-<img src="variable1 variable2"> <!-- etc -->
+<span>
+<!-- output the expressions here -->
+</span>
 ```
 
 ### Notes

@@ -2,7 +2,7 @@ import { equalMode } from "./utils";
 import { EqualRuntimeError, ErrorHandler } from "./error";
 import { operatorType } from "./token";
 import { ExpressionVisitor, Expression, Binary, Unary, Literal, Variable, Logical } from "./expression";
-import { StatementVisitor, Statement, Assignment, ExpressionStatement, Scope, ConditionalStatement, Loop } from "./statement";
+import { StatementVisitor, Statement, Assignment, ExpressionStatement, Scope, ConditionalStatement, Loop, PrintStatement } from "./statement";
 import { Environment } from "./environment";
 // change name of visitor?
 
@@ -25,12 +25,16 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
     this.path = path;
     this.statements = statements;
     if (this.mode == equalMode.VERBOSE) console.info(this.statements);
+    let ret = "";
     while (!(this.pointer > this.statements.length - 1)) {
       const statement = this.statements[this.pointer];
-      this.exec(statement);
+      let stmt = this.exec(statement);
+      if (stmt !== undefined) ret += (stmt + "\n");
       this.pointer++;
     }
     if (this.mode == equalMode.VERBOSE) console.info(this.environment);
+    return ret.slice(0, ret.length-1);
+    // JSON.stringify(this.environment);
   }
 
   public visitBinary(host: Binary): string | number | boolean {
@@ -157,7 +161,8 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
     this.environment.assign(host.name, this.eval(host.expression));
   }
 
-  public visitExpressionStatement(host: ExpressionStatement): void {
+
+  public visitExpressionStatement(host: ExpressionStatement) {
     this.eval(host.expression);
   }
 
@@ -191,6 +196,15 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
     
   }
 
+  public visitPrintStatement(host: PrintStatement) {
+    let ret = "";
+    for (let pointer = 0; pointer <= host.expressions.length - 1; pointer++) {
+      ret += this.eval(host.expressions[pointer]) + "\n";
+    }
+    return ret.slice(0, ret.length-1);
+    ;
+  }
+
   private eval(expr: Expression): any {
     return expr.accept(this);
   }
@@ -212,6 +226,7 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
       if (typeof val == t) return true;
     }
     // need to find a way to get current line
+    // pass in tokens?
     throw new EqualRuntimeError("Unexpected type " + (typeof val), this.path);
   }
 

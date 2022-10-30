@@ -27,13 +27,13 @@ class Equal {
       this.lexer = new Lexer(this.mode, this.errHandler);
       this.parser = new Parser(this.mode, this.errHandler);
       this.interpreter = new Interpreter(this.mode, this.errHandler);
-      this.run();
+      // this.run();
 
     } catch(err) {
       this.errHandler.handleError(err);
     }
   }
-  public run(): void {
+  public run() {
     try {
       // is this line needed?
       if (this.error == false) {    
@@ -42,7 +42,7 @@ class Equal {
         this.verbose(tokens);
         const ast = this.parser.parse(tokens, this.path);
         this.error = this.errHandler.getErrorStatus();
-        this.execute(ast, this.path);
+        return this.execute(ast, this.path);
         // check for error here
       }
 
@@ -55,29 +55,19 @@ class Equal {
   // always inside another function's try block
   private loadFile(): string {
     this.verbose("Loading file at " + this.path);
+    if (!fs.existsSync(this.path)) throw new EqualRuntimeError("Invalid path");
     const file = fs.readFileSync(this.path, "utf8");
-    if (file == undefined) throw new EqualRuntimeError("Invalid path");
-    else return file as string;
-  }
-
-  private stdout(output: string): void {
-
-  }
-
-  private stderr(output: string): void {
-
+    // undefined?
+    return file as string;
   }
 
   private execute(ast: Statement[], path: string) {
     try {
       if (this.error == false) {
-        this.interpreter.interpret(ast, path);
+        return this.interpreter.interpret(ast, path);
       } else {
-        // delete later
         this.verbose(this.errHandler.errors);
       }
-      // exit?   
-
     } catch(err) {
       this.errHandler.handleError(err);
     }

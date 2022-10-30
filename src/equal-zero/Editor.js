@@ -15,7 +15,7 @@ class Editor extends React.Component {
       theme={sublime}
       extensions={[html()]}
       onChange={(value, viewUpdate) => {
-        console.log(value);
+        window.electronAPI.onInput(value);
       }}
     />
     // get height from props

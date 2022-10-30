@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Tray, nativeImage, Menu, ipcMain } = require("electron");
 const path = require("path");
-const { newFile, openFile, save, saveAs } = require("./file.js");
+const { newFile, openFile, save, saveAs, run } = require("./file.js");
+const { runMain } = require("module");
 
 const createWindow = () => {
   
@@ -27,6 +28,9 @@ app.whenReady()
   // macOS
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  })
+  ipcMain.on("input", (val) => {
+    console.log(val);
   })
 })
 .then(() => {
@@ -107,6 +111,17 @@ app.whenReady()
         {
           role: "toggleDevTools"
           
+        }
+
+      ]
+    },
+    {
+      label: "Run",
+      submenu: [
+        {
+          label: "Run Interpreter",
+          accelerator: "F5",
+          click: run
         }
 
       ]

@@ -130,7 +130,8 @@ let tagMap = new Map()
 .set("form", ["title", "id"])
 .set("label", ["for"])
 .set("link", ["rel", "href", "type"])
-.set("img", ["src", "alt"])
+// .set("img", ["src", "alt"])
+.set("span", [])
 
 class BigToken {
   type: bigTokenType;

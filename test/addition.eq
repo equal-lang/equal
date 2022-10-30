@@ -1,25 +1,18 @@
-<a id="test">
-  0
-</a>
-<p>
+<span>
   <form title="!=">
     <label>
-      <a href="test">
-      </a>
+      true
+    </label>
+    <label>
+      true
+    </label>
+  </form>
+  <form title="==">
+    <label>
+      11
     </label>
     <label>
       10
     </label>
   </form>
-  <a id="test">
-    <form title="+">
-      <label>
-        <a href="test">
-        </a>
-      </label>
-      <label>
-        1
-      </label>
-    </form>
-  </a>
-</p>
+</span>

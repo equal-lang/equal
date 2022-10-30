@@ -13,12 +13,15 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
   statements: Statement[];
   pointer: number;
   environment: Environment;
+  global: Environment;
 
   constructor(mode: equalMode, errHandler: ErrorHandler) {
     this.mode = mode;
     this.errHandler = errHandler;
     this.pointer = 0;
-    this.environment = new Environment();
+    const globalEnv = new Environment();
+    this.environment = globalEnv;
+    this.global = globalEnv;
   }
 
   public interpret(statements: Statement[], path: string) {
@@ -158,7 +161,8 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
   }
 
   public visitAssignment(host: Assignment): void {
-    this.environment.assign(host.name, this.eval(host.expression));
+    if (host.scope == "global") this.global.assign(host.name, this.eval(host.expression));
+    else this.environment.assign(host.name, this.eval(host.expression));
   }
 
 

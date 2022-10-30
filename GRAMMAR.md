@@ -8,7 +8,7 @@ SCOPE ->
 | ASSIGNMENT*)
 
 ASSIGNMENT -> 
-(<a id="identifier">
+(<a id="identifier" (class="global")?>
   EXPRESSION
 </a>
 | STATEMENT)
@@ -97,9 +97,15 @@ UNARY ->
 (<form title="!">
   <label>EXPRESSION</label>
 </form>
-| LITERAL)
+| CALL)
 
-LITERAL -> 
+CALL -> 
+(<form title="identifier">
+  (<label>EXPRESSION</label>)*
+</form>
+| PRIMARY)
+
+PRIMARY -> 
 (string | number | boolean | IDENTIFIER)
 
 IDENTIFIER ->

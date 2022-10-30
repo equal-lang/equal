@@ -1,18 +1,13 @@
+<a id="test">
+  false
+</a>
+<div>
+  <a id="test" class="global">
+    6
+  </a>
+</div>
+
 <span>
-  <form title="!=">
-    <label>
-      true
-    </label>
-    <label>
-      true
-    </label>
-  </form>
-  <form title="==">
-    <label>
-      11
-    </label>
-    <label>
-      10
-    </label>
-  </form>
+  <a href="test">
+  </a>
 </span>

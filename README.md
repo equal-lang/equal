@@ -12,7 +12,7 @@
 <div>
   <!-- code inside -->
 </div>
-<!-- variable outside the current div block can be accessed but not modified -->
+<!-- variable outside the current div block can be accessed, variable in the global scope can be modified -->
 <!-- variable in children div blocks cannot be accessed or modified -->
 ```
 #### If/else statements
@@ -42,9 +42,10 @@
 #### Assignment
 ```html
 <!-- declare and reassign variable -->
-<a id="name_of_variable">
+<a id="name_of_variable" class="global">
   value
 </a>
+<!-- set class value to global to modify global value -->
 <!-- refer to variable -->
 <a href="name_of_variable">
 </a>
@@ -205,12 +206,8 @@
 
 ### Notes
 - Most attributes
-  - ```class``` usually stores expressions to be evaluated in control flow
   - ```id``` is usually used when defining the name of variables or functions
-  - ```href``` is used when the variable is global
-  - the value can be referenced directly from values in tags
-  - ```title``` is used later to refer to the function
-  - ```input``` is used to define the parameters and return variable of function
+  - ```href``` and ```title``` are used to refer to variables and functions that are already defined
   - ```for``` is used to refer to the parameter when passing in values
 - Tagnames
   - tbc

@@ -40,10 +40,16 @@
 - [ ] Expression and assignment?
 - [ ] Class that provide environmental variables
 - [ ] Attached classes - accessable from outside?
-- [ ] Refer to variables in another scope
-- [ ] Short circuiting logical operators
+- [X] Refer to variables in another scope
+- [X] Short circuiting logical operators
   - [ ] Pass binary or logical as a parameter
 - [ ] Add test cases
 - [ ] Syntax highlighting?
 - [ ] Clean up call stack
 - [ ] Statement
+- [ ] Pass in tokens when creating variables and functions
+- [ ] Allow variables to be referred to in class names
+- [ ] Add type checking with class?
+- [ ] Adjust print statement
+- [ ] What is the purpose of div blocks?
+- [X] Add support for modifying global variables

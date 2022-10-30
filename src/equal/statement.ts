@@ -41,11 +41,13 @@ class Scope extends Statement {
 class Assignment extends Statement {
   name: string; 
   expression: Expression; 
+  scope: string | undefined; 
   
-  constructor(name: string, expression: Expression, ) {
+  constructor(name: string, expression: Expression, scope: string | undefined, ) {
     super();
     this.name = name;
     this.expression = expression;
+    this.scope = scope;
     
   }
   public accept(visitor: StatementVisitor) {

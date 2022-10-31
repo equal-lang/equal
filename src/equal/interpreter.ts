@@ -31,15 +31,12 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
     this.statements = statements;
     this.global.declareFunc("input", new Input());
     if (this.mode == equalMode.VERBOSE) console.info(this.statements);
-    let ret = "";
     while (!(this.pointer > this.statements.length - 1)) {
       const statement = this.statements[this.pointer];
-      let stmt = this.exec(statement);
-      if (stmt !== undefined) ret += (stmt + "\n");
+      this.exec(statement);
       this.pointer++;
     }
     if (this.mode == equalMode.VERBOSE) console.info(this.environment);
-    return ret.slice(0, ret.length-1);
   }
 
   public visitBinary(host: Binary): string | number | boolean {
@@ -228,13 +225,10 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
   }
 
   public visitPrintStatement(host: PrintStatement) {
-    let ret = "";
     for (let pointer = 0; pointer <= host.expressions.length - 1; pointer++) {
-      ret += this.eval(host.expressions[pointer]) + "\n";
       // temporary solution
       console.log(this.eval(host.expressions[pointer]));
     }
-    return ret.slice(0, ret.length-1);
   }
 
   private eval(expr: Expression): any {
@@ -248,10 +242,18 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
   private execBlock(stmts: Statement[], env: Environment): void {
     let prev: Environment = this.environment;
     this.environment = env;
-    for (let pointer = 0; pointer <= stmts.length - 1; pointer++) {
-      this.exec(stmts[pointer]);
+    try {
+      for (let pointer = 0; pointer <= stmts.length - 1; pointer++) {
+        this.exec(stmts[pointer]);
+      }
+
+    } catch(err) {
+      throw err;
+    } finally {
+      this.environment = prev;
     }
-    this.environment = prev;
+    
+    // because thrown in the middle, never reached this statement
   }
   
   private checkType(val: any, type: string[]) {

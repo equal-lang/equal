@@ -1,7 +1,6 @@
 <form id="fib">
   <input id="n">
   <div>
-  <a href="n"></a>
   <h1>
     <form title="<">
       <label> <a href="n"></a> </label>
@@ -27,6 +26,7 @@
         </label>
       </form>
     </label>
+
     <label>
       <form title="fib">
         <label>
@@ -40,11 +40,13 @@
       </form>
     </label>
   </form>
+
+
   </div>
 
 </form>
 
-<a id="i"> 0 </a>
+<a id="i"> 1 </a>
 <p>
   <form title="<">
     <label>
@@ -72,5 +74,3 @@
     </form>
   </a>
 </p>
-
-error

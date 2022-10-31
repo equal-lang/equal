@@ -77,11 +77,11 @@
   <input id="name_of_param3">
   <!-- etc -->
   <div>
-    <!-- code to be executed -->
-  </div>
+  <!-- code to be executed -->
   <!-- optional, return value defaults to 0 -->
   <input type="submit"> 
   <!-- if there is a input submit, an expression must be returned -->
+  </div>
 </form>
 ```
 #### Reference
@@ -153,14 +153,13 @@
 
 - TODO: since all expressions are nested inside forms, is precedence really needed?
 
-#### [Grammar so far](GRAMMAR.md)
+#### [Grammar](GRAMMAR.md)
 ##### Notes
 - do not change the order of classes if possible
 - add ending tags, even if they are optional
 
 ### Standard library
 #### String manipulation
-- TODO: CHANGE FROM CLASS TO LABEL
 ```html
 <!-- concat -->
 <form title="con" class="str1 str2"></form>
@@ -168,37 +167,12 @@
 <!-- (index1 inclusive, index2 exclusive) -->
 <form title="sub" class="str index1 index2"></form>
 ```
-#### Conversion between types
-```html
-<!-- string to number (only when possible) -->
-<form title="sn" class="str"></form>
-<!-- number to string -->
-<form title="ns" class="num"></form>
-```
-#### ASCII
-```html
-<!-- string to ascii -->
-<form title="sa" class="str"></form>
-<!-- ASCII to string -->
-<form title="as" class="ascii_string"></form>
-```
 
 #### Reserved function names
 - \+ , \- , \* , /, !, ==, !=, >, <, &&, ||
-- as, ns
-- con, sub
-- sa, sn
+
 
 ### IO
-#### Streams
-```html
-<head>
-  <!-- set source of input stream, default to stdin if not set -->
-  <link rel="stylesheet" href="file.in" type="in">
-  <!-- set destination of output stream, default to stdout if not set -->
-  <link rel="stylesheet" href="file.out" type="out">
-</head>
-```
 #### Content
 ```html
 <!-- empty src value means input, and alt, which defaults to 1, represents the number of whitespace-separated values the input would take -->

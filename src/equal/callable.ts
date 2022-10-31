@@ -21,7 +21,7 @@ class EqualFunction implements EqualCallable {
   }
   public call(interpreter: Interpreter, args: (string | number | boolean)[]) {
     // global functions
-    let env: Environment = new Environment(interpreter.global);
+    let env: Environment = new Environment(interpreter.environment);
     for (let pointer = 0; pointer <= args.length-1; pointer++) {
       env.assign(this.declaration.params[pointer], args[pointer]);
     }

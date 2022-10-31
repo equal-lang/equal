@@ -205,10 +205,11 @@ class Parser {
       this.checkString(calleeName, "callee name");
       let args: Expression[] = [];
       
-      while (this.matchStartLabel()) {
-        let arg = this.expression();
-        args.push(arg);
-        this.force(this.matchEndLabel);
+      if (this.matchStartLabel()) {
+        while (!this.matchEndLabel()) {
+          let arg = this.expression();
+          args.push(arg);
+        }
       }
 
       this.force(this.matchEndForm);

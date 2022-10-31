@@ -41,7 +41,7 @@ class Equal {
         this.verbose(tokens);
         const ast = this.parser.parse(tokens, this.path);
         this.error = this.errHandler.getErrorStatus();
-        return this.execute(ast, this.path);
+        this.execute(ast, this.path);
         // check for error here
       }
 
@@ -65,7 +65,7 @@ class Equal {
   private execute(ast: Statement[], path: string) {
     try {
       if (this.error == false) {
-        return this.interpreter.interpret(ast, path);
+        this.interpreter.interpret(ast, path);
       } else {
         this.verbose(this.errHandler.errors);
       }

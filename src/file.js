@@ -24,7 +24,7 @@ function run(menuItem, browserWindow, event) {
     dialog.showOpenDialog({properties: ["openFile"] })
     .then((res) => {
       if (res.canceled == false) {
-        browserWindow.webContents.send("execute-equal", new Equal(res.filePaths[0], "NORMAL").run());
+        browserWindow.webContents.send("execute-equal", new Equal(res.filePaths[0], "NORMAL"));
       }
     })
     .catch((err) => {

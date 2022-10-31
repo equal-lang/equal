@@ -6,6 +6,7 @@ import { StatementVisitor, Statement, Assignment, ExpressionStatement, Scope, Co
 import { Environment } from "./environment";
 import { isEqualCallable, EqualFunction, returnVal } from "./callable";
 import { Input } from "./foreign";
+import { Printer } from "./printer";
 
 
 class Interpreter implements ExpressionVisitor, StatementVisitor {
@@ -16,14 +17,18 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
   pointer: number;
   environment: Environment;
   global: Environment;
+  printer: Printer;
+  input: undefined | ((arg0: string) => string);
 
-  constructor(mode: equalMode, errHandler: ErrorHandler) {
+  constructor(mode: equalMode, errHandler: ErrorHandler, printer: Printer, input?: (arg0: string) => string,) {
     this.mode = mode;
     this.errHandler = errHandler;
     this.pointer = 0;
     const globalEnv = new Environment();
     this.environment = globalEnv;
     this.global = globalEnv;
+    this.printer = printer;
+    this.input = input;
   }
 
   public interpret(statements: Statement[], path: string) {
@@ -226,8 +231,7 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
 
   public visitPrintStatement(host: PrintStatement) {
     for (let pointer = 0; pointer <= host.expressions.length - 1; pointer++) {
-      // temporary solution
-      console.log(this.eval(host.expressions[pointer]));
+      this.printer.print(this.eval(host.expressions[pointer]));
     }
   }
 

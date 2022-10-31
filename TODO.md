@@ -55,3 +55,4 @@
 - [ ] Statement. Expression.
 - [ ] Add support for local function (crucial parts marked with "global functions")
 - [ ] Put statement above scope for better readability
+- [ ] Input (spaces in equal.ts and interpreter.ts)

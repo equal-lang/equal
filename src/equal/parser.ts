@@ -2,9 +2,8 @@ import { equalMode } from "./utils";
 import { Token, operatorMap, operatorType } from "./token";
 import { EqualSyntaxError, ErrorHandler } from "./error";
 import { Expression, Binary, Logical, Unary, Literal, Variable, Call } from "./expression";
-import { Scope, Assignment, Statement, ExpressionStatement, ConditionalStatement, PrintStatement, Loop, FunctionDeclaration, ReturnStatement } from "./statement";
+import { Statement, Scope, Assignment, ExpressionStatement, ConditionalStatement, PrintStatement, Loop, FunctionDeclaration, ReturnStatement } from "./statement";
 import { bigLexer, BigToken, bigTokenType } from "./big-lexer";
-import { boolean } from "yargs";
 
 class Parser {
   mode: equalMode;
@@ -27,17 +26,21 @@ class Parser {
     this.tokens = bigLexer(tokens, this.path, this.errHandler);
     if (this.mode == equalMode.VERBOSE) console.info(this.tokens);
     while (!this.atEnd()) {
-      this.statements.push(this.scope());
+      this.statements.push(this.statement());
       // this.pointer++;
     }
     return this.statements;
+  }
+
+  private statement(): Statement {
+    return this.scope();
   }
 
   private scope(): Statement {
     if (this.match(bigTokenType.START_TAG, "div", {})) {
       let statements: Statement[] = [];
       while(!this.match(bigTokenType.END_TAG, "div", {})) {
-        statements.push(this.scope());
+        statements.push(this.statement());
       }
       return new Scope(statements);
       // this.force(() => this.match(bigTokenType.END_TAG, "div", {}));
@@ -76,17 +79,13 @@ class Parser {
       let statements: Statement[] = [];
       this.force(() => this.match(bigTokenType.START_TAG, "div", {}));
       while (!this.match(bigTokenType.END_TAG, "div", {})) {
-        statements.push(this.scope());
+        statements.push(this.statement());
       }
       this.force(() => this.match(bigTokenType.END_TAG, "form", {}))
       return new FunctionDeclaration(name as string, params, statements);
 
     }
-    else return this.statement();
-  }
-
-  private statement(): Statement {
-    return this.returnStatement();
+    else return this.returnStatement();
   }
 
   private returnStatement() {
@@ -101,7 +100,7 @@ class Parser {
       let statements: Statement[] = [];
       let condition: Expression = this.expression();
       while(!this.match(bigTokenType.END_TAG, "p", {})) {
-        statements.push(this.scope());
+        statements.push(this.statement());
       }
       return new Loop(condition, statements);
     }
@@ -117,7 +116,7 @@ class Parser {
       let expr: Expression = this.expression();
 
       while(!this.match(bigTokenType.END_TAG, "h1", {})) {
-        stmts.push(this.scope());
+        stmts.push(this.statement());
       }
       statements.push(stmts);
       conditions.push(expr);
@@ -127,7 +126,7 @@ class Parser {
           expr = this.expression();
           stmts = [];
           while(!this.match(bigTokenType.END_TAG, "h" + i, {})) {
-            stmts.push(this.scope());
+            stmts.push(this.statement());
           }
           statements.push(stmts);
           conditions.push(expr);
@@ -136,7 +135,7 @@ class Parser {
       if (this.match(bigTokenType.START_TAG, "h6", {})) {
         stmts = [];
         while(!this.match(bigTokenType.END_TAG, "h6", {})) {
-          stmts.push(this.scope());
+          stmts.push(this.statement());
         }
         statements.push(stmts);
       }

@@ -1,5 +1,7 @@
 ```html
-PROGRAM -> SCOPE*
+PROGRAM -> STATEMENT*
+
+STATEMENT -> SCOPE
 
 SCOPE -> 
 ((<div>
@@ -20,9 +22,7 @@ FUNCTION_DECLARATION ->
     (STATEMENT)*
   </div>
 </form>
-| STATEMENT)
-
-STATEMENT -> RETURN_STATEMENT
+| RETURN_STATEMENT)
 
 RETURN_STATEMENT -> 
 (<input type="submit" value="identifier">
@@ -32,33 +32,33 @@ EXPRESSION
 LOOP -> 
 (<p>
   EXPRESSION
-  SCOPE*
+  STATEMENT*
 </p>
 | CONDITIONAL_STATEMENT)
 
 CONDITIONAL_STATEMENT -> 
 (<h1>
   EXPRESSION
-  SCOPE*
+  STATEMENT*
 </h1>
 (<h2>
   EXPRESSION
-  SCOPE*
+  STATEMENT*
 <h2>)?
 (<h3>
   EXPRESSION
-  SCOPE*
+  STATEMENT*
 <h3>)?
 (<h4>
   EXPRESSION
-  SCOPE*
+  STATEMENT*
 <h4>)?
 (<h5>
   EXPRESSION
-  SCOPE*
+  STATEMENT*
 <h5>)?
 (<h6>
-  SCOPE*
+  STATEMENT*
 </h6>)?
 | PRINT_STATEMENT)
 

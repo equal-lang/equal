@@ -53,6 +53,6 @@
 - [ ] Adjust print statement
 - [X] Add support for modifying global variables
 - [ ] Statement. Expression.
-- [ ] Add support for local function (crucial parts marked with "global functions")
-- [ ] Put statement above scope for better readability
+- [ ] Add support for local function (crucial parts marked with "global function")
+- [X] Put statement above scope for better readability
 - [ ] Input (spaces in equal.ts and interpreter.ts)

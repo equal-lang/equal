@@ -16,7 +16,7 @@
 - [ ] Debug yargs behavior: when option --help passed in, show option ----help in help text
   - [ ] -v does not work but --verbose works
 - [ ] More flexible syntax
-- [ ] Better error message
+- [ ] Better error message - get current line by passing in tokens instead of lines
 - [X] Perhaps add a second lexer
 - [ ] Sychronize error!
 - [ ] Dot or bracket?
@@ -26,7 +26,7 @@
 - [ ] Handle EOF better in bigToken
 - [ ] In parser, condense repeating parts into functions?
 - [ ] Add parentheses 
-- [ ] Is predecedence really needed since arguments are always nested in forms?
+- [ ] Is predecedence really needed since arguments are always nested in forms? Only difference is the order tested
 - [X] More clear differece between error types
 - [ ] Generate error class with ast.js
 - [ ] Reorganize bigtoken file
@@ -51,5 +51,7 @@
 - [ ] Allow variables to be referred to in class names
 - [ ] Add type checking with class?
 - [ ] Adjust print statement
-- [ ] What is the purpose of div blocks?
 - [X] Add support for modifying global variables
+- [ ] Statement. Expression.
+- [ ] Add support for local function (crucial parts marked with "global functions")
+- [ ] Put statement above scope for better readability

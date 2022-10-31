@@ -1,5 +1,4 @@
-import { Expression } from "./expression";
-import { Environment } from "./environment";
+import { Expression, Literal } from "./expression";
 
 interface StatementVisitor {
   visitScope(host: Scope): any;
@@ -8,11 +7,13 @@ interface StatementVisitor {
   visitConditionalStatement(host: ConditionalStatement): any;
   visitExpressionStatement(host: ExpressionStatement): any;
   visitPrintStatement(host: PrintStatement): any;
+  visitFunctionDeclaration(host: FunctionDeclaration): any;
+  visitReturnStatement(host: ReturnStatement): any;
   
 }
 
 function isStatementVisitor(cls: any): cls is StatementVisitor {
-  return cls.visitScope !== undefined &&cls.visitAssignment !== undefined &&cls.visitLoop !== undefined &&cls.visitConditionalStatement !== undefined &&cls.visitExpressionStatement !== undefined &&cls.visitPrintStatement !== undefined ;
+  return cls.visitScope !== undefined &&cls.visitAssignment !== undefined &&cls.visitLoop !== undefined &&cls.visitConditionalStatement !== undefined &&cls.visitExpressionStatement !== undefined &&cls.visitPrintStatement !== undefined &&cls.visitFunctionDeclaration !== undefined &&cls.visitReturnStatement !== undefined ;
 } 
 
 // abstract class
@@ -116,6 +117,38 @@ class PrintStatement extends Statement {
   }
 }
 
+class FunctionDeclaration extends Statement {
+  name: string; 
+  params: string[]; 
+  body: Statement[]; 
+  
+  constructor(name: string, params: string[], body: Statement[], ) {
+    super();
+    this.name = name;
+    this.params = params;
+    this.body = body;
+    
+  }
+  public accept(visitor: StatementVisitor) {
+    super.accept(visitor);
+    return visitor.visitFunctionDeclaration(this);
+  }
+}
+
+class ReturnStatement extends Statement {
+  expression: Expression; 
+  
+  constructor(expression: Expression, ) {
+    super();
+    this.expression = expression;
+    
+  }
+  public accept(visitor: StatementVisitor) {
+    super.accept(visitor);
+    return visitor.visitReturnStatement(this);
+  }
+}
+
 export {
-  StatementVisitor, isStatementVisitor, Statement, Scope, Assignment, Loop, ConditionalStatement, ExpressionStatement, PrintStatement, 
+  StatementVisitor, isStatementVisitor, Statement, Scope, Assignment, Loop, ConditionalStatement, ExpressionStatement, PrintStatement, FunctionDeclaration, ReturnStatement, 
 }

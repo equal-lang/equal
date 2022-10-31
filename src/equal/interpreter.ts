@@ -2,9 +2,9 @@ import { equalMode } from "./utils";
 import { EqualRuntimeError, ErrorHandler } from "./error";
 import { operatorType } from "./token";
 import { ExpressionVisitor, Expression, Binary, Unary, Literal, Variable, Logical, Call } from "./expression";
-import { StatementVisitor, Statement, Assignment, ExpressionStatement, Scope, ConditionalStatement, Loop, PrintStatement } from "./statement";
+import { StatementVisitor, Statement, Assignment, ExpressionStatement, Scope, ConditionalStatement, Loop, PrintStatement, FunctionDeclaration, ReturnStatement } from "./statement";
 import { Environment } from "./environment";
-import { EqualCallable, isEqualCallable } from "./callable";
+import { isEqualCallable, EqualFunction, returnVal } from "./callable";
 import { Input } from "./foreign";
 
 
@@ -150,7 +150,8 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
   }
 
   public visitCall(host: Call) {
-    const func = this.environment.getFunc(host.calleeName);
+    // global function
+    const func = this.global.getFunc(host.calleeName);
     if (!isEqualCallable(func)) throw new EqualRuntimeError("Object is not callable", this.path);
     const argList: (string | number | boolean)[] = [];
     for (let pointer = 0; pointer <= host.args.length - 1; pointer++) {
@@ -178,6 +179,17 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
   public visitAssignment(host: Assignment): void {
     if (host.scope == "global") this.global.assign(host.name, this.eval(host.expression));
     else this.environment.assign(host.name, this.eval(host.expression));
+  }
+
+  public visitFunctionDeclaration(host: FunctionDeclaration) {
+    const func = new EqualFunction(host);
+    // global functions
+    this.global.declareFunc(host.name, func);
+  }
+
+  public visitReturnStatement(host: ReturnStatement) {
+    if (this.environment == this.global) throw new EqualRuntimeError("No return statement allowed in global scope", this.path);
+    throw new returnVal(this.eval(host.expression));
   }
 
 
@@ -219,6 +231,8 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
     let ret = "";
     for (let pointer = 0; pointer <= host.expressions.length - 1; pointer++) {
       ret += this.eval(host.expressions[pointer]) + "\n";
+      // temporary solution
+      console.log(this.eval(host.expressions[pointer]));
     }
     return ret.slice(0, ret.length-1);
   }
@@ -239,15 +253,17 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
     }
     this.environment = prev;
   }
+  
   private checkType(val: any, type: string[]) {
     for (let t of type) {
       if (typeof val == t) return true;
     }
-    // need to find a way to get current line
-    // pass in tokens?
     throw new EqualRuntimeError("Unexpected type " + (typeof val), this.path);
   }
 
+  public publicExecBlock(stmts: Statement[], env: Environment) {
+    return this.execBlock(stmts, env);
+  }
 }
 
 export {

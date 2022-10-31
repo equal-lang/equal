@@ -11,9 +11,23 @@ ASSIGNMENT ->
 (<a id="identifier" (class="global")?>
   EXPRESSION
 </a>
+| FUNCTION_DECLARATION)
+
+FUNCTION_DECLARATION -> 
+(<form id="identifier">
+  (<input id="identifier">)*
+  <div>
+    (STATEMENT)*
+  </div>
+</form>
 | STATEMENT)
 
-STATEMENT -> LOOP
+STATEMENT -> RETURN_STATEMENT
+
+RETURN_STATEMENT -> 
+(<input type="submit" value="identifier">
+EXPRESSION
+| LOOP)
 
 LOOP -> 
 (<p>

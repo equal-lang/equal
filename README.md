@@ -68,7 +68,7 @@
 
 ### Functions
 - Only global functions supported
-- Functions must be declared?
+- Functions must be declared (and initialized) before being used
 #### Definition
 ```html
 <form id="name_of_function">
@@ -79,7 +79,9 @@
   <div>
     <!-- code to be executed -->
   </div>
-  <input type="submit" value="expression_to_be_returned">
+  <!-- optional, return value defaults to 0 -->
+  <input type="submit"> 
+  <!-- if there is a input submit, an expression must be returned -->
 </form>
 ```
 #### Reference

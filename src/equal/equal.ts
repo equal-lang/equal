@@ -27,7 +27,6 @@ class Equal {
       this.lexer = new Lexer(this.mode, this.errHandler);
       this.parser = new Parser(this.mode, this.errHandler);
       this.interpreter = new Interpreter(this.mode, this.errHandler);
-      // this.run();
 
     } catch(err) {
       this.errHandler.handleError(err);
@@ -52,6 +51,7 @@ class Equal {
     
   }
 
+  // new Equal(content, inputFunc, outputFunc).run()
   // always inside another function's try block
   private loadFile(): string {
     this.verbose("Loading file at " + this.path);
@@ -61,13 +61,6 @@ class Equal {
     return file as string;
   }
 
-  private stdin() {
-
-  }
-
-  private stdout() {
-    
-  }
 
   private execute(ast: Statement[], path: string) {
     try {

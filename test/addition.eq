@@ -7,12 +7,28 @@
   </a>
 </div>
 
-<form title="testing">
-  <label>param one</label>
+<form id="testing">
+  <input id="param">
+  <div>
+    <span>
+      <a href="param">
+      </a>
+    </span>
+    <input type="submit">
+    20
+  </div>
 </form>
-<!-- colliding variable and function names? -->
+
+<a id="te">
+<form title="testing">
+  <label>
+    <a href="test">
+    </a>
+  </label>
+</form>
+</a>
 
 <span>
-  <a href="test">
+  <a href="te">
   </a>
 </span>

@@ -2,10 +2,9 @@ import { equalMode } from "./utils";
 import { Token, operatorMap, operatorType } from "./token";
 import { EqualSyntaxError, ErrorHandler } from "./error";
 import { Expression, Binary, Logical, Unary, Literal, Variable, Call } from "./expression";
-import { Scope, Assignment, Statement, ExpressionStatement, ConditionalStatement, PrintStatement, Loop } from "./statement";
+import { Scope, Assignment, Statement, ExpressionStatement, ConditionalStatement, PrintStatement, Loop, FunctionDeclaration, ReturnStatement } from "./statement";
 import { bigLexer, BigToken, bigTokenType } from "./big-lexer";
 import { boolean } from "yargs";
-import { Environment } from "./environment";
 
 class Parser {
   mode: equalMode;
@@ -53,18 +52,48 @@ class Parser {
     if (this.match(bigTokenType.START_TAG, "a", {})) {
       const name = this.retPrevAttrE("id");
       const scope = (this.retPrevAttr("class") == "global") ? "global" : undefined;
-      if (typeof name != "string") this.throwError("The value of attribute id must be a string", this.tokens[this.pointer]["line"]);
+      this.checkString(name, "a id");
       let expr: Expression = this.expression();
       this.force(() => this.match(bigTokenType.END_TAG, "a", {}));
       return new Assignment(name as string, expr, scope);
     } else {
-      return this.statement();
+      return this.functionDeclaration();
     }
   }
 
+  // add another function to avoid manipulating the pointer
+  private functionDeclaration() {
+    
+    if (this.match(bigTokenType.START_TAG, "form", {"id": undefined})) {
+      const name = this.retPrevAttrE("id");
+      this.checkString(name, "function name");
+      let params = [];
+      while (this.match(bigTokenType.START_TAG, "input", {})) {
+        let id = this.retPrevAttrE("id");
+        this.checkString(id, "input id");
+        params.push(id as string);
+      }
+      let statements: Statement[] = [];
+      this.force(() => this.match(bigTokenType.START_TAG, "div", {}));
+      while (!this.match(bigTokenType.END_TAG, "div", {})) {
+        statements.push(this.scope());
+      }
+      this.force(() => this.match(bigTokenType.END_TAG, "form", {}))
+      return new FunctionDeclaration(name as string, params, statements);
+
+    }
+    else return this.statement();
+  }
+
   private statement(): Statement {
-    // redirect
-    return this.loop();
+    return this.returnStatement();
+  }
+
+  private returnStatement() {
+    if (this.match(bigTokenType.START_TAG, "input", {"type": ["submit"]})) {
+      return new ReturnStatement(this.expression());
+    }
+    else return this.loop();
   }
 
   private loop(): Statement {
@@ -138,7 +167,7 @@ class Parser {
   }
 
   private logic(): Expression {
-    return this.retWhileLogicalExpr(["&&", "||"], this.equality.bind(this));
+    return this.retNestedLogicalExpr(["&&", "||"], this.equality.bind(this));
   }
 
   private equality(): Expression {
@@ -150,11 +179,11 @@ class Parser {
   }
 
   private addition(): Expression {
-    return this.retWhileBinaryExpr(["+", "-"], this.multiplication.bind(this));
+    return this.retNestedBinaryExpr(["+", "-"], this.multiplication.bind(this));
   }
 
   private multiplication(): Expression {
-    return this.retWhileBinaryExpr(["*", "/"], this.unary.bind(this));
+    return this.retNestedBinaryExpr(["*", "/"], this.unary.bind(this));
   }
 
   private unary(): Expression {
@@ -173,7 +202,7 @@ class Parser {
   private call(): Expression {
     if (this.match(bigTokenType.START_TAG, "form", {})) {
       let calleeName = this.retPrevAttrE("title");
-      if (typeof calleeName !== "string") this.throwError("The name of a function must be a string", this.tokens[this.pointer]["line"])
+      this.checkString(calleeName, "callee name");
       let args: Expression[] = [];
       
       while (this.matchStartLabel()) {
@@ -194,7 +223,7 @@ class Parser {
       this.force(() => this.match(bigTokenType.START_TAG, "a", {}));
       // if (this.retPrevAttr("id") !== undefined) this.throwError("Href and id cannot be used in the same a tag", this.tokens[this.pointer]["line"]);
       const name = this.retPrevAttrE("href");
-      if (typeof name != "string") this.throwError("The value of attribute href must be a string", this.tokens[this.pointer]["line"]);
+      this.checkString(name, "a href");
       this.force(() => this.match(bigTokenType.END_TAG, "a", {}));
       return new Variable(name as string);
     }
@@ -222,25 +251,22 @@ class Parser {
   }
 
 
-
-  private retWhileBinaryExpr(operatorList: string[], next: () => Expression, ) {
+  private retNestedExpr(operatorList: string[], next: () => Expression, cls: any) {
     if (this.matchStartForm(operatorList)) {
       const operator = this.retOperator();
 
       this.force(this.matchStartLabel);
       let base1 = this.expression();
-      // next();
       this.force(this.matchEndLabel);
 
       this.force(this.matchStartLabel);
       let base2 = this.expression();
-      // next();
       this.force(this.matchEndLabel);
 
-      let base = new Binary(operator, base1, base2);
+      let base = new cls(operator, base1, base2);
       while (this.matchStartLabel()) {
         let top = this.expression();
-        base = new Binary(operator, base, top);
+        base = new cls(operator, base, top);
         this.force(this.matchEndLabel);
       }
 
@@ -253,43 +279,15 @@ class Parser {
     }
   }
 
-
-  // there is definitely a better way to do this
-  // pass Binary or Logical as parameter?
-  private retWhileLogicalExpr(operatorList: string[], next: () => Expression, ) {
-    if (this.matchStartForm(operatorList)) {
-      const operator = this.retOperator();
-
-      this.force(this.matchStartLabel);
-      let base1 = this.expression();
-      // next();
-      this.force(this.matchEndLabel);
-
-      this.force(this.matchStartLabel);
-      let base2 = this.expression();
-      // next();
-      this.force(this.matchEndLabel);
-
-      let base = new Logical(operator, base1, base2);
-      while (this.matchStartLabel()) {
-        let top = this.expression();
-        base = new Logical(operator, base, top);
-        this.force(this.matchEndLabel);
-      }
-
-      this.force(this.matchEndForm);
-      return base;
-
-    } else {
-      return next();
-      // precedence only decide which order expressions are tested in 
-    }
+  private retNestedBinaryExpr(operatorList: string[], next: () => Expression ) {
+    return this.retNestedExpr(operatorList, next, Binary);
   }
 
+  private retNestedLogicalExpr(operatorList: string[], next: () => Expression) {
+    return this.retNestedExpr(operatorList, next, Logical);
+  }
 
-
-
-  private match(type: bigTokenType, name: string | undefined, attributeObj: { [k: string]: any }): boolean {
+  private match(type: bigTokenType, name: string | undefined, attributeObj: { [k: string]: string[] | undefined }): boolean {
     let token: BigToken;
     if (!this.atEnd()) token = this.tokens[this.pointer];
     else {
@@ -297,7 +295,10 @@ class Parser {
     }
     if (token!["type"] === type && token!["name"] === name) {
       for (let item in attributeObj) {
-        if (!attributeObj[item].includes(token!["attribute"][item])) return false;
+        if (attributeObj[item] == undefined) {
+          if (!token!["attribute"][item]) return false; 
+        }
+        else if (!attributeObj[item]!.includes(token!["attribute"][item])) return false;
       }
       this.pointer++;
       return true;
@@ -335,7 +336,7 @@ class Parser {
       if (token["type"] == bigTokenType.START_TAG) text = "start " + token["name"];
       else if (token["type"] == bigTokenType.END_TAG) text = "end " + token["name"];
       else text = "text";
-      this.throwError("Wrong " + text, this.tokens[this.pointer]["line"]);
+      this.throwError("Unexpected " + text, this.tokens[this.pointer]["line"]);
     }
     return true;
   }
@@ -347,7 +348,9 @@ class Parser {
 
   private retPrevAttrE(attribute: string): string | number | boolean {
     const val = this.retPrevAttr(attribute);
-    if (val === undefined) this.throwError("Value of attribute " + attribute + " cannot be undefined", this.tokens[this.pointer - 1]["line"]);
+    if (val === undefined) {
+      this.throwError("Value of attribute " + attribute + " cannot be undefined", this.tokens[this.pointer - 1]["line"]);
+    }
     return val as string | number | boolean;
   }
 
@@ -361,6 +364,10 @@ class Parser {
     return (this.pointer + offset > this.tokens.length - 1);
   }
 
+  private checkString(val: any, name?: string) {
+    if (typeof val != "string") this.throwError("String value expected for " + name, this.tokens[this.pointer]["line"]);
+  }
+
   // local error methods
   private throwError(message: string, line?: number) {
     throw new EqualSyntaxError(message, this.path, line);
@@ -370,6 +377,5 @@ class Parser {
     this.errHandler.reportError(new EqualSyntaxError(message, this.path, line));
   }
 }
-
 
 export { Parser };

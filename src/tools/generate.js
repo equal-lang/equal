@@ -23,8 +23,9 @@ ast(statementPath, statementBase, {
   "Loop": {"condition": "Expression", "statements": "Statement[]"},
   "ConditionalStatement": {"conditions": "Expression[]", "statements": "Statement[][]"},
   "ExpressionStatement": {"expression": "Expression"},
-  "PrintStatement": {"expressions": "Expression[]"}
+  "PrintStatement": {"expressions": "Expression[]"},
+  "FunctionDeclaration": {"name": "string", "params": "string[]", "body": "Statement[]"},
+  "ReturnStatement": {"expression": "Expression"}
 }, 
-`import { Expression } from "./expression";
-import { Environment } from "./environment";
+`import { Expression, Literal } from "./expression";
 `);

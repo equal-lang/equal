@@ -10,6 +10,7 @@ import { Printer } from "./printer";
 class Equal {
   error: boolean;
   path: string;
+  source: string;
   mode: equalMode;
   lexer: Lexer;
   parser: Parser;
@@ -32,27 +33,27 @@ class Equal {
       this.interpreter = new Interpreter(this.mode, this.errHandler, this.printer, input);
       if (path == undefined) {
         if (source == undefined) throw new EqualRuntimeError("No source code found");
-        else this.run(source);
+        else this.source = source;
+      } else {
+        this.source = this.loadFile();
       }
-      this.run();
 
     } catch(err) {
       this.errHandler.handleError(err);
     }
   }
 
-  public run(source?: string) {
+  public run() {
     try {
       // is this line needed?
       if (this.error == false) {    
         this.verbose("Running in verbose mode");
-        const src = (source != undefined) ? source : this.loadFile();
-        const tokens = this.lexer.lex(src, this.path);
+        const tokens = this.lexer.lex(this.source, this.path);
         this.verbose(tokens);
         const ast = this.parser.parse(tokens, this.path);
         this.error = this.errHandler.getErrorStatus();
         this.execute(ast, this.path);
-        // check for error here
+        return this.printer.allPrinted();
       }
 
     } catch(err) {
@@ -61,7 +62,6 @@ class Equal {
     
   }
 
-  // new Equal(content, inputFunc, outputFunc).run()
   // always inside another function's try block
   private loadFile(): string {
     this.verbose("Loading file at " + this.path);
@@ -89,7 +89,6 @@ class Equal {
   private verbose(log: any): void {
     if (this.mode == equalMode.VERBOSE) console.info(log);
   }
-
 }
 
 export { Equal };

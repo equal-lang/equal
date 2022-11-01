@@ -16,10 +16,10 @@ class Grid extends React.Component {
       winW: 12, // constant
       winH: 6, // constant
 
-      editorW: 7, // can be modified
-      outputW: 12 - 7, // change when editorW changes
-      stdinH: 3, // can be modified
-      stdoutH: 6 - 3, // can be modified
+      editorW: 8, // can be modified
+      outputW: 12 - 8, // change when editorW changes
+      stdinH: 0, // can be modified
+      stdoutH: 6 - 0, // can be modified
 
     }
   }
@@ -28,7 +28,8 @@ class Grid extends React.Component {
   onBreakpointChange(newBreakpoint, newCols) {
 
     const winW = newCols,
-      editorW = Math.floor(.6 * winW),
+      // really control the starting width
+      editorW = Math.floor(.7 * winW),
       outputW = winW - editorW;
     this.setState({
       winW, editorW, outputW
@@ -53,7 +54,6 @@ class Grid extends React.Component {
       stdout = searchI(layout, "stdout");
 
     // editor, one of stdin or stdout must exist
-
     const newEditorW = editor["w"],
       newOutputW = (newItem["i"] == "stdin" || newItem["i"] == "stdout") ? newItem["w"] : this.state.winW - newEditorW,
       newStdinW = stdin ? stdin["w"] : (this.state.winW - newEditorW),
@@ -87,6 +87,7 @@ class Grid extends React.Component {
         });
       })
     }
+
     let state = this.state,
       editorLayout = { i: "editor", x: 0, y: 0, w: state.editorW, h: state.winH, minH: state.winH, maxH: state.winH, maxW: state.winW, minW: 0 },
       stdinLayout = { i: "stdin", x: state.editorW, y: 0, w: state.outputW, h: state.stdinH, maxH: state.winH, maxW: state.winW, minW: 0, minH: 0 },

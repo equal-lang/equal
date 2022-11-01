@@ -1,3 +1,7 @@
 .ͼ1.cm-editor {
-  font-size: 15px;
+  font-size: 16px;
+}
+
+.cm-gutter, .cm-content {
+  font-family: "Source Code Pro", monospace
 }

@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="UTF-8"/>
-    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'"/> -->
-    <!-- <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'"/> -->
-    <!-- style-src 'self' 'unsafe-inline'; -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"/>
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"/>
+     -->
     <title>Equal Zero</title>
     <style>
       body {
@@ -16,9 +16,11 @@
     <div id="root"></div>
   </body>
   <script>
-    // TO CHANGE
     window.electronAPI.onExecuteEqual((_event, value) => {
       document.getElementById("stdout").innerText = value;
     })
+    // window.electronAPI.onOpenFile((_event, value) => {
+    //   console.log(document.getElementById("editor"));
+    // })
   </script>
 </html>

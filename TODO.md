@@ -55,4 +55,12 @@
 - [ ] Statement. Expression.
 - [ ] Add support for local function (crucial parts marked with "global function")
 - [X] Put statement above scope for better readability
-- [ ] Input (spaces in equal.ts and interpreter.ts)
+- [ ] Implement input (spaces in equal.ts and interpreter.ts)
+- [ ] Fix bug - selection
+- [ ] Eliminate blank screen
+- [ ] Migrate all to typescript
+
+- [ ] SetValue is not the best name, and also can be more efficient
+- [ ] Possible bug: this.source only has value after text in the editor has changed
+- [ ] Implement openfile, etc. (changing value of codemirror programmatically)
+- [ ] Make content policy safer

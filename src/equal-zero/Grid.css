@@ -4,17 +4,19 @@
   height: 100%;
 }
 
-.react-grid-item#stdin {
-  background-color: #424D58;
+.react-grid-item {
   color: white;
-  font-family: monospace;
-  font-size: 15px;
-  /* border: groove; */
+  font-family: "Source Code Pro", "monospace";
+  font-size: 16px;
+}
+
+.react-grid-item#stdin {
+  background-color: #2c2c2c;
+  padding: 4px;
+  
 }
 
 .react-grid-item#stdout {
-  background-color: #3B454F;
-  color: white;
-  font-family: monospace;
-  font-size: 15px;
+  background-color: #1f1f1f;
+  padding: 4px;
 }

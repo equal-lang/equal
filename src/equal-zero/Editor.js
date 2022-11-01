@@ -2,7 +2,7 @@ import React from "react";
 import CodeMirror from "@uiw/react-codemirror";
 // import { EditorView, basicSetup } from "codemirror";
 import { html } from "@codemirror/lang-html";
-import { sublime } from "@uiw/codemirror-theme-sublime";
+import { abcdef } from "@uiw/codemirror-theme-abcdef";
 
 import "./Editor.css";
 
@@ -12,10 +12,10 @@ class Editor extends React.Component {
       <CodeMirror
       value="<div>Hello World</div>"
       height={this.props.height + "px"}
-      theme={sublime}
+      theme={abcdef}
       extensions={[html()]}
       onChange={(value, viewUpdate) => {
-        window.electronAPI.onInput(value);
+        window.electronAPI.setValue(value);
       }}
     />
     // get height from props
@@ -26,4 +26,4 @@ class Editor extends React.Component {
 
 }
 
-export default Editor;
+export default Editor; 

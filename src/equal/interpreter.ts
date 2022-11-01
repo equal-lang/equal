@@ -5,7 +5,7 @@ import { ExpressionVisitor, Expression, Binary, Unary, Literal, Variable, Logica
 import { StatementVisitor, Statement, Assignment, ExpressionStatement, Scope, ConditionalStatement, Loop, PrintStatement, FunctionDeclaration, ReturnStatement } from "./statement";
 import { Environment } from "./environment";
 import { isEqualCallable, EqualFunction, returnVal } from "./callable";
-import { Input } from "./foreign";
+// import { Input } from "./foreign";
 import { Printer } from "./printer";
 
 
@@ -34,7 +34,7 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
   public interpret(statements: Statement[], path: string) {
     this.path = path;
     this.statements = statements;
-    this.global.declareFunc("input", new Input());
+    // this.global.declareFunc("input", new Input());
     if (this.mode == equalMode.VERBOSE) console.info(this.statements);
     while (!(this.pointer > this.statements.length - 1)) {
       const statement = this.statements[this.pointer];

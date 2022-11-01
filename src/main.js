@@ -1,7 +1,6 @@
 const { app, BrowserWindow, Tray, nativeImage, Menu, ipcMain } = require("electron");
 const path = require("path");
-const { newFile, openFile, save, saveAs, run } = require("./file.js");
-const { runMain } = require("module");
+const { File } = require("./file.js");
 
 const createWindow = () => {
   
@@ -16,9 +15,7 @@ const createWindow = () => {
   win.setIcon(path.join(__dirname, "../public/assets/icon.png"));
   win.loadFile(path.join(__dirname, "../build/index.html"));
   win.on("resize", () => {
-    
     win.webContents.send("window-resize");
-
   })
 }
 
@@ -29,135 +26,98 @@ app.whenReady()
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   })
-  ipcMain.on("input", (val) => {
-    console.log(val);
-  })
 })
 .then(() => {
+  const file = new File();
+  ipcMain.on("set-value", (_event, val) => {
+    file.setSource(val);
+  })
   const appMenu = Menu.buildFromTemplate([
-    // TODO: add functions and shortcuts
     {
       label: "&File",
       role: "fileMenu",
       submenu: [
+        // {
+        //   label: "New File",
+        //   accelerator: "CommandOrControl+N",
+        //   click: file.newFile
+        // },
+        // {
+        //   label: "Open File...",
+        //   accelerator: "CommandOrControl+O",
+        //   click: file.openFile
+        // },
+        // { type: "separator" },
+        // {
+        //   label: "Save",
+        //   accelerator: "CommandOrControl+S",
+        //   click: file.save
+        // },
+        // {
+        //   label: "Save As...",
+        //   accelerator: "CommandOrControl+Shift+S",
+        //   click: file.saveAs
+        // },
+        // { type: "separator" },
         {
-          label: "New File",
-          accelerator: "CommandOrControl+N",
-          click: (menuItem, browserWindow, event) => {
-            newFile();
-          }
-        },
-        {
-          label: "Open File...",
-          accelerator: "CommandOrControl+O",
-          click: (menuItem, browserWindow, event) => {
-            openFile();
-          }
-        },
-        {
-          type: "separator",
-        },
-        {
-          label: "Save",
-          accelerator: "CommandOrControl+S",
-          click: (menuItem, browserWindow, event) => {
-            save();
-          }
-        },
-        {
-          label: "Save As...",
-          accelerator: "CommandOrControl+Shift+S",
-          click: (menuItem, browserWindow, event) => {
-            saveAs();
-          }
-        },
-        {
-          type: "separator",
-        },
-        {
-          label: "New Window",
-          accelerator: "CommandOrControl+Shift+N",
-          click: (menuItem, browserWindow, event) => {
-            console.log("New Window");
-          }
-        },
-        {
-          label: "Close Window",
-          role: "close"
-        },
-        {
-          type: "separator",
+          label: "Close",
+          role: "close",
+          accelerator: "CommandOrControl+W",
         },
         {
           // only different from close on macOS
           label: "Quit",
           role: "quit",
           accelerator: "Alt+F4",
-
         },
       ]
     },
     {
-      label: "Edit",
+      label: "&Edit",
       role: "editMenu",
-      submenu: [
 
-      ]
     },
     {
-      label: "View",
-      role: "viewMenu",
-      submenu: [
-        {
-          role: "toggleDevTools"
-          
-        }
-
-      ]
-    },
-    {
-      label: "Run",
+      label: "&Run",
       submenu: [
         {
           label: "Run Interpreter",
-          accelerator: "F5",
-          click: run
+          // accelerator: "F5",
+          click: file.run
+        },
+        // {
+        //   label: "Run in Verbose Mode",
+        //   accelerator: "Shift+F5",
+        //   click: file.runVerbose
+        // },
+        {
+          label: "Run from File",
+          click: file.runFromFile
         }
-
       ]
     },
     {
-      label: "Help",
-      role: "help",
-      submenu: [
-
-      ]
-    },
-    {
-      label: "Tools",
+      label: "&Tools",
       // role: "help",
       submenu: [
-// html linter
-// js transpiler
-// view actual webpage
-// tabs?
+        // html linter
+        // js transpiler
+        // view actual webpage
+        // tabs?
+      ]
+    },
+    {
+      label: "&Help",
+      role: "help",
+      submenu: [
+        { role: "toggleDevTools" }
       ]
     }
   ])
   Menu.setApplicationMenu(appMenu);
 })
-.then(() => {
-  // TODO: change tray menu
-  let tray = new Tray(nativeImage.createFromPath(path.join(__dirname, "../public/assets/logo.png")));
-  const trayMenu = Menu.buildFromTemplate([
-    { label: "Launch Interpreter", type: "normal"}
-  ])
-  tray.setToolTip("Equal Zero");
-  tray.setTitle("Equal Zero");
-  tray.setContextMenu(trayMenu);
-})
 .catch((err) => {
-
+  console.error(err);
 })
 
 app.on("window-all-closed", () => {

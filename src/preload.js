@@ -5,5 +5,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.on("window-resize", callback);
   },
   onExecuteEqual: (val) => ipcRenderer.on("execute-equal", val),
-  onInput: (input) => ipcRenderer.send("input", input)
+  onOpenFile: (val) => ipcRenderer.on("open-file", val),
+  setValue: (val) => ipcRenderer.send("set-value", val)
 })

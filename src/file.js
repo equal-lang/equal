@@ -1,30 +1,72 @@
-const { dialog } = require("electron");
-// TO CHANGE
+const { dialog, ipcMain } = require("electron");
+
+// TO CHANGE?
 const { Equal } = require("../cli-build/equal/equal");
+const fs = require("fs");
 
-function newFile() {
-  console.log("New File");
-}
+const startStr = "<div>Hello World</div>";
+class File {
+  constructor() {
+    this.path = undefined;
+    this.source = startStr;
+    this.newFile = this.newFile.bind(this);
+    this.openFile = this.openFile.bind(this);
+    this.save = this.save.bind(this);
+    this.saveAs = this.saveAs.bind(this);
+    this.run = this.run.bind(this);
+    this.runVerbose = this.runVerbose.bind(this);
 
-function openFile() {
-  // window.electronAPI.openFile()
-  // .then()
-  console.log("Open File...");
-}
 
-function save() {
-  console.log("Save");
-}
+  }
+  
 
-function saveAs() {
-  console.log("Save As...");
-}
+  newFile(menuItem, browserWindow, event) {
+    console.log("Yet to be implemented");
+  }
+  
+  openFile(menuItem, browserWindow, event) {
 
-function run(menuItem, browserWindow, event) {
     dialog.showOpenDialog({properties: ["openFile"] })
     .then((res) => {
       if (res.canceled == false) {
-        browserWindow.webContents.send("execute-equal", new Equal(res.filePaths[0], "NORMAL"));
+        
+        const path = res.filePaths[0];
+        if (fs.existsSync(path)) {
+          const source = fs.readFileSync(path, "utf8");
+          this.path = path;
+          this.source = source;
+          browserWindow.webContents.send("open-file", source);
+        }
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+    })
+    console.log("Yet to be implemented");
+  }
+  
+  save(menuItem, browserWindow, event) {
+    console.log("Yet to be implemented");
+  }
+  
+  saveAs(menuItem, browserWindow, event) {
+    console.log("Yet to be implemented");
+  }
+  
+  run(menuItem, browserWindow, event) {
+    browserWindow.webContents.send("execute-equal", new Equal(this.path, "NORMAL", this.source).run());
+  }
+  
+  
+  runVerbose(menuItem, browserWindow, event) {
+    browserWindow.webContents.send("execute-equal", new Equal(this.path, "VERBOSE", this.source).run());
+  }
+
+  runFromFile(menuItem, browserWindow, event) {
+    dialog.showOpenDialog({properties: ["openFile"] })
+    .then((res) => {
+      if (res.canceled == false) {
+        browserWindow.webContents.send("execute-equal", new Equal(res.filePaths[0], "NORMAL").run());
       }
     })
     .catch((err) => {
@@ -32,6 +74,14 @@ function run(menuItem, browserWindow, event) {
     })
   }
 
+
+  setSource(val) {
+    this.source = val;
+  }
+
+}
+
+
 module.exports = {
-  newFile, openFile, save, saveAs, run
+  File
 }

@@ -10,14 +10,14 @@ SCOPE ->
 | ASSIGNMENT*)
 
 ASSIGNMENT -> 
-(<a id="identifier" (class="global")?>
+(<a id="ID" (class="global")?>
   EXPRESSION
 </a>
 | FUNCTION_DECLARATION)
 
 FUNCTION_DECLARATION -> 
-(<form id="identifier">
-  (<input id="identifier">)*
+(<form id="ID">
+  (<input id="ID">)*
   <div>
     (STATEMENT)*
   </div>
@@ -25,7 +25,7 @@ FUNCTION_DECLARATION ->
 | RETURN_STATEMENT)
 
 RETURN_STATEMENT -> 
-(<input type="submit" value="identifier">
+(<input type="submit" value="ID">
 EXPRESSION
 | LOOP)
 
@@ -114,7 +114,7 @@ UNARY ->
 | CALL)
 
 CALL -> 
-(<form title="identifier">
+(<form title="ID">
   (<label>EXPRESSION</label>)*
 </form>
 | PRIMARY)
@@ -123,7 +123,8 @@ PRIMARY ->
 (string | number | boolean | IDENTIFIER)
 
 IDENTIFIER ->
-(<a href="identifier">
+(<a href="ID">
 </a>)
 
+ID -> string
 ```

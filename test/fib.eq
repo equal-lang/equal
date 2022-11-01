@@ -3,8 +3,8 @@
   <div>
   <h1>
     <form title="<">
-      <label> <a href="n"></a> </label>
-      <label> 2 </label>
+      <label><a href="n"></a></label>
+      <label>2</label>
     </form>
 
     <input type="submit">
@@ -46,7 +46,7 @@
 
 </form>
 
-<a id="i"> 1 </a>
+<a id="i">1</a>
 <p>
   <form title="<">
     <label>

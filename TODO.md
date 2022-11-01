@@ -64,3 +64,4 @@
 - [ ] Possible bug: this.source only has value after text in the editor has changed
 - [ ] Implement openfile, etc. (changing value of codemirror programmatically)
 - [ ] Make content policy safer
+- [ ] Possible bug in addition.eq: <a href="n"></a> by itself

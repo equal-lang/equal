@@ -15,7 +15,10 @@
   - ```id``` is usually used when defining variables or functions
   - ```href``` and ```title``` are used to refer to variables and functions that are already defined
 
-## [Grammar](GRAMMAR.md)
+## [Grammar](GRAMMAR.md) 
+- Backus Naur form
+- CAPS are non-terminals
+- string, number, boolean are terminals, representing js values of the type
 
 ## Features
 ### IO

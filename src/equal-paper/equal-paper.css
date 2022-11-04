@@ -1,0 +1,17 @@
+.e-main, .e-nav, .e-sidebar-right {
+  border: 1px black solid;
+}
+
+div.e-grid {
+  display: grid;
+  grid-template-columns: 25% 50% 25%;
+}
+
+h1.e-title {
+  grid-column: 1 / 4;
+  text-align: center;
+}
+
+main, section {
+  padding: 5px;
+}

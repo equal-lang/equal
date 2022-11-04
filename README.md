@@ -1,5 +1,7 @@
 # Equal - the Esoteric Programming Language HTML
 
+## Snapshot on [Nov 1](https://github.com/equal-lang/equal/tree/38dbfb14d8ea0a9f5ae14c2d19bff02a30febac3)
+
 ## Rules of thumb
 - Tagnames
   - ```span``` is used in print statements

@@ -2,16 +2,17 @@
   <input id="n">
   <div>
   <h1>
+    <!--  if (n < 2)    -->
     <form title="<">
       <label><a href="n"></a></label>
       <label>2</label>
     </form>
-
+    <!-- return n -->
     <input type="submit">
     <a href="n"></a>
   </h1>
 
-
+<!--   return fib(n-2) + fib(n-1) -->
   <input type="submit">
   <form title="+">
     <label>
@@ -46,7 +47,10 @@
 
 </form>
 
-<a id="i">1</a>
+<!-- var i = ? -->
+<a id="i">0</a>
+
+<!-- while (i < ?)  -->
 <p>
   <form title="<">
     <label>
@@ -55,7 +59,7 @@
     <label>20</label>
   </form>
 
-
+<!-- console.log(fib(i)) -->
   <span>
     <form title="fib">
       <label>
@@ -64,13 +68,13 @@
     </form>
   </span>
 
-
+<!-- i = i + ? -->
   <a id="i" class="global"> 
     <form title="+">
       <label>
         <a href="i"></a>
       </label>
-      <label>1</label>
+      <label>2</label>
     </form>
   </a>
 </p>

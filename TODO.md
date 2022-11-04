@@ -65,3 +65,6 @@
 - [ ] Implement openfile, etc. (changing value of codemirror programmatically)
 - [ ] Make content policy safer
 - [ ] Possible bug in addition.eq: <a href="n"></a> by itself
+
+- [ ] Stderr?
+- [ ] Native application

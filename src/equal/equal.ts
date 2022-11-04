@@ -49,7 +49,7 @@ class Equal {
       if (this.error == false) {    
         this.verbose("Running in verbose mode");
         const tokens = this.lexer.lex(this.source, this.path);
-        this.verbose(tokens);
+        this.verbose(tokens, "Tokens");
         const ast = this.parser.parse(tokens, this.path);
         this.error = this.errHandler.getErrorStatus();
         this.execute(ast, this.path);
@@ -78,7 +78,7 @@ class Equal {
         this.interpreter.interpret(ast, path);
         this.printer.flushBuffer();
       } else {
-        this.verbose(this.errHandler.errors);
+        this.verbose(this.errHandler.errors, "Errors");
       }
     } catch(err) {
       this.errHandler.handleError(err);
@@ -86,8 +86,11 @@ class Equal {
      
   }
 
-  private verbose(log: any): void {
-    if (this.mode == equalMode.VERBOSE) console.info(log);
+  private verbose(log: any, message?: string): void {
+    if (this.mode == equalMode.VERBOSE) {
+      if (message) console.debug(message, log);
+      else console.debug(log);
+    }
   }
 }
 

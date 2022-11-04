@@ -24,7 +24,7 @@ class Parser {
   public parse(tokens: Token[], path: string) {
     this.path = path;
     this.tokens = bigLexer(tokens, this.path, this.errHandler);
-    if (this.mode == equalMode.VERBOSE) console.info(this.tokens);
+    if (this.mode == equalMode.VERBOSE) console.debug("bigTokens", this.tokens);
     while (!this.atEnd()) {
       this.statements.push(this.statement());
       // this.pointer++;

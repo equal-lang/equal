@@ -110,7 +110,7 @@ class ErrorHandler {
   // Handle errors that are thrown
   public handleError(err: Error) {
     // probably will make this output look better
-    if (this.mode == equalMode.VERBOSE) console.info(err);
+    if (this.mode == equalMode.VERBOSE) console.debug("Error", err);
     let newErr: EqualError;
     if (!(err instanceof EqualError)) newErr = new EqualUnexpectedError(err.message);
     else newErr = err;

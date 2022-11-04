@@ -3,8 +3,8 @@ function fib(n) {
   return (fib(n-2) + fib(n-1));
 }
 
-var i = 1;
-while (i < 18) {
+var i = 0;
+while (i < 20) {
   console.log(fib(i));
-  i = i + 3;
+  i = i + 1;
 }

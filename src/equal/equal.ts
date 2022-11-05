@@ -18,6 +18,7 @@ class Equal {
   errHandler: ErrorHandler;
   printer: Printer;
 
+  // TODO: pass in options object
   constructor(path: string | undefined, mode: string, source?: string, output: (arg0: string) => void = console.log, input?: (arg0: string) => string) {
     // pass in undefined for path and pass in the source instead
     try {

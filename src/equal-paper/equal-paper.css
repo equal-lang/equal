@@ -4,7 +4,8 @@
 
 div.e-grid {
   display: grid;
-  grid-template-columns: 25% 50% 25%;
+  grid-template-columns: 20% 50% 30%;
+  grid-template-rows: 10vh 45vh 40vh;
 }
 
 h1.e-title {
@@ -12,6 +13,21 @@ h1.e-title {
   text-align: center;
 }
 
+div.e-html-viewer {
+  grid-column: 1 / 4;
+}
+
+iframe {
+  height: 100%;
+  width: 100%;
+}
+
 main, section {
   padding: 5px;
 }
+
+.cm-editor {
+  max-height: 200px;
+}
+/* white, gray, and black
+another block underneath? */

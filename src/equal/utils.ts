@@ -10,6 +10,14 @@ function wrapValue(val: string): string | number | boolean {
   else return val;
 }
 
+interface equalOptions {
+  mode: string;
+  path?: string;
+  source?: string;
+  output?: (arg0: string) => void;
+  input?: (arg0: string) => string;
+}
+
 export {
-  equalMode, wrapValue
+  equalMode, wrapValue, equalOptions
 }

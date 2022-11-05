@@ -24,7 +24,11 @@ yargs(hideBin(process.argv))
   handler: (argv: any) => {
     if (!fs.existsSync(argv.path) || !fs.lstatSync(argv.path).isFile()) console.error("Invalid path");
     else {
-      new Equal(argv.path, (argv.verbose ? "VERBOSE": "NORMAL")).run();
+      const options = {
+        path: argv.path,
+        mode: (argv.verbose ? "VERBOSE": "NORMAL")
+      }
+      new Equal(options).run();
     }
   }
 })

@@ -54,19 +54,19 @@ class File {
   }
   
   run(menuItem, browserWindow, event) {
-    browserWindow.webContents.send("execute-equal", new Equal(this.path, "NORMAL", this.source).run());
+    browserWindow.webContents.send("execute-equal", new Equal({path: this.path, mode: "NORMAL", source: this.source}).run());
   }
   
   
   runVerbose(menuItem, browserWindow, event) {
-    browserWindow.webContents.send("execute-equal", new Equal(this.path, "VERBOSE", this.source).run());
+    browserWindow.webContents.send("execute-equal", new Equal({path: this.path, mode: "VERBOSE", source: this.source}).run());
   }
 
   runFromFile(menuItem, browserWindow, event) {
     dialog.showOpenDialog({properties: ["openFile"] })
     .then((res) => {
       if (res.canceled == false) {
-        browserWindow.webContents.send("execute-equal", new Equal(res.filePaths[0], "NORMAL").run());
+        browserWindow.webContents.send("execute-equal", new Equal({path: res.filePaths[0]}).run());
       }
     })
     .catch((err) => {

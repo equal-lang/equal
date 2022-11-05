@@ -2,7 +2,7 @@ import * as fs from "fs";
 import { Lexer } from "./lexer";
 import { Parser } from "./parser";
 import { Interpreter } from "./interpreter";
-import { equalMode } from "./utils";
+import { equalMode, equalOptions } from "./utils";
 import { EqualRuntimeError, ErrorHandler } from "./error";
 import { Statement } from "./statement";
 import { Printer } from "./printer";
@@ -19,25 +19,28 @@ class Equal {
   printer: Printer;
 
   // TODO: pass in options object
-  constructor(path: string | undefined, mode: string, source?: string, output: (arg0: string) => void = console.log, input?: (arg0: string) => string) {
-    // pass in undefined for path and pass in the source instead
+  constructor({mode="NORMAL", path, source, output=console.log, input}: equalOptions) {
+    // either path or source is required
+    // source takes precedence
     try {
+      // should cover all cases
+      if (!path && !source) throw new EqualRuntimeError("No source code found");
+      else if (source) {
+        this.source = source;
+      } else if (path) {
+        this.source = this.loadFile(path);
+      }
+      this.path = (path != undefined) ? path : "Unknown";
+
       if (mode == "VERBOSE") this.mode = equalMode.VERBOSE;
       else this.mode = equalMode.NORMAL;
 
       this.error = false;
-      this.path = (path != undefined) ? path : "Unknown";
       this.printer = new Printer(output);
       this.errHandler = new ErrorHandler(this.mode);
       this.lexer = new Lexer(this.mode, this.errHandler);
       this.parser = new Parser(this.mode, this.errHandler);
       this.interpreter = new Interpreter(this.mode, this.errHandler, this.printer, input);
-      if (path == undefined) {
-        if (source == undefined) throw new EqualRuntimeError("No source code found");
-        else this.source = source;
-      } else {
-        this.source = this.loadFile();
-      }
 
     } catch(err) {
       this.errHandler.handleError(err);
@@ -64,10 +67,10 @@ class Equal {
   }
 
   // always inside another function's try block
-  private loadFile(): string {
+  private loadFile(path: string): string {
     this.verbose("Loading file at " + this.path);
-    if (!fs.existsSync(this.path)) throw new EqualRuntimeError("Invalid path");
-    const file = fs.readFileSync(this.path, "utf8");
+    if (!fs.existsSync(path)) throw new EqualRuntimeError("Invalid path");
+    const file = fs.readFileSync(path, "utf8");
     // undefined?
     return file as string;
   }

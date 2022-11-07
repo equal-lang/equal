@@ -12,12 +12,13 @@ function bigLexer(tokens: Token[], path: string, errHandler: ErrorHandler) {
     const token = tokens[pointer];
     if (token["tokenType"] == tokenType.START_TAG_LEFT) {
       evalText(text);
+      if (inStartTag) throwError("Unterminated start tag", token["line"]);
       inStartTag = true;
     } else if (token["tokenType"] == tokenType.END_TAG_LEFT) {
       evalText(text);
+      if (inEndTag) throwError("Unterminated end tag", token["line"]);
       inEndTag = true;
     } else if (token["tokenType"] == tokenType.TAG_RIGHT) {
-      // The tokens parsed by the lexer will be wrong if this is true
       if (inStartTag && inEndTag) throwError("Missing right tag", token["line"]);
       else if (!inStartTag && !inEndTag) throwError("Extra right tag", token["line"]);
       else if (inStartTag) {

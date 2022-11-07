@@ -10,7 +10,7 @@
 - [ ] Video and overlay?
 - [ ] Add arrays and objects (ol and ul?)
 - [ ] Better type checking
-- [ ] Visitors in Error and Expression - either both use interface or both use inherited classes
+- [X] Visitors in Error and Expression - either both use interface or both use inherited classes
 - [ ] Record more info on unexpected errors
 - [ ] Expand this list into some issues
 - [ ] Debug yargs behavior: when option --help passed in, show option ----help in help text
@@ -24,7 +24,8 @@
 - [ ] Unexpected or Syntax error?
 - [ ] Where to throw error - in function or outside?
 - [ ] Handle EOF better in bigToken
-- [ ] In parser, condense repeating parts into functions?
+- [X] In parser, condense repeating parts into functions?
+- [ ] Delete some functions in parser (matchText, etc.)
 - [ ] Add parentheses 
 - [ ] Is predecedence really needed since arguments are always nested in forms? Only difference is the order tested
 - [X] More clear differece between error types
@@ -64,7 +65,25 @@
 - [ ] Possible bug: this.source only has value after text in the editor has changed
 - [ ] Implement openfile, etc. (changing value of codemirror programmatically)
 - [ ] Make content policy safer
-- [ ] Possible bug in addition.eq: <a href="n"></a> by itself
+- [ ] Possible bug in addition.eq: ```<a href="n"></a>``` by itself
 
 - [ ] Stderr?
 - [ ] Native application
+- [ ] Change development to production and enable content policy
+- [ ] e.existsSync is not a function
+- [ ] Unify catch copies
+- [ ] Use import()
+- [X] Change constructor to use options object
+- [ ] Make logo easier to see
+- [ ] Change file structure
+- [ ] Improve CSS selector
+
+- [ ] React grid layout bugs: translate from source
+
+- [ ] Adjust size of page depending on iframe
+- [ ] Mobile responsive?
+  - [ ] When toolbar takes up two rows
+  - [ ] Grid items on top of each other
+
+- [ ] Link to favicon
+- [ ] Description

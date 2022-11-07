@@ -2,28 +2,26 @@
 <html>
   <head>
     <title>Equal Paper - Web Interpreter for Equal, the Esoteric Programming Language with HTML Syntax</title>
+    <link rel="icon" href="../public/assets/logo-border.png">
+    <meta charset="utf-8">
   </head>
   <body>
-    <div class="e-grid">
-      <h1 class="e-title">Equal Paper</h1>
-      <section class="e-nav" id="nav">
-      </section>
-      <main class="e-main">
-        main
-        <div id="test1"></div>
-      </main>
-      <!-- console -->
-      <section class="e-sidebar-right">
-        sidebar right
-        <div id="output"></div>
-        <div id="test2"></div>
-        <button id="test3">test3</button>
-      </section>
-      <div class="e-html-viewer">
-        <iframe id="i">
-      
-        </iframe>
+    <div class="main">
 
+      <h1 class="title">equal-paper</h1>
+
+      <div class="code-editor">
+        <div id="toolbar"></div>
+        <div id="editor"></div>
+      </div>
+
+      <div class="equal-viewer">
+        <div id="console"></div>
+      </div>
+
+      <div class="html-viewer">
+        <iframe id="html-rendered">
+        </iframe>
       </div>
       
     </div>    

@@ -1,0 +1,13 @@
+<div>
+  {{#each tools}}
+    {{#if name}}
+      <button id="tool-{{name}}">
+        {{#if display}}
+          {{display}}
+        {{else}}
+          {{name}}
+        {{/if}}
+      </button>
+    {{/if}}
+  {{/each}}
+</div>

@@ -2,13 +2,10 @@ import {basicSetup, EditorView} from "codemirror"
 import {html} from "@codemirror/lang-html"
 
 let editor = new EditorView({
-  doc: "<div>hello world</div>",
+  doc: "<div>Equal, not HTML</div>",
   extensions: [basicSetup, html()],
-  parent: document.getElementById("test1")
+  parent: document.getElementById("editor")
 })
-
-// export?
-console.log(editor)
 
 export { editor }
 

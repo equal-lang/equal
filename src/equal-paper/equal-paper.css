@@ -22,9 +22,21 @@ div.code-editor, div.equal-viewer {
   border: 1px black solid;
 }
 
+@media (max-width: 1101px) {
+  div.code-editor {
+    --toolbar-height: 50px;
+  }
+}
+
+@media (min-width: 1102px) {
+  div.code-editor {
+    --toolbar-height: 28px;
+  }
+}
+
 div.code-editor {
   display: grid;
-  grid-template-rows: 30px calc(100% - 30px);
+  grid-template-rows: var(--toolbar-height) calc(100% - var(--toolbar-height));
 }
 
 .cm-editor {

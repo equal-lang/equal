@@ -8,5 +8,3 @@ let editor = new EditorView({
 })
 
 export { editor }
-
-

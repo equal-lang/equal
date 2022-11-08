@@ -1,9 +1,6 @@
-import { equalMode } from "../../cli-build/equal/utils";
 import "./equal-paper.css";
 import toolbar from "./toolbar.hbs";
 
-// set css for editor
-// attach listeners
 document.addEventListener("DOMContentLoaded", () => {
   setupToolbar();
 
@@ -12,7 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const falseColor = getBackgroundColor("tool-help");
 
   document.getElementById("tool-open-file").addEventListener("click", () => {
-    console.log("of");
+    openFile()
+    .then((text) => {
+      setEditorValue(text);
+    })
+    .catch(catchError);
   })
 
   
@@ -25,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
   })
   
   document.getElementById("tool-run").addEventListener("click", () => {
-    
     let runEq = new Promise((resolve, reject) => {
       let verbose = false;
       if (getBackgroundColor("tool-verbose") == trueColor) verbose = true;
@@ -54,13 +54,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // detect state because state can be changed
   document.getElementById("tool-html-viewer").addEventListener("click", () => {
     if (isVisible("html-rendered")) {
-      console.log("true to false");
       setBackgroundColor("tool-html-viewer", falseColor);
       hideHTML();
     }
     else {
-      console.log("false to true");
-
       setBackgroundColor("tool-html-viewer", trueColor);
       renderHTML(getEditorValue());
     }
@@ -78,7 +75,7 @@ function setupToolbar() {
   document.getElementById("toolbar").innerHTML = toolbar({
     tools: [
       { name: "open-file",
-        display: "open" },
+        display: "open-file" },
       { name: "save-file",
         display: "save" },
       { name: "save-file-as",
@@ -95,8 +92,14 @@ function setupToolbar() {
         display: "refresh-page", },
       { name: "help",
         display: "help" }
-    ]
+    ],
+    file: {
+      // make right justified?
+      name: "",
+      saved: false
+    }
   });
+  // time, date, file, saved?
 }
 
 function runEqual(source, verbose=false) {
@@ -107,8 +110,40 @@ function runEqual(source, verbose=false) {
   }).run();
 }
 
+function openFile() {
+  const fileOptions = {
+    types: [
+      {
+        description: "Equal Files",
+        accept: {
+          "text/plain": [".eq", ".txt"],
+          "text/html": [".html"]
+        }
+      },
+    ],
+    excludeAcceptAllOption: true,
+    multiple: false  
+  }
+  return window.showOpenFilePicker(fileOptions)
+  .then((fileHandles) => {
+    return fileHandles[0].getFile();
+  })
+  .then((file) => {
+    return file.text();
+  })
+  .catch(catchError);
+}
+
 function getEditorValue() {
   return editor.editor.viewState.state.doc.toString();
+}
+
+function setEditorValue(val) {
+
+  editor.editor.dispatch({
+    changes: [{from: 0, to: getEditorValue().length, insert: val}]
+  })
+  
 }
 
 function logConsole(val, endOfLine="\n") {
@@ -155,4 +190,8 @@ function getBackgroundColor(id) {
 
 function setBackgroundColor(id, color) {
   document.getElementById(id).style["background-color"] = color;
+}
+
+function catchError(err) {
+  console.error(err);
 }

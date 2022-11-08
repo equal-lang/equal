@@ -87,3 +87,5 @@
 
 - [ ] Link to favicon
 - [ ] Description
+- [ ] Pass in the entire editor instead of edtior view
+- [ ] Navigate to past folder

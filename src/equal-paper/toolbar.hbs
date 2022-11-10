@@ -1,20 +1,12 @@
-<div>
-    {{#each tools}}
-      {{#if this.name}}
-        <button id="tool-{{this.name}}">
-          {{#if this.display}}
-            {{this.display}}
-          {{else}}
-            {{this.name}}
-          {{/if}}
-        </button>
-      {{/if}}
-    {{/each}}
-    {{#with file}}
-      {{#if this.name}}
-      <span id="file">
-        <span id="file-name">{{this.name}}</span><span id="file-saved">{{#unless this.saved}}*{{/unless}}</span>
-      </span>
-      {{/if}}
-    {{/with}}
-</div>
+{{#each tools}}
+{{#if this.name}}
+<button id="tool-{{this.name}}">
+  {{#if this.display}}
+  {{this.display}}
+  {{else}}
+  {{this.name}}
+  {{/if}}
+</button>
+{{/if}}
+{{/each}}
+<span id="toolbar-file"></span>

@@ -12,7 +12,7 @@ module.exports = {
       }
     },
     editor: {
-      import: path.join(__dirname, "./editor.js"),
+      import: path.join(__dirname, "./cm-editor.js"),
       library: {
         name: "editor",
         type: "var"

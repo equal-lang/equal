@@ -89,3 +89,5 @@
 - [ ] Description
 - [ ] Pass in the entire editor instead of edtior view
 - [ ] Navigate to past folder
+- [ ] Solution for the unsaved *, which is being activated by the change in editor value after a new file is opened
+ 

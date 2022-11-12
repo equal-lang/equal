@@ -1,8 +1,8 @@
 import {basicSetup, EditorView} from "codemirror"
 import {html} from "@codemirror/lang-html"
 const initialText = 
-`
-<form id="fib">
+`<form id="fib">
+  <input id="n">
   <div>
   <h1>
     <!--  if (n < 2)    -->

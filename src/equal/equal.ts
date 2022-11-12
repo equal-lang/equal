@@ -18,7 +18,6 @@ class Equal {
   errHandler: ErrorHandler;
   printer: Printer;
 
-  // TODO: pass in options object
   constructor({mode="NORMAL", path, source, output=console.log, input}: equalOptions) {
     // either path or source is required
     // source takes precedence

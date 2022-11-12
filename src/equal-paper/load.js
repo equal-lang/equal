@@ -41,9 +41,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   })
 
-  document.getElementById("tool-save-file-as").addEventListener("click", () => {
-    console.log("sfa");
-  })
+  // document.getElementById("tool-save-file-as").addEventListener("click", () => {
+  //   console.log("sfa");
+  // })
 
   document.getElementById("tool-run").addEventListener("click", () => {
     let runEq = new Promise((resolve, reject) => {
@@ -82,7 +82,9 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 
   document.getElementById("tool-help").addEventListener("click", () => {
-    console.log("h");
+    if (confirm("This action will open a new tab. Proceed?")) {
+      window.open("https://github.com/equal-lang/equal#readme");
+    }
   })
 
   document.addEventListener("editor-change", (val) => {
@@ -96,10 +98,10 @@ document.addEventListener("DOMContentLoaded", () => {
 function setupToolbar() {
   document.getElementById("toolbar").innerHTML = toolbar({
     tools: [
-      {
-        name: "new-file",
-        display: "new-file"
-      },
+      // {
+      //   name: "new-file",
+      //   display: "new-file"
+      // },
       {
         name: "open-file",
         display: "open-file"
@@ -108,10 +110,10 @@ function setupToolbar() {
         name: "save-file",
         display: "save"
       },
-      {
-        name: "save-file-as",
-        display: "save-as"
-      },
+      // {
+      //   name: "save-file-as",
+      //   display: "save-as"
+      // },
       {
         name: "run",
         display: "run"

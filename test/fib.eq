@@ -1,5 +1,4 @@
 <form id="fib">
-  <input id="n">
   <div>
   <h1>
     <!--  if (n < 2)    -->

@@ -11,6 +11,7 @@ npm run dist
 ```
 - Build website
 ```
+npm run build1
 npm run website
 ```
-Note: open ```docs/index.html```
+Note: open ```docs/index.html``` to view website

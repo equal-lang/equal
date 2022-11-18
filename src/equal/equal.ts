@@ -24,7 +24,6 @@ class Equal {
     try {
       if (mode == "VERBOSE") this.mode = equalMode.VERBOSE;
       else this.mode = equalMode.NORMAL;
-
       this.error = false;
       this.printer = new Printer(output);
       this.errHandler = new ErrorHandler(this.mode);
@@ -45,10 +44,10 @@ class Equal {
     }
   }
 
-  public run() {
+  public run() { 
     try {
       this.error = this.errHandler.getErrorStatus();
-      if (this.error == false) {    
+      if (this.error == false) {  
         this.verbose("Running in verbose mode");
         const tokens = this.lexer.lex(this.source, this.path);
         this.verbose(tokens, "Tokens");

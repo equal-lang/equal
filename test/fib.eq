@@ -1,4 +1,5 @@
 <form id="fib">
+  <!-- function fib(n) -->
   <input id="n">
   <div>
   <h1>

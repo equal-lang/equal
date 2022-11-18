@@ -1,4 +1,11 @@
-# Long-Term
+## Timeline in November
+1. Finish development of a web interpreter, adding a new field, finishing new file and save as
+2. Tighten up / rewrite lexer
+3. Clean up parser, redirecting calls at the earliest possible time
+4. Clean up error handling, with sychronized errors and line numbers
+4. Try to go through some of [this course](https://ocw.mit.edu/courses/6-035-computer-language-engineering-spring-2010/) if have time
+
+## Issues
 - [ ] Rework the lexer to make code cleaner (especially consumeWhile and rightPointer, and optionally fix comments consumed)
   - currently a hybrid of flags and functions
 - [ ] Add option to have whitespace between / and > (?)
@@ -89,5 +96,12 @@
 - [ ] Description
 - [ ] Pass in the entire editor instead of edtior view
 - [ ] Navigate to past folder
-- [ ] Solution for the unsaved *, which is being activated by the change in editor value after a new file is opened
- 
+- [X] Solution for the unsaved *, which is being activated by the change in editor value after a new file is opened
+- [ ] Open empty file, write, save, save again - overwrite warning
+- [ ] After aborting requests, filehandle in editordata is undefined
+- [ ] Add notice that verbose logging is in the console (link to NOTES)
+- [ ] Do something with AbortError?
+- [ ] Make website layout more flexible
+- [X] Info, data, file (editorData names)
+- [ ] Something other than copy and pasting in initialText
+- [ ] Setup local storage

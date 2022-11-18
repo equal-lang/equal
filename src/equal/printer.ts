@@ -21,6 +21,7 @@ class Printer {
       this.outputMethod(this.buffer);
     }
   }
+  // no verbose logging
   public allPrinted(): string {
     if (this.allText[this.allText.length-1] == "\n") this.allText = this.allText.slice(0, this.allText.length-1);
     return this.allText;

@@ -22,15 +22,6 @@ class Equal {
     // either path or source is required
     // source takes precedence
     try {
-      // should cover all cases
-      if (!path && !source) throw new EqualRuntimeError("No source code found");
-      else if (source) {
-        this.source = source;
-      } else if (path) {
-        this.source = this.loadFile(path);
-      }
-      this.path = (path != undefined) ? path : "Unknown";
-
       if (mode == "VERBOSE") this.mode = equalMode.VERBOSE;
       else this.mode = equalMode.NORMAL;
 
@@ -41,6 +32,14 @@ class Equal {
       this.parser = new Parser(this.mode, this.errHandler);
       this.interpreter = new Interpreter(this.mode, this.errHandler, this.printer, input);
 
+      if (!path && !source) throw new EqualRuntimeError("No source code found");
+      else if (source) {
+        this.source = source;
+      } else if (path) {
+        this.source = this.loadFile(path);
+      }
+      this.path = (path != undefined) ? path : "Unknown";
+
     } catch(err) {
       this.errHandler.handleError(err);
     }
@@ -48,14 +47,14 @@ class Equal {
 
   public run() {
     try {
-      // is this line needed?
+      this.error = this.errHandler.getErrorStatus();
       if (this.error == false) {    
         this.verbose("Running in verbose mode");
         const tokens = this.lexer.lex(this.source, this.path);
         this.verbose(tokens, "Tokens");
         const ast = this.parser.parse(tokens, this.path);
-        this.error = this.errHandler.getErrorStatus();
         this.execute(ast, this.path);
+        this.verbose("Finished running script");
         return this.printer.allPrinted();
       }
 
@@ -77,6 +76,7 @@ class Equal {
 
   private execute(ast: Statement[], path: string) {
     try {
+      this.error = this.errHandler.getErrorStatus();
       if (this.error == false) {
         this.interpreter.interpret(ast, path);
         this.printer.flushBuffer();

@@ -2,6 +2,7 @@ import {basicSetup, EditorView} from "codemirror"
 import {html} from "@codemirror/lang-html"
 const initialText = 
 `<form id="fib">
+  <!-- function fib(n) -->
   <input id="n">
   <div>
   <h1>
@@ -89,7 +90,8 @@ let editor = new EditorView({
     basicSetup, 
     html(),
     EditorView.updateListener.of((viewUpdate) => {
-      document.dispatchEvent(new CustomEvent("editor-change", {detail: viewUpdate}));
+      const fileOpened = viewUpdate.transactions.length > 0 && viewUpdate.transactions[0].isUserEvent("open.file");
+      document.dispatchEvent(new CustomEvent("editor-change", {detail: { viewUpdate: viewUpdate, fileOpened: fileOpened}}));
     })
   ],
 

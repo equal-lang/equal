@@ -2,48 +2,30 @@ import "./equal-paper.css";
 import toolbar from "./toolbar.hbs";
 import toolbarFile from "./toolbar-file.hbs";
 
-// open file: change filehandle, set unsaved to false
-// file edited: set unsaved to true
-// save file: set unsaved to false
-// new file?
-// if path not set, redirect to save-file-as
-// file changing in another place - like notepad, will not refresh?
-// deleted - created again
-// now - lose all data on refresh
-// modifiedtime 
-// creating
-
 document.addEventListener("DOMContentLoaded", () => {
   setupToolbar();
-  const editorFile = editorData();
+  const mainEditorData = editorInit();
 
   const trueColor = "rgb(212, 245, 198)";
   const falseColor = getBackgroundColor("tool-help");
 
   document.getElementById("tool-open-file").addEventListener("click", () => {
-    openFile()
-      .then((fileHandle) => {
-        editorFile.setFileHandle(fileHandle);
-        return getTextFromFileHandle(fileHandle);
-      })
-      .then((text) => {
-        setEditorValue(text);
-      })
-      .catch(catchError);
+    openFile(mainEditorData);
   })
 
 
   document.getElementById("tool-save-file").addEventListener("click", () => {
-    if (editorFile.getFileHandle() !== undefined) {
-      save(editorFile, getEditorValue());
+    if (mainEditorData.getFileHandle() !== undefined) {
+      save(mainEditorData, getEditorValue());
     } else {
-      saveAs();
+      saveAs(mainEditorData, getEditorValue());
+      // set file handle
     }
   })
 
-  // document.getElementById("tool-save-file-as").addEventListener("click", () => {
-  //   console.log("sfa");
-  // })
+  document.getElementById("tool-save-file-as").addEventListener("click", () => {
+    console.log("sfa");
+  })
 
   document.getElementById("tool-run").addEventListener("click", () => {
     let runEq = new Promise((resolve, reject) => {
@@ -55,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     runEq
       .then((verbose) => {
-        if (verbose) console.debug("Finished running script");
+        // if (verbose) console.debug("Finished running script");
       })
       .catch(catchError)
   })
@@ -88,8 +70,10 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 
   document.addEventListener("editor-change", (val) => {
-    if (val.detail.docChanged) {
-      editorFile.notSaved();
+    const {viewUpdate, fileOpened} = val.detail;
+    if (fileOpened) mainEditorData.saved();
+    else if (viewUpdate.docChanged && mainEditorData.getUnsaved() == false) {
+      mainEditorData.notSaved();
     }
   })
 
@@ -98,10 +82,10 @@ document.addEventListener("DOMContentLoaded", () => {
 function setupToolbar() {
   document.getElementById("toolbar").innerHTML = toolbar({
     tools: [
-      // {
-      //   name: "new-file",
-      //   display: "new-file"
-      // },
+      {
+        name: "new-file",
+        display: "new-file"
+      },
       {
         name: "open-file",
         display: "open-file"
@@ -110,10 +94,10 @@ function setupToolbar() {
         name: "save-file",
         display: "save"
       },
-      // {
-      //   name: "save-file-as",
-      //   display: "save-as"
-      // },
+      {
+        name: "save-file-as",
+        display: "save-as"
+      },
       {
         name: "run",
         display: "run"
@@ -151,7 +135,7 @@ function setupToolbarFile(name="Untitled", unsaved=true) {
   })
 }
 
-const editorData = (function () {
+const editorInit = (function () {
   let fileHandle = undefined;
   let unsaved = false;
   let savedTime = undefined;
@@ -185,25 +169,43 @@ const editorData = (function () {
   }
 });
 
+const acceptedFileTypes = [
+  { 
+    description: "Equal file",
+    accept: {
+      "text/equal": [".eq"]
+    }
+  },
+  { 
+    description: "HTML file",
+    accept: {
+      "text/html": [".html"]
+    }
+  },
+  { 
+    description: "Plain text file",
+    accept: {
+      "text/plain": [".txt"],
+    }
+  },
+];
 // return promise
-function openFile() {
+function openFile(editorData) {
   const fileOptions = {
-    types: [
-      {
-        description: "Equal Files",
-        accept: {
-          "text/plain": [".eq", ".txt"],
-          "text/html": [".html"]
-        }
-      },
-    ],
+    types: acceptedFileTypes,
     excludeAcceptAllOption: true,
     multiple: false
   }
-
   return window.showOpenFilePicker(fileOptions)
     .then((fileHandles) => {
       return fileHandles[0];
+    })
+    .then((fileHandle) => {
+      editorData.setFileHandle(fileHandle);
+      return getTextFromFileHandle(fileHandle);
+    })
+    .then((text) => {
+      setEditorValue(text, "open.file");
     })
     .catch(catchError);
 }
@@ -216,41 +218,65 @@ function getTextFromFileHandle(fileHandle) {
     });
 }
 
-function save(editorInfo, value) {
-  editorInfo.getFileHandle().getFile()
+// check if a newer version than the one currently opened exists
+// write and save if checked and given permission
+function save(editorData, value) {
+  editorData.getFileHandle().getFile()
   .then((file) => {
     let proceed = true;
-    if (editorInfo.newVersion(file.lastModified)) {
+    if (editorData.newVersion(file.lastModified)) {
       proceed = confirm("A newer version of the currently open file exists, which will be overwritten by this operation. Proceed?");
     }
     if (proceed) {
-      editorInfo.getFileHandle().createWritable()
+      editorData.getFileHandle().createWritable()
       .then((stream) => {
         stream.write(value);
         return stream;
       })
       .then((stream) => {
         stream.close();
-        editorInfo.saved();
+        editorData.saved();
       })
       .catch(catchError)
     }
   })
-  
 }
 
-function saveAs() {
-  
+// get and save file handle
+// overwrite and save
+function saveAs(editorData, value) {
+  return window.showSaveFilePicker({
+    types: acceptedFileTypes
+  })
+  .then((fileHandles) => {
+    return fileHandles[0];
+  })
+  .then((fileHandle) => {
+    editorData.setFileHandle(fileHandle);
+    return fileHandle.createWritable();
+  })
+  .then((stream) => {
+    console.log(value);
+    stream.write(value);
+    return stream;
+  })
+  .then((stream) => {
+    stream.close();
+    editorData.saved();
+  })
+  .catch(catchError);
 }
 
 function getEditorValue() {
   return editor.editor.viewState.state.doc.toString();
 }
 
-function setEditorValue(val) {
-  editor.editor.dispatch({
-    changes: [{ from: 0, to: editor.editor.state.doc.length, insert: val }]
-  })
+function setEditorValue(val, userEvent=undefined) {
+  let transaction = {
+    changes: [{ from: 0, to: editor.editor.state.doc.length, insert: val }],
+  };
+  if (userEvent) transaction["userEvent"] = userEvent;
+  editor.editor.dispatch(transaction)
 }
 
 function runEqual(source, verbose = false) {

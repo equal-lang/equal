@@ -1,7 +1,7 @@
 - Build CLI
 ```
 npm run build1
-node cli-build/equal/cli.js ./test/fib.eq
+node cli-build/equal/cli.js ./examples/fib.eq
 ```
 - Build exe
 ```

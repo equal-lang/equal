@@ -57,7 +57,7 @@
     <label>
       <a href="i"></a>
     </label>
-    <label>20</label>
+    <label>15</label>
   </form>
 
 <!-- console.log(fib(i)) -->

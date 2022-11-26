@@ -18,7 +18,6 @@ module.exports = {
         type: "var"
       }
     },
-
     load: {
       import: path.join(__dirname, "./load.js")
     }

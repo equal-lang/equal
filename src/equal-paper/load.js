@@ -5,6 +5,10 @@ import toolbarFile from "./toolbar-file.hbs";
 document.addEventListener("DOMContentLoaded", () => {
   setupToolbar();
   const mainEditorData = editorInit();
+  const runEqualWorker = new Worker(new URL("./run-equal.js", import.meta.url), {type: "module"});
+  console.log("equal", equal.Equal);
+  
+  runEqualWorker.postMessage({"equal": JSON.stringify(equal.Equal)});
 
   const trueColor = "rgb(212, 245, 198)";
   const falseColor = getBackgroundColor("tool-help");
@@ -24,22 +28,22 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 
   document.getElementById("tool-save-file-as").addEventListener("click", () => {
-    console.log("sfa");
+    saveAs(mainEditorData, getEditorValue());
   })
 
   document.getElementById("tool-run").addEventListener("click", () => {
-    let runEq = new Promise((resolve, reject) => {
-      let verbose = false;
-      if (getBackgroundColor("tool-verbose") == trueColor) verbose = true;
-      runEqual(getEditorValue(), verbose);
-      resolve(verbose);
-      reject();
-    });
-    runEq
-      .then((verbose) => {
-        // if (verbose) console.debug("Finished running script");
-      })
-      .catch(catchError)
+    let verbose = false;
+    if (getBackgroundColor("tool-verbose") == trueColor) verbose = true;
+    console.log("equal", equal.Equal)
+    if (runEqualWorker) {
+          // error
+    runEqualWorker.postMessage("test");
+    // runEqual(getEditorValue(), verbose);
+
+    }
+    else {
+      throw new Error("No interpreter worker found");
+    }
   })
 
   // log verbose in this console?
@@ -78,6 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 
 })
+
 
 function setupToolbar() {
   document.getElementById("toolbar").innerHTML = toolbar({
@@ -189,6 +194,7 @@ const acceptedFileTypes = [
     }
   },
 ];
+
 // return promise
 function openFile(editorData) {
   const fileOptions = {
@@ -279,13 +285,6 @@ function setEditorValue(val, userEvent=undefined) {
   editor.editor.dispatch(transaction)
 }
 
-function runEqual(source, verbose = false) {
-  new equal.Equal({
-    mode: verbose ? "VERBOSE" : "NORMAL",
-    source: source,
-    output: (str) => logConsole(str)
-  }).run();
-}
 
 
 

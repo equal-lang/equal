@@ -18,9 +18,14 @@ module.exports = {
         type: "var"
       }
     },
+    worker: {
+      import: path.join(__dirname, "./run-equal.js"),
+      dependOn: "equal"
+    },
     load: {
-      import: path.join(__dirname, "./load.js")
-    }
+      import: path.join(__dirname, "./load.js"),
+      dependOn: "worker"
+    },
 
   },
   output: {

@@ -1,13 +1,13 @@
 import "./equal-paper.css";
 import toolbar from "./toolbar.hbs";
 import toolbarFile from "./toolbar-file.hbs";
+const workerPath = "./worker.bundle.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   setupToolbar();
   const mainEditorData = editorInit();
-  const runEqualWorker = new Worker(new URL("./run-equal.js", import.meta.url), {type: "module"});
-  console.log("equal", equal.Equal);
-  
+  const runEqualWorker = new Worker(new URL(workerPath), {type: "module"});
+  console.log(runEqualWorker);
   runEqualWorker.postMessage({"equal": JSON.stringify(equal.Equal)});
 
   const trueColor = "rgb(212, 245, 198)";
@@ -34,16 +34,16 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("tool-run").addEventListener("click", () => {
     let verbose = false;
     if (getBackgroundColor("tool-verbose") == trueColor) verbose = true;
-    console.log("equal", equal.Equal)
-    if (runEqualWorker) {
-          // error
-    runEqualWorker.postMessage("test");
+    // console.log("equal", equal.Equal)
+    // if (runEqualWorker) {
+    //       // error
+    // runEqualWorker.postMessage("test");
     // runEqual(getEditorValue(), verbose);
 
-    }
-    else {
-      throw new Error("No interpreter worker found");
-    }
+    // }
+    // else {
+    //   throw new Error("No interpreter worker found");
+    // }
   })
 
   // log verbose in this console?

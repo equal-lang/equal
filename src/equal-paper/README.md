@@ -1,6 +1,6 @@
 # Equal Paper
-- Minimalist webpage for testing Equal
+- Minimalist online interpreter for testing Equal
 
-- Handlebars, Webpack, CodeMirror
-
-- Help
+### Misc
+- Verbose logging is displayed in the browser console (at the verbose level)
+- Save As opens the new file for editing

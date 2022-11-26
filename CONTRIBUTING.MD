@@ -14,4 +14,4 @@ npm run dist
 npm run build1
 npm run website
 ```
-Note: open ```docs/index.html``` to view website
+Note: ```npm run local-run``` to setup website for local development

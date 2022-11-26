@@ -1,11 +1,11 @@
 ## Timeline in November
-1. Finish development of a web interpreter, adding a new field, finishing new file and save as
+1. Finish development of an online interpreter, adding a new field, finishing new file and save as
 2. Tighten up / rewrite lexer
 3. Clean up parser, redirecting calls at the earliest possible time
 4. Clean up error handling, with sychronized errors and line numbers
 4. Try to go through some of [this course](https://ocw.mit.edu/courses/6-035-computer-language-engineering-spring-2010/) if have time
 
-## Issues
+## Misc Issues
 - [ ] Rework the lexer to make code cleaner (especially consumeWhile and rightPointer, and optionally fix comments consumed)
   - currently a hybrid of flags and functions
 - [ ] Add option to have whitespace between / and > (?)
@@ -104,4 +104,16 @@
 - [ ] Make website layout more flexible
 - [X] Info, data, file (editorData names)
 - [ ] Something other than copy and pasting in initialText
-- [ ] Setup local storage
+- [ ] Setup local storage - save content in editor and file handle?
+  - [ ] Add clear editor button?
+- [ ] Find a way to get rid of babel
+- [ ] Find a way to avoid committing built files
+- [ ] Config font colors, etc.
+- [ ] Stacking buttons
+- [ ] Using require in test
+- [ ] New GUI
+- [ ] Get variable from outside the file
+  - [ ] Write an input function
+- [ ] Finish workers
+- [ ] Commit build separately
+- [ ] Throwing errors in js file?

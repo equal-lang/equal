@@ -117,3 +117,11 @@
 - [ ] Finish workers
 - [ ] Commit build separately
 - [ ] Throwing errors in js file?
+- [ ] !get ride of JSONfn
+
+- [ ] workers and equal
+  - Solution 1: import bundled worker, making equal available through config in webpack
+    - Error: onmessage is null
+  - Solution 2: use webpack's preferred syntax of importing workers, and import equal
+    - dirname is still pointing to the src folder?
+  - Solution 3: use webpack's preferred syntax of importing workers, and pass equal through postMessage somehow

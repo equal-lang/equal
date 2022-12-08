@@ -2,7 +2,8 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  mode: "production",
+  // "production"
+  mode: "development",
   entry: {
     equal: {
       import: path.join(__dirname, "../equal/equal.ts"),
@@ -18,13 +19,9 @@ module.exports = {
         type: "var"
       }
     },
-    worker: {
-      import: path.join(__dirname, "./run-equal.js"),
-      dependOn: "equal"
-    },
     load: {
       import: path.join(__dirname, "./load.js"),
-      dependOn: "worker"
+      dependOn: "equal"
     },
 
   },

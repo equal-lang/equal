@@ -24,9 +24,9 @@ class Equal {
     try {
       if (mode == "VERBOSE") this.mode = equalMode.VERBOSE;
       else this.mode = equalMode.NORMAL;
+      this.errHandler = new ErrorHandler(this.mode);
       this.error = false;
       this.printer = new Printer(output);
-      this.errHandler = new ErrorHandler(this.mode);
       this.lexer = new Lexer(this.mode, this.errHandler);
       this.parser = new Parser(this.mode, this.errHandler);
       this.interpreter = new Interpreter(this.mode, this.errHandler, this.printer, input);

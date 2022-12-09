@@ -8,8 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const mainEditorData = editorInit();
   
   // setup worker and object
-  const runEqualWorker = new Worker(new URL("./run-equal.js", import.meta.url), {type: "module"});
-  runEqualWorker.postMessage({"equal": JSONfn.stringify(equal)});
+  // const runEqualWorker = new Worker(new URL("./run-equal.js", import.meta.url), {type: "module"});
+  // runEqualWorker.postMessage({"equal": JSONfn.stringify(equal)});
 
   const trueColor = "rgb(212, 245, 198)";
   const falseColor = getBackgroundColor("tool-help");
@@ -36,12 +36,12 @@ document.addEventListener("DOMContentLoaded", () => {
     let verbose = false;
     if (getBackgroundColor("tool-verbose") == trueColor) verbose = true;
     // check worker
-    if (runEqualWorker) {
-      runEqualWorker.postMessage({
-        "source": getEditorValue(),
-        "verbose": verbose
-      });
-    }
+    // if (runEqualWorker) {
+    //   runEqualWorker.postMessage({
+    //     "source": getEditorValue(),
+    //     "verbose": verbose
+    //   });
+    // }
     else {
       throw new Error("No interpreter worker found");
     }

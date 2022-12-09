@@ -21,9 +21,10 @@ module.exports = {
     },
     load: {
       import: path.join(__dirname, "./load.js"),
-      dependOn: "equal"
     },
-
+    api: {
+      import: path.join(__dirname, "./api.js"),
+    }
   },
   output: {
     filename: "[name].bundle.js",
@@ -56,9 +57,15 @@ module.exports = {
     ]
   },
   plugins: [
-      new HtmlWebpackPlugin({
-        template: path.join(__dirname, "./template.html"),
-      })
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, "./template.html"),
+      chunks: ["editor", "load"]
+    }),
+    new HtmlWebpackPlugin({
+      filename: "api.html",
+      title: "Equal API",
+      chunks: ["equal", "api"]
+    })
   ]
 }
 

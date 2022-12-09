@@ -118,6 +118,9 @@
 - [ ] Commit build separately
 - [ ] Throwing errors in js file?
 - [ ] !get ride of JSONfn
+- [ ] Test url parameters
+- [ ] Throw error on unrecognized character?
+- [ ] Can js be added to inner text?
 
 - [ ] workers and equal
   - Solution 1: import bundled worker, making equal available through config in webpack

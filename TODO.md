@@ -127,3 +127,12 @@
 - [X] workers and equal
   - not workers, but api hosted on heroku
 - [ ] Naming Equal distributions consistently
+- [X] Get tsconfig working
+- [X] fix references to cli-build
+- [ ] builds directory?
+- [X] Name build scripts
+- [X] Organize contributing.md
+- [ ] Organize build script dependencies
+- [ ] cannot find equal/equal?
+- [X] Test build scripts
+- [ ] Bump to production

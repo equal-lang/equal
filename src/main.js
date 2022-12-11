@@ -13,7 +13,7 @@ const createWindow = () => {
   })
 
   win.setIcon(path.join(__dirname, "../public/assets/icon.png"));
-  win.loadFile(path.join(__dirname, "../electron-build/index.html"));
+  win.loadFile(path.join(__dirname, "../builds/gui/index.html"));
   win.on("resize", () => {
     win.webContents.send("window-resize");
   })

@@ -1,6 +1,6 @@
 const assert = require("assert");
 const path = require("path");
-const { Equal } = require(path.resolve(__dirname, "../cli-build/equal/equal"));
+const { Equal } = require(path.resolve(__dirname, "../builds/equal/equal"));
 
 describe("fibonacci numbers", function () {
   it("should return the first fifteen numbers", function () {

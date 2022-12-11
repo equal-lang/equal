@@ -11,16 +11,16 @@
   },
   "scripts": {
     "test": "mocha",
-    "build": "webpack --config webpack.config.js",
-    "start": "electron .",
-    "build1": "tsc && node src/tools/generate.js",
-    "start1": "node cli-build/equal/cli.js",
-    "dist": "electron-builder -w",
-    "make": "npm run build1 && npm run build && npm run dist",
-    "website": "webpack --config src/equal-paper/webpack.config.js",
-    "local": "cd docs && http-server -c-0 && cd ..",
-    "local-run": "nodemon --watch docs/ --exec npm run local",
-    "api-install": "cd src/equal-api && npm install && cd ../.."
+    "build-cli": "node src/tools/generate.js && tsc -b",
+    "start-cli": "node builds/cli/cli.js ./examples/fib.eq",
+    "build-gui": "webpack --config webpack.config.js",
+    "start-gui": "electron .",
+    "dist-gui": "electron-builder -w",
+    "build-website": "webpack --config src/equal-paper/webpack.config.js",
+    "start-website": "cd docs && http-server -c-0 && cd ..",
+    "watch-website": "nodemon --watch docs/ --exec npm run start-website",
+    "setup-api": "cd src/equal-api && npm install && cd ../..",
+    "make": "npm run build-cli && npm run build-gui && npm run dist-gui && npm run build-website && npm run setup-api"
   },
   "build": {
     "appId": "com.electron.equal",
@@ -29,11 +29,10 @@
       "target": "portable"
     },
     "files": [
-      "electron-build",
       "node_modules",
       "public",
       "src",
-      "cli-build"
+      "builds"
     ]
   },
   "postInstall": "electron-builder install-app-deps",

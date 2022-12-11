@@ -1,14 +1,7 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "removeComments": true,
-    "preserveConstEnums": true,
-    "outDir": "cli-build/equal",
-    "strictNullChecks": true,
-    "sourceMap": true,
-    "moduleResolution": "node",
-    "noImplicitAny": true,
-  },
-  "include": ["src/equal/*"],
-  "exclude": ["node_modules"]
+  "files": [], 
+  "references": [
+    { "path": "./src/equal" },
+    { "path": "./src/equal-cli" }
+  ],
 }

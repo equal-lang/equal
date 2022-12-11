@@ -1,7 +1,7 @@
 const { dialog, ipcMain } = require("electron");
 
 // TO CHANGE?
-const { Equal } = require("../cli-build/equal/equal");
+const { Equal } = require("../builds/equal/equal");
 const fs = require("fs");
 
 const startStr = "<div>Hello World</div>";

@@ -7,11 +7,8 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}/cli-build/equal/cli.js",
-      "args": ["${workspaceFolder}/examples/fib.eq"],
-      // "outFiles": [
-      //   "${workspaceFolder}/cli-build/*.js"
-      // ]
+      "program": "${workspaceFolder}/builds/cli/cli.js",
+      "args": ["${workspaceFolder}/examples/fib.eq"]
     }
   ]
 }

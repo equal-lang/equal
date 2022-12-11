@@ -4,8 +4,8 @@
 import yargs from "yargs";
 // import yargs = require("yargs/yargs");
 import { hideBin } from "yargs/helpers";
-const fs = require("fs");
-const { Equal } = require("./equal");
+import * as fs from "fs";
+import { Equal } from "../equal/equal";
 
 yargs(hideBin(process.argv))
 .scriptName("equal")

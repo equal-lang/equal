@@ -1,15 +1,15 @@
-- Build CLI
+## Build CLI
 ```
 npm run build1
 node cli-build/equal/cli.js ./examples/fib.eq
 ```
-- Build exe
+## Build exe
 ```
 npm run build
 npm run start
 npm run dist
 ```
-- Build website
+## Build website
 ```
 npm run build1
 npm run website

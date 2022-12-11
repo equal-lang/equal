@@ -1,0 +1,79 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Equal API",
+    "description": "API for Equal, an esoteric programming language",
+    "license": {
+      "name": "MIT",
+      "url": "https://mit-license.org/"
+    },
+    "version": "0.0.1"
+  },
+  "servers": [
+    {
+      "url": "https://equal-lang.herokuapp.com/api/v0"
+    }
+  ],
+  "externalDocs": {
+    "description": "Find out more about Equal",
+    "url": "https://github.com/equal-lang/equal#readme"
+  },
+  "paths": {
+    "/source": {
+      "put": {
+        "description": "Evaluates Equal source code and returns output",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Source"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully returned output",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Output"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Source": {
+        "type": "object",
+        "required": [
+          "source"
+        ],
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string"
+          }
+        }
+      },
+      "Output": {
+        "type": "object",
+        "properties": {
+          "output": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -121,6 +121,9 @@
 - [ ] Test url parameters
 - [ ] Throw error on unrecognized character?
 - [ ] Can js be added to inner text?
+- [ ] Manage package json
+- [ ] Post or get? Too much data, but not modifying state; put, since same effect every time
+- [ ] Delete the current electron GUI and build a new one, in rust or nodejs-gui
 
 - [ ] workers and equal
   - Solution 1: import bundled worker, making equal available through config in webpack

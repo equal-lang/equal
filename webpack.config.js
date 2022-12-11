@@ -5,7 +5,7 @@ module.exports = {
   entry: "./src/equal-zero/index.js",
   output: {
     filename: "main.js",
-    path: path.resolve(__dirname, "build"),
+    path: path.resolve(__dirname, "electron-build"),
     clean: true
   },
   mode: "development",

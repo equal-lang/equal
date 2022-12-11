@@ -29,7 +29,7 @@
       "target": "portable"
     },
     "files": [
-      "build",
+      "electron-build",
       "node_modules",
       "public",
       "src",

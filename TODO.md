@@ -117,17 +117,13 @@
 - [ ] Finish workers
 - [ ] Commit build separately
 - [ ] Throwing errors in js file?
-- [ ] !get ride of JSONfn
+- [ ] !get rid of JSONfn
 - [ ] Test url parameters
 - [ ] Throw error on unrecognized character?
 - [ ] Can js be added to inner text?
 - [ ] Manage package json
 - [ ] Post or get? Too much data, but not modifying state; put, since same effect every time
 - [ ] Delete the current electron GUI and build a new one, in rust or nodejs-gui
-
-- [ ] workers and equal
-  - Solution 1: import bundled worker, making equal available through config in webpack
-    - Error: onmessage is null
-  - Solution 2: use webpack's preferred syntax of importing workers, and import equal
-    - dirname is still pointing to the src folder?
-  - Solution 3: use webpack's preferred syntax of importing workers, and pass equal through postMessage somehow
+- [X] workers and equal
+  - not workers, but api hosted on heroku
+- [ ] Naming Equal distributions consistently

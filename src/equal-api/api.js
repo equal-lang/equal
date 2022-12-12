@@ -5,7 +5,7 @@ const port = (process.env.PORT != undefined) ? process.env.PORT : 8000;
 
 // env variable
 app.use(require("cors")({
-  origin: "https://equal-lang.github.io/"
+  origin: "https://equal-lang.github.io"
 }));
 app.use(require("body-parser").json());
 

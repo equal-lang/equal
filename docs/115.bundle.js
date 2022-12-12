@@ -1,1 +1,0 @@
-onmessage=e=>{console.log(e),e.data.equal&&(self.equal=JSON.parse(e.data.equal)),console.log("self.equal",self.equal),console.log(self),function(e,o=!1){if(!self.equal)throw new Error("No interpreter object found");console.log(self.equal)}()},onerror=e=>{console.error(e)};

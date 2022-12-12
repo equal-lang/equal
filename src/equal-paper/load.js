@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
     openFile(mainEditorData);
   })
 
-
   document.getElementById("tool-save-file").addEventListener("click", () => {
     if (mainEditorData.getFileHandle() !== undefined) {
       save(mainEditorData, getEditorValue());
@@ -29,9 +28,27 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("tool-run").addEventListener("click", () => {
     let verbose = false;
     if (getBackgroundColor("tool-verbose") == trueColor) verbose = true;
-    else {
-      throw new Error("No interpreter worker found");
+    const source = {
+      "mode": verbose,
+      "source": getEditorValue()
     }
+    // env variable
+    const apiUrl = "https://equal-lang.herokuapp.com/api/v0";
+    fetch(apiUrl, {
+      method: "PUT",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(source)
+    })
+    .then((res) => {
+      return res.json();
+    })
+    .then((res) => {
+      logConsole(res);
+    })
+    .catch(catchError);
   })
 
   // log verbose in this console?
@@ -270,7 +287,7 @@ function setEditorValue(val, userEvent=undefined) {
     changes: [{ from: 0, to: editor.editor.state.doc.length, insert: val }],
   };
   if (userEvent) transaction["userEvent"] = userEvent;
-  editor.editor.dispatch(transaction)
+  editor.editor.dispatch(transaction);
 }
 
 

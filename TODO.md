@@ -132,7 +132,11 @@
 - [ ] builds directory?
 - [X] Name build scripts
 - [X] Organize contributing.md
-- [ ] Organize build script dependencies
-- [ ] cannot find equal/equal?
+- [ ] Organize build script dependencies (!!)
+- [ ] cannot find equal/equal? - happen to be the same name after copied over by project reference
 - [X] Test build scripts
 - [ ] Bump to production
+- [ ] Return debug string
+- [ ] Build is ready for deployment, while test is for testing?
+- [ ] Make API RESTful
+- [ ] Env variable

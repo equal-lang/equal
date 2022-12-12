@@ -13,7 +13,7 @@ npm run test
 npm run start-cli
 ```
 - First 15 fib numbers should be printed to the console
-- Pressing ```F5``` in VSCode does the same thing
+- Pressing `F5` in VSCode does the same thing
 
 ## Build exe
 ### Build
@@ -49,7 +49,12 @@ npm run watch-website
 ## Build API
 ### Build
 ```
+npm run build-api
+```
+### Test
+```
 npm run setup-api
+npm run start-api
 ```
 
 ## Build All

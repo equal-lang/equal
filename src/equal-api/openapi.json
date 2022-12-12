@@ -68,8 +68,14 @@
       },
       "Output": {
         "type": "object",
+        "required": [
+          "output"
+        ],
         "properties": {
           "output": {
+            "type": "string"
+          },
+          "debug": {
             "type": "string"
           }
         }

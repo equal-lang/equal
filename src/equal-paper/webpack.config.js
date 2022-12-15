@@ -49,7 +49,8 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "./template.html"),
-      chunks: ["editor", "load"]
+      chunks: ["editor", "load"],
+      favicon: "./public/assets/logo-border.png"
     })
   ]
 }

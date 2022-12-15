@@ -8,6 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const trueColor = "rgb(212, 245, 198)";
   const falseColor = getBackgroundColor("tool-help");
 
+  document.getElementById("tool-new-file").addEventListener("click", () => {
+    mainEditorData.setFileHandle(undefined);
+    mainEditorData.notSaved();
+    setEditorValue("");
+  })
+
   document.getElementById("tool-open-file").addEventListener("click", () => {
     openFile(mainEditorData);
   })
@@ -68,6 +74,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     else {
       setBackgroundColor("tool-html-viewer", trueColor);
+      renderHTML(getEditorValue());
+    }
+  })
+
+  document.getElementById("tool-html-refresh").addEventListener("click", () => {
+    if (isVisible("html-rendered")) {
       renderHTML(getEditorValue());
     }
   })
@@ -150,6 +162,10 @@ const editorInit = (function () {
   let unsaved = false;
   let savedTime = undefined;
 
+  function updateToolbarFile() {
+    setupToolbarFile(fileHandle == undefined ? undefined : fileHandle.name, unsaved);
+  }
+
   return {
     getFileHandle() {
       return fileHandle;
@@ -160,11 +176,11 @@ const editorInit = (function () {
     saved() {
       unsaved = false;
       savedTime = Date.now();
-      this.updateToolbarFile();
+      updateToolbarFile();
     },
     notSaved() {
       unsaved = true;
-      this.updateToolbarFile();
+      updateToolbarFile();
     },
     setFileHandle(handle) {
       fileHandle = handle;
@@ -172,9 +188,6 @@ const editorInit = (function () {
     newVersion(fileModifiedTime) {
       // changed since last saved, giving 1000ms for the file to write
       return (fileModifiedTime > (savedTime + 1000));
-    },
-    updateToolbarFile() {
-      setupToolbarFile(fileHandle.name, unsaved);
     }
   }
 });
@@ -260,14 +273,13 @@ function saveAs(editorData, value) {
     types: acceptedFileTypes
   })
   .then((fileHandles) => {
-    return fileHandles[0];
+    return fileHandles;
   })
   .then((fileHandle) => {
     editorData.setFileHandle(fileHandle);
     return fileHandle.createWritable();
   })
   .then((stream) => {
-    console.log(value);
     stream.write(value);
     return stream;
   })

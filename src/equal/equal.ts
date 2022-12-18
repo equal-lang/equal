@@ -6,6 +6,7 @@ import { equalMode, equalOptions } from "./utils";
 import { EqualRuntimeError, ErrorHandler } from "./error";
 import { Statement } from "./statement";
 import { Printer } from "./printer";
+import { bigLexer } from "./big-lexer";
 
 class Equal {
   error: boolean;
@@ -13,6 +14,7 @@ class Equal {
   source: string;
   mode: equalMode;
   lexer: Lexer;
+  bigLexer: bigLexer;
   parser: Parser;
   interpreter: Interpreter;
   errHandler: ErrorHandler;
@@ -28,6 +30,7 @@ class Equal {
       this.error = false;
       this.printer = new Printer(output);
       this.lexer = new Lexer(this.mode, this.errHandler);
+      this.bigLexer = new bigLexer(this.mode, this.errHandler);
       this.parser = new Parser(this.mode, this.errHandler);
       this.interpreter = new Interpreter(this.mode, this.errHandler, this.printer, input);
 
@@ -47,20 +50,20 @@ class Equal {
   public run() { 
     try {
       this.error = this.errHandler.getErrorStatus();
-      if (this.error == false) {  
+      if (this.error == false) {
         this.verbose("Running in verbose mode");
         const tokens = this.lexer.lex(this.source, this.path);
         this.verbose(tokens, "Tokens");
-        const ast = this.parser.parse(tokens, this.path);
+        const bigTokens = this.bigLexer.bigLex(tokens, this.path);
+        this.verbose(bigTokens, "bigTokens");
+        const ast = this.parser.parse(bigTokens, this.path);
         this.execute(ast, this.path);
         this.verbose("Finished running script");
         return this.printer.allPrinted();
       }
-
     } catch(err) {
       this.errHandler.handleError(err);
     }
-    
   }
 
   // always inside another function's try block
@@ -78,7 +81,6 @@ class Equal {
       this.error = this.errHandler.getErrorStatus();
       if (this.error == false) {
         this.interpreter.interpret(ast, path);
-        this.printer.flushBuffer();
       } else {
         this.verbose(this.errHandler.errors, "Errors");
       }

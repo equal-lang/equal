@@ -3,7 +3,7 @@ import { Token, operatorMap, operatorType } from "./token";
 import { EqualSyntaxError, ErrorHandler } from "./error";
 import { Expression, Binary, Logical, Unary, Literal, Variable, Call } from "./expression";
 import { Statement, Scope, Assignment, ExpressionStatement, ConditionalStatement, PrintStatement, Loop, FunctionDeclaration, ReturnStatement } from "./statement";
-import { bigLexer, BigToken, bigTokenType } from "./big-lexer";
+import { BigToken, bigTokenType } from "./big-lexer";
 
 class Parser {
   mode: equalMode;
@@ -21,13 +21,11 @@ class Parser {
   }
   
 
-  public parse(tokens: Token[], path: string) {
+  public parse(bigTokens: BigToken[], path: string) {
     this.path = path;
-    this.tokens = bigLexer(tokens, this.path, this.errHandler);
-    if (this.mode == equalMode.VERBOSE) console.debug("bigTokens", this.tokens);
+    this.tokens = bigTokens;
     while (!this.atEnd()) {
       this.statements.push(this.statement());
-      // this.pointer++;
     }
     return this.statements;
   }

@@ -7,7 +7,7 @@ class Lexer {
   mode: equalMode;
   errHandler: ErrorHandler;
   path: string;
-  
+
   source: string;
 
   line: number;

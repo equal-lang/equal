@@ -38,8 +38,10 @@ document.addEventListener("DOMContentLoaded", () => {
       "mode": verbose,
       "source": getEditorValue()
     }
+    
     // env variable
-    const apiUrl = "https://equal-lang.herokuapp.com/api/v0";
+    // port 8000: default port for API when port not provided by heroku (local development)
+    const apiUrl = ((window.location.origin == "http://localhost:8080") ? "http://localhost:8000/api/v0" : "https://equal-lang.herokuapp.com/api/v0");
     fetch(apiUrl, {
       method: "PUT",
       mode: "cors",

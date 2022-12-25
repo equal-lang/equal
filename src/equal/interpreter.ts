@@ -35,13 +35,12 @@ class Interpreter implements ExpressionVisitor, StatementVisitor {
     this.path = path;
     this.statements = statements;
     // this.global.declareFunc("input", new Input());
-    if (this.mode == equalMode.VERBOSE) console.debug("Statements", this.statements);
     while (!(this.pointer > this.statements.length - 1)) {
       const statement = this.statements[this.pointer];
       this.exec(statement);
       this.pointer++;
     }
-    if (this.mode == equalMode.VERBOSE) console.debug("GlobalEnvironment", this.environment);
+    if (this.mode == equalMode.VERBOSE) this.printer.debug("GlobalEnvironment", this.environment);
   }
 
   public visitBinary(host: Binary): string | number | boolean {

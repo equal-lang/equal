@@ -57,7 +57,9 @@ class Equal {
         const bigTokens = this.bigLexer.bigLex(tokens, this.path);
         this.verbose(bigTokens, "bigTokens");
         const ast = this.parser.parse(bigTokens, this.path);
+        this.verbose(ast, "Statements");
         this.execute(ast, this.path);
+        this.verbose(this.errHandler.errors, "Errors")
         this.verbose("Finished running script");
         return this.printer.allPrinted();
       }
@@ -68,7 +70,7 @@ class Equal {
 
   // always inside another function's try block
   private loadFile(path: string): string {
-    this.verbose("Loading file at " + this.path);
+    this.verbose("Loading file at " + path);
     if (!fs.existsSync(path)) throw new EqualRuntimeError("Invalid path");
     const file = fs.readFileSync(path, "utf8");
     // undefined?
@@ -92,8 +94,9 @@ class Equal {
 
   private verbose(log: any, message?: string): void {
     if (this.mode == equalMode.VERBOSE) {
-      if (message) console.debug(message, log);
-      else console.debug(log);
+      if (message) this.printer.debug(message, log);
+      // misc?
+      else this.printer.debug("Process", log);
     }
   }
 }

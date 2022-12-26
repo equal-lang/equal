@@ -11,17 +11,20 @@
   },
   "scripts": {
     "test": "mocha",
+    "test-lexer": "tsc src/equal/new-lexer.ts --outDir lexer-test/ && node lexer-test/new-lexer.js",
     "build-cli": "node src/tools/generate.js && tsc -b",
     "start-cli": "node builds/cli/cli.js ./examples/fib.eq",
     "build-gui": "webpack --config webpack.config.js",
     "start-gui": "electron .",
     "dist-gui": "electron-builder -w",
+    "start-gui-1": "npx qode ./src/equal-one/index.js",
     "build-website": "webpack --config src/equal-paper/webpack.config.js",
     "start-website": "cd docs && http-server -c-0 && cd ..",
     "watch-website": "nodemon --watch docs/ --exec npm run start-website",
-    "build-api": "npm run build-cli && node src/equal-api/build.js",
     "setup-api": "cd api-docs && npm install && cd ..",
-    "start-api": "nodemon api-docs/api.js",
+    "build-api": "npm run build-cli && node src/equal-api/build.js",
+    "start-api": "set CUSTOM_DEV_MODE=1&& npm run start-api-prod",
+    "start-api-prod": "nodemon api-docs/api.js",
     "make": "npm run build-cli && npm run build-gui && npm run dist-gui && npm run build-website && npm run build-api"
   },
   "build": {
@@ -63,6 +66,7 @@
   "dependencies": {
     "@codemirror/lang-html": "^6.1.2",
     "@fontsource/source-code-pro": "^4.5.12",
+    "@nodegui/nodegui": "^0.57.3",
     "@uiw/codemirror-theme-abcdef": "^4.12.4",
     "@uiw/react-codemirror": "^4.12.4",
     "react": "^18.2.0",

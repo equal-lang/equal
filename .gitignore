@@ -6,3 +6,6 @@ builds/
 
 node_modules/
 notes.txt
+
+# temporary
+lexer-test/

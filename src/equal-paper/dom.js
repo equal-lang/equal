@@ -1,4 +1,19 @@
+import toolbar from "./toolbar.hbs";
+import toolbarFile from "./toolbar-file.hbs";
+
 // depend on window, document, editor
+
+function setupToolbar(toolbarId, toolbarObj) {
+  document.getElementById(toolbarId).innerHTML = toolbar(toolbarObj);
+}
+
+function setupToolbarFile(toolbarFileId, name="Untitled", unsaved=true) {
+  document.getElementById(toolbarFileId).innerHTML = toolbarFile({
+    name: name,
+    unsaved: unsaved
+  })
+}
+
 function getBackgroundColor(id) {
   return window.getComputedStyle(document.getElementById(id))["background-color"];
 }
@@ -32,14 +47,12 @@ function setEditorValue(val, userEvent=undefined) {
   editor.editor.dispatch(transaction);
 }
 
-// change to console
-
-function logText(id, val, endOfLine = "\n") {
-  document.getElementById(id).innerText += val + endOfLine;
+function logConsole(consoleId, val, endOfLine = "\n") {
+  document.getElementById(consoleId).innerText += val + endOfLine;
 }
 
-function clearText(id) {
-  document.getElementById(id).innerText = "";
+function clearConsole(consoleId) {
+  document.getElementById(consoleId).innerText = "";
 }
 
 function isVisible(id) {
@@ -61,8 +74,9 @@ function hideHTML(gridId, gridLayout, iframeId) {
 }
 
 export {
+  setupToolbar, setupToolbarFile,
   getBackgroundColor, setBackgroundColor, toggleBackground,
   getEditorValue, setEditorValue, 
-  logText, clearText, 
+  logConsole, clearConsole, 
   isVisible, renderHTML, hideHTML
 }

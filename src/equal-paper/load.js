@@ -1,21 +1,45 @@
 import "./equal-paper.css";
-import toolbar from "./toolbar.hbs";
-import toolbarFile from "./toolbar-file.hbs";
 import { EditorData } from "./data";
-import * as editorDOM from "./dom";
+import * as domFunctions from "./dom";
 
 // set const variables and pass in
 
 document.addEventListener("DOMContentLoaded", () => {
-  setupToolbar();
+  const toolbarObj = {
+    tools: [
+      { name: "new-file",
+        display: "new-file" },
+      { name: "open-file",
+        display: "open-file" },
+      { name: "save-file",
+        display: "save" },
+      { name: "save-file-as",
+        display: "save-as" },
+      { name: "run",
+        display: "run" },
+      { name: "verbose",
+        display: "verbose" },
+      { name: "clear-console",
+        display: "clear-console" },
+      { name: "html-viewer",
+        display: "view-page", },
+      { name: "html-refresh",
+        display: "refresh-page", },
+      { name: "help",
+        display: "help" }
+    ]
+  };
+  domFunctions.setupToolbar("toolbar", toolbarObj);
+  domFunctions.setupToolbarFile("toolbar-file");
+
   const mainEditorData = editorInit();
   const trueColor = "rgb(212, 245, 198)";
-  const falseColor = editorDOM.getBackgroundColor("tool-help");
+  const falseColor = domFunctions.getBackgroundColor("tool-help");
 
   document.getElementById("tool-new-file").addEventListener("click", () => {
     mainEditorData.setFileHandle(undefined);
     mainEditorData.notSaved();
-    editorDOM.setEditorValue("");
+    domFunctions.setEditorValue("");
   })
 
   document.getElementById("tool-open-file").addEventListener("click", () => {
@@ -24,23 +48,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("tool-save-file").addEventListener("click", () => {
     if (mainEditorData.getFileHandle() !== undefined) {
-      save(mainEditorData, editorDOM.getEditorValue());
+      save(mainEditorData, domFunctions.getEditorValue());
     } else {
-      saveAs(mainEditorData, editorDOM.getEditorValue());
-      // set file handle
+      saveAs(mainEditorData, domFunctions.getEditorValue());
     }
   })
 
   document.getElementById("tool-save-file-as").addEventListener("click", () => {
-    saveAs(mainEditorData, editorDOM.getEditorValue());
+    saveAs(mainEditorData, domFunctions.getEditorValue());
   })
 
   document.getElementById("tool-run").addEventListener("click", () => {
     let verbose = false;
-    if (editorDOM.getBackgroundColor("tool-verbose") == trueColor) verbose = true;
+    if (domFunctions.getBackgroundColor("tool-verbose") == trueColor) verbose = true;
     const source = {
       "mode": verbose,
-      "source": editorDOM.getEditorValue()
+      "source": domFunctions.getEditorValue()
     }
     
     // env variable
@@ -58,43 +81,43 @@ document.addEventListener("DOMContentLoaded", () => {
       return res.json();
     })
     .then((res) => {
-      editorDOM.logText("console", res);
+      domFunctions.logConsole("console", res);
     })
     .catch(catchError);
   })
 
   // log verbose in this console?
   document.getElementById("tool-verbose").addEventListener("click", () => {
-    editorDOM.toggleBackground("tool-verbose", trueColor, falseColor);
+    domFunctions.toggleBackground("tool-verbose", trueColor, falseColor);
   })
 
   document.getElementById("tool-clear-console").addEventListener("click", () => {
-    editorDOM.clearText("console");
+    domFunctions.clearConsole("console");
   })
 
   function renderHTML(html) {
-    editorDOM.renderHTML(html, "main-grid", "45vh 50vh", "html-rendered");
+    domFunctions.renderHTML(html, "main-grid", "45vh 50vh", "html-rendered");
   }
 
   function hideHTML() {
-    editorDOM.hideHTML("main-grid", "95vh", "html-rendered");
+    domFunctions.hideHTML("main-grid", "95vh", "html-rendered");
   }
 
   // detect state because state can be changed
   document.getElementById("tool-html-viewer").addEventListener("click", () => {
-    if (editorDOM.isVisible("html-rendered")) {
-      editorDOM.setBackgroundColor("tool-html-viewer", falseColor);
+    if (domFunctions.isVisible("html-rendered")) {
+      domFunctions.setBackgroundColor("tool-html-viewer", falseColor);
       hideHTML();
     }
     else {
-      editorDOM.setBackgroundColor("tool-html-viewer", trueColor);
-      renderHTML(editorDOM.getEditorValue());
+      domFunctions.setBackgroundColor("tool-html-viewer", trueColor);
+      renderHTML(domFunctions.getEditorValue());
     }
   })
 
   document.getElementById("tool-html-refresh").addEventListener("click", () => {
-    if (editorDOM.isVisible("html-rendered")) {
-      renderHTML(editorDOM.getEditorValue());
+    if (domFunctions.isVisible("html-rendered")) {
+      renderHTML(domFunctions.getEditorValue());
     }
   })
 
@@ -114,61 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 })
 
-function setupToolbar() {
-  document.getElementById("toolbar").innerHTML = toolbar({
-    tools: [
-      {
-        name: "new-file",
-        display: "new-file"
-      },
-      {
-        name: "open-file",
-        display: "open-file"
-      },
-      {
-        name: "save-file",
-        display: "save"
-      },
-      {
-        name: "save-file-as",
-        display: "save-as"
-      },
-      {
-        name: "run",
-        display: "run"
-      },
-      {
-        name: "verbose",
-        display: "verbose"
-      },
-      {
-        name: "clear-console",
-        display: "clear-console"
-      },
-      {
-        name: "html-viewer",
-        display: "view-page",
-      },
-      {
-        name: "html-refresh",
-        display: "refresh-page",
-      },
-      {
-        name: "help",
-        display: "help"
-      }
-    ]
-  });
-  setupToolbarFile();
-}
 
-function setupToolbarFile(name="Untitled", unsaved=true) {
-  document.getElementById("toolbar-file").innerHTML = toolbarFile({
-    // make right justified?
-    name: name,
-    unsaved: unsaved
-  })
-}
 
 const editorInit = (function () {
   let fileHandle = undefined;
@@ -176,7 +145,7 @@ const editorInit = (function () {
   let savedTime = undefined;
 
   function updateToolbarFile() {
-    setupToolbarFile(fileHandle == undefined ? undefined : fileHandle.name, unsaved);
+    domFunctions.setupToolbarFile(fileHandle == undefined ? undefined : fileHandle.name, unsaved);
   }
 
   return {
@@ -242,7 +211,7 @@ function openFile(editorData) {
       return getTextFromFileHandle(fileHandle);
     })
     .then((text) => {
-      editorDOM.setEditorValue(text, "open.file");
+      domFunctions.setEditorValue(text, "open.file");
     })
     .catch(catchError);
 }

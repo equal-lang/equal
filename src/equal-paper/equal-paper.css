@@ -1,8 +1,7 @@
-/* body {
-  padding-left: 9vw;
-  padding-right: 9vw;
-
-} */
+button {
+  /* referenced in js */
+  background-color: rgb(240, 240, 240);
+}
 
 div#main-grid {
   display: grid;

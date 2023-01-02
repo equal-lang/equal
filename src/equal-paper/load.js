@@ -1,46 +1,17 @@
 import "./equal-paper.css";
 import { EditorData } from "./data";
-import * as domFunctions from "./dom";
-
-// set const variables and pass in
+import * as domTools from "./dom";
 
 document.addEventListener("DOMContentLoaded", () => {
   const editorData = new EditorData();
 
-  const toolbarObj = {
-    tools: [
-      { name: "new-file",
-        display: "new-file" },
-      { name: "open-file",
-        display: "open-file" },
-      { name: "save-file",
-        display: "save" },
-      { name: "save-file-as",
-        display: "save-as" },
-      { name: "run",
-        display: "run" },
-      { name: "verbose",
-        display: "verbose" },
-      { name: "clear-console",
-        display: "clear-console" },
-      { name: "html-viewer",
-        display: "view-page", },
-      { name: "html-refresh",
-        display: "refresh-page", },
-      { name: "help",
-        display: "help" }
-    ]
-  };
-  domFunctions.setupToolbar("toolbar", toolbarObj);
-  domFunctions.setupToolbarFile("toolbar-file");
-
-  const trueColor = "rgb(212, 245, 198)";
-  const falseColor = domFunctions.getBackgroundColor("tool-help");
+  domTools.setupToolbar();
+  domTools.setupToolbarFile();
 
   document.getElementById("tool-new-file").addEventListener("click", () => {
     editorData.setFileHandle(undefined);
     editorData.notSaved();
-    domFunctions.setEditorValue("");
+    domTools.setEditorValue("");
   })
 
   document.getElementById("tool-open-file").addEventListener("click", () => {
@@ -49,22 +20,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("tool-save-file").addEventListener("click", () => {
     if (editorData.getFileHandle() !== undefined) {
-      save(editorData, domFunctions.getEditorValue());
+      save(editorData, domTools.getEditorValue());
     } else {
-      saveAs(editorData, domFunctions.getEditorValue());
+      saveAs(editorData, domTools.getEditorValue());
     }
   })
 
   document.getElementById("tool-save-file-as").addEventListener("click", () => {
-    saveAs(editorData, domFunctions.getEditorValue());
+    saveAs(editorData, domTools.getEditorValue());
   })
 
   document.getElementById("tool-run").addEventListener("click", () => {
     let verbose = false;
-    if (domFunctions.getBackgroundColor("tool-verbose") == trueColor) verbose = true;
+    if (domTools.getBackgroundColor("tool-verbose") == domTools.trueColor) verbose = true;
     const source = {
       "mode": verbose,
-      "source": domFunctions.getEditorValue()
+      "source": domTools.getEditorValue()
     }
     
     // env variable
@@ -82,43 +53,36 @@ document.addEventListener("DOMContentLoaded", () => {
       return res.json();
     })
     .then((res) => {
-      domFunctions.logConsole("console", res);
+      domTools.logConsole(res);
     })
     .catch(catchError);
   })
 
   // log verbose in this console?
   document.getElementById("tool-verbose").addEventListener("click", () => {
-    domFunctions.toggleBackground("tool-verbose", trueColor, falseColor);
+    domTools.toggleBackgroundColor("tool-verbose");
   })
 
   document.getElementById("tool-clear-console").addEventListener("click", () => {
-    domFunctions.clearConsole("console");
+    domTools.clearConsole();
   })
 
-  function renderHTML(html) {
-    domFunctions.renderHTML(html, "main-grid", "45vh 50vh", "html-rendered");
-  }
-
-  function hideHTML() {
-    domFunctions.hideHTML("main-grid", "95vh", "html-rendered");
-  }
 
   // detect state because state can be changed
   document.getElementById("tool-html-viewer").addEventListener("click", () => {
-    if (domFunctions.isVisible("html-rendered")) {
-      domFunctions.setBackgroundColor("tool-html-viewer", falseColor);
-      hideHTML();
+    if (domTools.isVisible("html-rendered")) {
+      domTools.setBackgroundColor("tool-html-viewer", domTools.falseColor);
+      domTools.hideHTML();
     }
     else {
-      domFunctions.setBackgroundColor("tool-html-viewer", trueColor);
-      renderHTML(domFunctions.getEditorValue());
+      domTools.setBackgroundColor("tool-html-viewer", domTools.trueColor);
+      domTools.renderHTML(domTools.getEditorValue());
     }
   })
 
   document.getElementById("tool-html-refresh").addEventListener("click", () => {
-    if (domFunctions.isVisible("html-rendered")) {
-      renderHTML(domFunctions.getEditorValue());
+    if (domTools.isVisible("html-rendered")) {
+      domTools.renderHTML(domTools.getEditorValue());
     }
   })
 
@@ -176,7 +140,7 @@ function openFile(editorData) {
       return getTextFromFileHandle(fileHandle);
     })
     .then((text) => {
-      domFunctions.setEditorValue(text, "open.file");
+      domTools.setEditorValue(text, "open.file");
     })
     .catch(catchError);
 }

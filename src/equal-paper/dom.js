@@ -1,16 +1,56 @@
 import toolbar from "./toolbar.hbs";
 import toolbarFile from "./toolbar-file.hbs";
 
-// depend on window, document, editor
+const constants = {
+  toolbarObj: {
+    tools: [
+      { name: "new-file",
+        display: "new-file" },
+      { name: "open-file",
+        display: "open-file" },
+      { name: "save-file",
+        display: "save" },
+      { name: "save-file-as",
+        display: "save-as" },
+      { name: "run",
+        display: "run" },
+      { name: "verbose",
+        display: "verbose" },
+      { name: "clear-console",
+        display: "clear-console" },
+      { name: "html-viewer",
+        display: "view-page", },
+      { name: "html-refresh",
+        display: "refresh-page", },
+      { name: "help",
+        display: "help" }
+    ]
+  },
 
-function setupToolbar(toolbarId, toolbarObj) {
-  document.getElementById(toolbarId).innerHTML = toolbar(toolbarObj);
+  toolbarId: "toolbar",
+  toolbarFileId: "toolbar-file",
+  gridId: "main-grid",
+  consoleId: "console",
+  iframeId: "html-rendered",
+
+  gridLayoutHtml: "45vh 50vh",
+  gridLayoutNoHtml: "95vh",
+
+  trueColor: "rgb(212, 245, 198)",
+  falseColor: "rgb(240, 240, 240)",
 }
 
-function setupToolbarFile(toolbarFileId, name="Untitled", unsaved=true) {
-  document.getElementById(toolbarFileId).innerHTML = toolbarFile({
+// depend on window, document, editor
+
+function setupToolbar() {
+  // console.log(getBackgroundColor("tool-help"));
+  document.getElementById(constants.toolbarId).innerHTML = toolbar(constants.toolbarObj);
+}
+
+function setupToolbarFile(name="Untitled", unsaved=true) {
+  document.getElementById(constants.toolbarFileId).innerHTML = toolbarFile({
     name: name,
-    unsaved: unsaved
+    unsaved: unsaved,
   })
 }
 
@@ -23,17 +63,16 @@ function setBackgroundColor(id, color) {
 }
 
 // depend on getBackgroundColor and setBackgroundColor
-function toggleBackground(id, trueColor, falseColor) {
-  if (getBackgroundColor(id) == trueColor) {
-    setBackgroundColor(id, falseColor);
-    return falseColor;
+function toggleBackgroundColor(id) {
+  if (getBackgroundColor(id) == constants.trueColor) {
+    setBackgroundColor(id, constants.falseColor);
+    return constants.falseColor;
   }
   else {
-    setBackgroundColor(id, trueColor);
-    return trueColor;
+    setBackgroundColor(id, constants.trueColor);
+    return constants.trueColor;
   }
 }
-
 
 function getEditorValue() {
   return editor.editor.viewState.state.doc.toString();
@@ -47,12 +86,12 @@ function setEditorValue(val, userEvent=undefined) {
   editor.editor.dispatch(transaction);
 }
 
-function logConsole(consoleId, val, endOfLine = "\n") {
-  document.getElementById(consoleId).innerText += val + endOfLine;
+function logConsole(val, endOfLine = "\n") {
+  document.getElementById(constants.consoleId).innerText += val + endOfLine;
 }
 
-function clearConsole(consoleId) {
-  document.getElementById(consoleId).innerText = "";
+function clearConsole() {
+  document.getElementById(constants.consoleId).innerText = "";
 }
 
 function isVisible(id) {
@@ -60,22 +99,25 @@ function isVisible(id) {
   return !(style["display"] == "none" || style["visibility"] == "hidden");
 }
 
-function renderHTML(html, gridId, gridLayout, iframeId) {
-  document.getElementById(gridId).style["grid-template-rows"] = gridLayout;
-  const iframe = document.getElementById(iframeId);
+function renderHTML(html) {
+  document.getElementById(constants.gridId).style["grid-template-rows"] = constants.gridLayoutHtml;
+  const iframe = document.getElementById(constants.iframeId);
   // check for security
   iframe.setAttribute("srcdoc", html);
-  document.getElementById(iframeId).style.display = "block";
+  document.getElementById(constants.iframeId).style.display = "block";
 }
 
-function hideHTML(gridId, gridLayout, iframeId) {
-  document.getElementById(gridId).style["grid-template-rows"] = gridLayout;
-  document.getElementById(iframeId).style.display = "none";
+function hideHTML() {
+  document.getElementById(constants.gridId).style["grid-template-rows"] = constants.gridLayoutNoHtml;
+  document.getElementById(constants.iframeId).style.display = "none";
 }
+
+export const trueColor = constants.trueColor;
+export const falseColor = constants.falseColor;
 
 export {
   setupToolbar, setupToolbarFile,
-  getBackgroundColor, setBackgroundColor, toggleBackground,
+  getBackgroundColor, setBackgroundColor, toggleBackgroundColor,
   getEditorValue, setEditorValue, 
   logConsole, clearConsole, 
   isVisible, renderHTML, hideHTML

@@ -1,4 +1,4 @@
-import * as domFunctions from "./dom";
+import * as domTools from "./dom";
 
 class EditorData {
   #fileHandle;
@@ -13,7 +13,7 @@ class EditorData {
 
   #updateToolbarFile() {
     // need toolbar id
-    domFunctions.setupToolbarFile(this.#fileHandle == undefined ? undefined : this.#fileHandle.name, this.#unsaved);
+    domTools.setupToolbarFile(this.#fileHandle == undefined ? undefined : this.#fileHandle.name, this.#unsaved);
   }
 
   getFileHandle() {

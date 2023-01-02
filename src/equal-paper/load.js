@@ -150,7 +150,7 @@ function getTextFromFileHandle(fileHandle) {
   return fileHandle.getFile()
     .then((file) => {
       return file.text();
-    });
+    }).catch(catchError)
 }
 
 // check if a newer version than the one currently opened exists
@@ -162,6 +162,7 @@ function save(editorData, value) {
     if (editorData.newVersion(file.lastModified)) {
       proceed = confirm("A newer version of the currently open file exists, which will be overwritten by this operation. Proceed?");
     }
+    // nested?
     if (proceed) {
       editorData.getFileHandle().createWritable()
       .then((stream) => {
@@ -172,7 +173,11 @@ function save(editorData, value) {
         stream.close();
         editorData.saved();
       })
-      .catch(catchError)
+      .catch(catchError);
+    }
+  }).catch((err) => {
+    if (err.name == "NotFoundError") {
+      if (confirm("The file cannot be found. Save at new location?")) saveAs(editorData, domTools.getEditorValue());
     }
   })
 }

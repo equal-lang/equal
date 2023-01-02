@@ -5,6 +5,8 @@ import * as domFunctions from "./dom";
 // set const variables and pass in
 
 document.addEventListener("DOMContentLoaded", () => {
+  const editorData = new EditorData();
+
   const toolbarObj = {
     tools: [
       { name: "new-file",
@@ -32,30 +34,29 @@ document.addEventListener("DOMContentLoaded", () => {
   domFunctions.setupToolbar("toolbar", toolbarObj);
   domFunctions.setupToolbarFile("toolbar-file");
 
-  const mainEditorData = editorInit();
   const trueColor = "rgb(212, 245, 198)";
   const falseColor = domFunctions.getBackgroundColor("tool-help");
 
   document.getElementById("tool-new-file").addEventListener("click", () => {
-    mainEditorData.setFileHandle(undefined);
-    mainEditorData.notSaved();
+    editorData.setFileHandle(undefined);
+    editorData.notSaved();
     domFunctions.setEditorValue("");
   })
 
   document.getElementById("tool-open-file").addEventListener("click", () => {
-    openFile(mainEditorData);
+    openFile(editorData);
   })
 
   document.getElementById("tool-save-file").addEventListener("click", () => {
-    if (mainEditorData.getFileHandle() !== undefined) {
-      save(mainEditorData, domFunctions.getEditorValue());
+    if (editorData.getFileHandle() !== undefined) {
+      save(editorData, domFunctions.getEditorValue());
     } else {
-      saveAs(mainEditorData, domFunctions.getEditorValue());
+      saveAs(editorData, domFunctions.getEditorValue());
     }
   })
 
   document.getElementById("tool-save-file-as").addEventListener("click", () => {
-    saveAs(mainEditorData, domFunctions.getEditorValue());
+    saveAs(editorData, domFunctions.getEditorValue());
   })
 
   document.getElementById("tool-run").addEventListener("click", () => {
@@ -129,50 +130,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.addEventListener("editor-change", (val) => {
     const {viewUpdate, fileOpened} = val.detail;
-    if (fileOpened) mainEditorData.saved();
-    else if (viewUpdate.docChanged && mainEditorData.getUnsaved() == false) {
-      mainEditorData.notSaved();
+    if (fileOpened) editorData.saved();
+    else if (viewUpdate.docChanged && editorData.getUnsaved() == false) {
+      editorData.notSaved();
     }
   })
 
 })
 
-
-
-const editorInit = (function () {
-  let fileHandle = undefined;
-  let unsaved = false;
-  let savedTime = undefined;
-
-  function updateToolbarFile() {
-    domFunctions.setupToolbarFile(fileHandle == undefined ? undefined : fileHandle.name, unsaved);
-  }
-
-  return {
-    getFileHandle() {
-      return fileHandle;
-    },
-    getUnsaved() {
-      return unsaved;
-    },
-    saved() {
-      unsaved = false;
-      savedTime = Date.now();
-      updateToolbarFile();
-    },
-    notSaved() {
-      unsaved = true;
-      updateToolbarFile();
-    },
-    setFileHandle(handle) {
-      fileHandle = handle;
-    },
-    newVersion(fileModifiedTime) {
-      // changed since last saved, giving 1000ms for the file to write
-      return (fileModifiedTime > (savedTime + 1000));
-    }
-  }
-});
 
 const acceptedFileTypes = [
   { 

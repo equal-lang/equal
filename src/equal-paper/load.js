@@ -1,17 +1,21 @@
 import "./equal-paper.css";
 import toolbar from "./toolbar.hbs";
 import toolbarFile from "./toolbar-file.hbs";
+import { EditorData } from "./data";
+import * as editorDOM from "./dom";
+
+// set const variables and pass in
 
 document.addEventListener("DOMContentLoaded", () => {
   setupToolbar();
   const mainEditorData = editorInit();
   const trueColor = "rgb(212, 245, 198)";
-  const falseColor = getBackgroundColor("tool-help");
+  const falseColor = editorDOM.getBackgroundColor("tool-help");
 
   document.getElementById("tool-new-file").addEventListener("click", () => {
     mainEditorData.setFileHandle(undefined);
     mainEditorData.notSaved();
-    setEditorValue("");
+    editorDOM.setEditorValue("");
   })
 
   document.getElementById("tool-open-file").addEventListener("click", () => {
@@ -20,23 +24,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("tool-save-file").addEventListener("click", () => {
     if (mainEditorData.getFileHandle() !== undefined) {
-      save(mainEditorData, getEditorValue());
+      save(mainEditorData, editorDOM.getEditorValue());
     } else {
-      saveAs(mainEditorData, getEditorValue());
+      saveAs(mainEditorData, editorDOM.getEditorValue());
       // set file handle
     }
   })
 
   document.getElementById("tool-save-file-as").addEventListener("click", () => {
-    saveAs(mainEditorData, getEditorValue());
+    saveAs(mainEditorData, editorDOM.getEditorValue());
   })
 
   document.getElementById("tool-run").addEventListener("click", () => {
     let verbose = false;
-    if (getBackgroundColor("tool-verbose") == trueColor) verbose = true;
+    if (editorDOM.getBackgroundColor("tool-verbose") == trueColor) verbose = true;
     const source = {
       "mode": verbose,
-      "source": getEditorValue()
+      "source": editorDOM.getEditorValue()
     }
     
     // env variable
@@ -54,35 +58,43 @@ document.addEventListener("DOMContentLoaded", () => {
       return res.json();
     })
     .then((res) => {
-      logConsole(res);
+      editorDOM.logText("console", res);
     })
     .catch(catchError);
   })
 
   // log verbose in this console?
   document.getElementById("tool-verbose").addEventListener("click", () => {
-    toggleBackground("tool-verbose", trueColor, falseColor);
+    editorDOM.toggleBackground("tool-verbose", trueColor, falseColor);
   })
 
   document.getElementById("tool-clear-console").addEventListener("click", () => {
-    clearConsole();
+    editorDOM.clearText("console");
   })
+
+  function renderHTML(html) {
+    editorDOM.renderHTML(html, "main-grid", "45vh 50vh", "html-rendered");
+  }
+
+  function hideHTML() {
+    editorDOM.hideHTML("main-grid", "95vh", "html-rendered");
+  }
 
   // detect state because state can be changed
   document.getElementById("tool-html-viewer").addEventListener("click", () => {
-    if (isVisible("html-rendered")) {
-      setBackgroundColor("tool-html-viewer", falseColor);
+    if (editorDOM.isVisible("html-rendered")) {
+      editorDOM.setBackgroundColor("tool-html-viewer", falseColor);
       hideHTML();
     }
     else {
-      setBackgroundColor("tool-html-viewer", trueColor);
-      renderHTML(getEditorValue());
+      editorDOM.setBackgroundColor("tool-html-viewer", trueColor);
+      renderHTML(editorDOM.getEditorValue());
     }
   })
 
   document.getElementById("tool-html-refresh").addEventListener("click", () => {
-    if (isVisible("html-rendered")) {
-      renderHTML(getEditorValue());
+    if (editorDOM.isVisible("html-rendered")) {
+      renderHTML(editorDOM.getEditorValue());
     }
   })
 
@@ -101,7 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 
 })
-
 
 function setupToolbar() {
   document.getElementById("toolbar").innerHTML = toolbar({
@@ -231,7 +242,7 @@ function openFile(editorData) {
       return getTextFromFileHandle(fileHandle);
     })
     .then((text) => {
-      setEditorValue(text, "open.file");
+      editorDOM.setEditorValue(text, "open.file");
     })
     .catch(catchError);
 }
@@ -290,66 +301,6 @@ function saveAs(editorData, value) {
     editorData.saved();
   })
   .catch(catchError);
-}
-
-function getEditorValue() {
-  return editor.editor.viewState.state.doc.toString();
-}
-
-function setEditorValue(val, userEvent=undefined) {
-  let transaction = {
-    changes: [{ from: 0, to: editor.editor.state.doc.length, insert: val }],
-  };
-  if (userEvent) transaction["userEvent"] = userEvent;
-  editor.editor.dispatch(transaction);
-}
-
-
-
-
-function logConsole(val, endOfLine = "\n") {
-  document.getElementById("console").innerText += val + endOfLine;
-}
-
-function clearConsole() {
-  document.getElementById("console").innerText = "";
-}
-
-function isVisible(id) {
-  const style = window.getComputedStyle(document.getElementById(id));
-  return !(style["display"] == "none" || style["visibility"] == "hidden");
-}
-
-function renderHTML(html) {
-  document.getElementsByClassName("main")[0].style["grid-template-rows"] = "10vh 45vh 40vh";
-  const iframe = document.getElementById("html-rendered");
-  // check for security
-  iframe.setAttribute("srcdoc", html);
-  document.getElementById("html-rendered").style.display = "block";
-}
-
-function hideHTML() {
-  document.getElementsByClassName("main")[0].style["grid-template-rows"] = "10vh 85vh";
-  document.getElementById("html-rendered").style.display = "none";
-}
-
-function toggleBackground(id, trueColor, falseColor) {
-  if (getBackgroundColor(id) == trueColor) {
-    setBackgroundColor(id, falseColor);
-    return falseColor;
-  }
-  else {
-    setBackgroundColor(id, trueColor);
-    return trueColor;
-  }
-}
-
-function getBackgroundColor(id) {
-  return window.getComputedStyle(document.getElementById(id))["background-color"];
-}
-
-function setBackgroundColor(id, color) {
-  document.getElementById(id).style["background-color"] = color;
 }
 
 function catchError(err) {

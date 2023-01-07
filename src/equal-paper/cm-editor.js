@@ -45,8 +45,6 @@ const initialText =
       </form>
     </label>
   </form>
-
-
   </div>
 
 </form>
@@ -60,7 +58,7 @@ const initialText =
     <label>
       <a href="i"></a>
     </label>
-    <label>15</label>
+    <label>20</label>
   </form>
 
 <!-- console.log(fib(i)) -->

@@ -65,7 +65,7 @@ const constants = {
   iframeId: "html-rendered",
 
   gridLayoutHtml: "45vh 50vh",
-  gridLayoutNoHtml: "95vh",
+  gridLayoutNoHtml: "95vh 0vh",
 
   trueColor: "rgb(212, 245, 198)",
   falseColor: "rgb(240, 240, 240)",

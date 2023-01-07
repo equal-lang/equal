@@ -61,6 +61,7 @@ const constants = {
   toolbarFileId: "toolbar-file",
   gridId: "main-grid",
   consoleId: "console",
+  iframeGridId: "grid-html-viewer",
   iframeId: "html-rendered",
 
   gridLayoutHtml: "45vh 50vh",
@@ -134,18 +135,19 @@ function renderHTML(html) {
   const iframe = document.getElementById(constants.iframeId);
   // check for security
   iframe.setAttribute("srcdoc", html);
-  document.getElementById(constants.iframeId).style.display = "block";
+  document.getElementById(constants.iframeGridId).style.display = "block";
 }
 
 function hideHTML() {
   document.getElementById(constants.gridId).style["grid-template-rows"] = constants.gridLayoutNoHtml;
-  document.getElementById(constants.iframeId).style.display = "none";
+  document.getElementById(constants.iframeGridId).style.display = "none";
 }
 
-export const trueColor = constants.trueColor;
-export const falseColor = constants.falseColor;
+// export const trueColor = constants.trueColor;
+// export const falseColor = constants.falseColor;
 
 export {
+  constants,
   setupToolbar, setupToolbarFile,
   getBackgroundColor, setBackgroundColor, toggleBackgroundColor,
   getEditorValue, setEditorValue,

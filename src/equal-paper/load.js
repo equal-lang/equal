@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("tool-run").addEventListener("click", () => {
     let verbose = false;
-    if (domTools.getBackgroundColor("tool-verbose") == domTools.trueColor) verbose = true;
+    if (domTools.getBackgroundColor("tool-verbose") == domTools.constants.trueColor) verbose = true;
     const source = {
       "mode": verbose,
       "source": domTools.getEditorValue()
@@ -70,18 +70,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // detect state because state can be changed
   document.getElementById("tool-html-viewer").addEventListener("click", () => {
-    if (domTools.isVisible("html-rendered")) {
-      domTools.setBackgroundColor("tool-html-viewer", domTools.falseColor);
+    if (domTools.isVisible(domTools.constants.iframeGridId)) {
+      domTools.setBackgroundColor("tool-html-viewer", domTools.constants.falseColor);
       domTools.hideHTML();
     }
     else {
-      domTools.setBackgroundColor("tool-html-viewer", domTools.trueColor);
+      domTools.setBackgroundColor("tool-html-viewer", domTools.constants.trueColor);
       domTools.renderHTML(domTools.getEditorValue());
     }
   })
 
   document.getElementById("tool-html-refresh").addEventListener("click", () => {
-    if (domTools.isVisible("html-rendered")) {
+    if (domTools.isVisible(domTools.constants.iframeGridId)) {
       domTools.renderHTML(domTools.getEditorValue());
     }
   })

@@ -1,8 +1,4 @@
-button {
-  /* referenced in js */
-  background-color: rgb(240, 240, 240);
-}
-
+/* grid management: main grid + subgrid in grid-code-editor */
 div#main-grid {
   display: grid;
   grid-template-columns: 70% 30%;
@@ -11,9 +7,20 @@ div#main-grid {
   /* grid-template-rows: 45vh 55vh; */
 }
 
-div#grid-code-editor, div#grid-equal-viewer {
-  padding: 5px;
-  border: 1px black solid;
+div#grid-code-editor {
+  grid-column: 1 / 2;
+}
+
+div#grid-equal-viewer {
+  grid-row: 1 / 3;
+  grid-column: 2 / 3;
+}
+
+div#grid-html-viewer {
+  grid-column: 1 / 2;
+  /* change with js */
+  display: none;
+  /* display: block; */
 }
 
 @media (max-width: 1101px) {
@@ -33,8 +40,11 @@ div#grid-code-editor {
   grid-template-rows: var(--toolbar-height) calc(100% - var(--toolbar-height));
 }
 
-.cm-editor {
-  max-height: 100%;
+/* styling */
+
+div#grid-code-editor, div#grid-equal-viewer {
+  padding: 5px;
+  border: 1px black solid;
 }
 
 div#grid-equal-viewer {
@@ -42,13 +52,20 @@ div#grid-equal-viewer {
 }
 
 div#grid-html-viewer {
-  grid-column: 1 / 3;
+  padding: 0px 3px 3px 0px;
+  border: 1px black solid;
+}
+
+button {
+  /* referenced in js */
+  background-color: rgb(240, 240, 240);
+}
+
+.cm-editor {
+  max-height: 100%;
 }
 
 iframe#html-rendered {
   height: 100%;
   width: 100%;
-   /* change with js */
-   display: none;
-   /* display: block; */
 }

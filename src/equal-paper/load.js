@@ -206,6 +206,10 @@ function saveAs(editorData, value) {
   .catch(catchError);
 }
 
+function syncData() {
+  // put function in then function
+}
+
 function catchError(err) {
   console.error(err);
 }

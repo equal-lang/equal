@@ -4,26 +4,56 @@ import toolbarFile from "./toolbar-file.hbs";
 const constants = {
   toolbarObj: {
     tools: [
-      { name: "new-file",
-        display: "new-file" },
-      { name: "open-file",
-        display: "open-file" },
-      { name: "save-file",
-        display: "save" },
-      { name: "save-file-as",
-        display: "save-as" },
-      { name: "run",
-        display: "run" },
-      { name: "verbose",
-        display: "verbose" },
-      { name: "clear-console",
-        display: "clear-console" },
-      { name: "html-viewer",
-        display: "view-page", },
-      { name: "html-refresh",
-        display: "refresh-page", },
-      { name: "help",
-        display: "help" }
+      {
+        name: "new-file",
+        display: "new-file",
+        class: "file"
+      },
+      {
+        name: "open-file",
+        display: "open-file",
+        class: "file"
+      },
+      {
+        name: "save-file",
+        display: "save",
+        class: "file"
+      },
+      {
+        name: "save-file-as",
+        display: "save-as",
+        class: "file"
+      },
+      {
+        name: "run",
+        display: "run",
+        class: "run"
+      },
+      {
+        name: "verbose",
+        display: "verbose",
+        class: "run"
+      },
+      {
+        name: "clear-console",
+        display: "clear-console",
+        class: "run"
+      },
+      {
+        name: "html-viewer",
+        display: "view-page",
+        class: "view"
+      },
+      {
+        name: "html-refresh",
+        display: "refresh-page",
+        class: "view"
+      },
+      {
+        name: "help",
+        display: "help",
+        class: "help"
+      }
     ]
   },
 
@@ -47,7 +77,7 @@ function setupToolbar() {
   document.getElementById(constants.toolbarId).innerHTML = toolbar(constants.toolbarObj);
 }
 
-function setupToolbarFile(name="Untitled", unsaved=true) {
+function setupToolbarFile(name = "Untitled", unsaved = true) {
   document.getElementById(constants.toolbarFileId).innerHTML = toolbarFile({
     name: name,
     unsaved: unsaved,
@@ -78,7 +108,7 @@ function getEditorValue() {
   return editor.editor.viewState.state.doc.toString();
 }
 
-function setEditorValue(val, userEvent=undefined) {
+function setEditorValue(val, userEvent = undefined) {
   let transaction = {
     changes: [{ from: 0, to: editor.editor.state.doc.length, insert: val }],
   };
@@ -118,7 +148,7 @@ export const falseColor = constants.falseColor;
 export {
   setupToolbar, setupToolbarFile,
   getBackgroundColor, setBackgroundColor, toggleBackgroundColor,
-  getEditorValue, setEditorValue, 
-  logConsole, clearConsole, 
+  getEditorValue, setEditorValue,
+  logConsole, clearConsole,
   isVisible, renderHTML, hideHTML
 }
